@@ -1,6 +1,7 @@
 var mongoose = require('mongoose'),
     Schema = mongoose.Schema,
-    timestamps = require('mongoose-timestamp');
+    timestamps = require('mongoose-timestamp'),
+    Address = require('./address').Address;
 
 /**
  * @module  User
@@ -31,7 +32,7 @@ var User = new Schema({
     */
     scope: {
         type: String,
-        enum: ['Customer'],
+        enum: ['Admin', 'Tenant', 'Tenant-User'],
         required: true
     },
 
@@ -51,18 +52,26 @@ var User = new Schema({
         required: true
     },
 
+    /** 
+      Address. It stores address information.
+    */
+
+    address: Address,
+
     /**
      * User name who has created the User.
      */
     createdBy: {
-        type: String
+        type: String,
+        enum: ['Self', 'Admin', 'Tenant-Admin']
     },
 
     /**
      * User name who has changed the User last time.
      */
     updatedBy: {
-        type: String
+        type: String,
+        enum: ['Self', 'Admin', 'Tenant-Admin']
     },
 
     /**
@@ -98,18 +107,12 @@ User.statics.updateUser = function(user, callback) {
     user.save(callback);
 };
 
-User.statics.findUser = function(userName, callback) {
+User.statics.findUser = function(userId, callback) {
     this.findOne({
-        userName: userName
+        userId: userId
     }, callback);
 };
 
-User.statics.findUserByIdAndUserName = function(id, userName, callback) {
-    this.findOne({
-        userName: userName,
-        _id: id
-    }, callback);
-};
 
 var user = mongoose.model('user', User);
 
