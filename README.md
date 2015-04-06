@@ -1,5 +1,5 @@
-Hapi-Mongoose-JWT( Json Web Token) Example with some advance Features
-======================================================================
+User-Tenant
+================================================================================
 
 Signup and Manage Users and Tenants with Node.js and MongoDB
 

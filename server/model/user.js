@@ -1,9 +1,6 @@
 var mongoose = require('mongoose'),
     Schema = mongoose.Schema,
-    autoIncrement = require('mongoose-auto-increment'),
-    db = require('../config/db').db;
-
-autoIncrement.initialize(db);
+    timestamps = require('mongoose-timestamp');
 
 /**
  * @module  User
@@ -13,9 +10,9 @@ autoIncrement.initialize(db);
 var User = new Schema({
 
     /** 
-      userName. It can only contain valid email id, should be unique, is required and indexed.
+      userId. It can only contain valid email id, should be unique, is required and indexed.
     */
-    userName: {
+    userId: {
         type: String,
         unique: true,
         required: true
@@ -30,8 +27,8 @@ var User = new Schema({
     },
 
     /** 
-    Scope. It can only contain string, is required field, and should have value from enum array.
-  */
+      Scope. It can only contain string, is required field, and should have value from enum array.
+    */
     scope: {
         type: String,
         enum: ['Customer'],
@@ -39,20 +36,58 @@ var User = new Schema({
     },
 
     /** 
-      propertyId. It can only contain string.
+      firstName. It can only contain string.
     */
-    isVerified: {
-        type: Boolean,
-        default: false
+    firstName: {
+        type: String,
+        required: true
+    },
+
+    /** 
+      lastName. It can only contain string.
+    */
+    lastName: {
+        type: String,
+        required: true
+    },
+
+    /**
+     * User name who has created the User.
+     */
+    createdBy: {
+        type: String
+    },
+
+    /**
+     * User name who has changed the User last time.
+     */
+    updatedBy: {
+        type: String
+    },
+
+    /**
+     * User last login timestamp.
+     */
+    lastLogin:{
+        type: Date
+    },
+
+    /**
+     * User first login timestamp.
+     */
+    firstLogin:{
+        type: Date
     }
 
-
 });
 
-User.plugin(autoIncrement.plugin, {
-    model: 'user',
-    field: '_id'
-});
+
+/**
+ * Date when the Product was created.
+ * Date when the Product was changed last time.
+ */
+User.plugin(timestamps);
+
 
 User.statics.saveUser = function(requestData, callback) {
     var user = new this(requestData);
