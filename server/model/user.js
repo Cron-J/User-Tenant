@@ -108,8 +108,10 @@ User.statics.saveUser = function(requestData, callback) {
     user.save(callback);
 };
 
-User.statics.updateUser = function(user, callback) {
-    user.save(callback);
+User.statics.updateUser = function(id, user, callback) {
+    this.update({
+        '_id': id
+    }, user, callback);
 };
 
 User.statics.findUser = function(userId, callback) {

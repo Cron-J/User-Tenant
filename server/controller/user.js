@@ -12,18 +12,18 @@ exports.create = {
     handler: function(request, reply) {
         request.payload.password = Crypto.encrypt(request.payload.password);
         request.payload.scope = "Admin";
-        User.saveUser(request.payload, function(err, user) {
+        User.saveUser( request.payload, function(err, user) {
             if (!err) {
                 var tokenData = {
                     userId: user.userId,
                     scope: [user.scope],
                     id: user._id
                 };
-                reply("user successfully created");
+                reply( "user successfully created" );
             } else {
-                if (11000 === err.code || 11001 === err.code) {
+                if ( 11000 === err.code || 11001 === err.code ) {
                     reply(Boom.forbidden("user email already registered"));
-                } else reply(Boom.forbidden(err)); // HTTP 403
+                } else reply( Boom.forbidden(err) ); // HTTP 403
             }
         });
     }
@@ -36,19 +36,31 @@ exports.login = {
                 if (user === null) return reply(Boom.forbidden("invalid username or password"));
                 if (request.payload.password === Crypto.decrypt(user.password)) {
 
+                    var  loginSummary = {};
+                    if( user.firstLogin === undefined ) {
+                        loginSummary['firstLogin'] = Date();
+                    }
+                    loginSummary['lastLogin'] = Date();
 
-                    var tokenData = {
-                        userId: user.userId,
-                        scope: [user.scope],
-                        id: user._id
-                    };
-                    var res = {
-                        userId: user.userId,
-                        scope: user.scope,
-                        token: Jwt.sign(tokenData, privateKey)
-                    };
+                        User.updateUser(user._id, loginSummary, function(err, result){
+                            if(err) {
+                                reply(Boom.forbidden("Oops something went wrong!"));
+                            }
+                            else{
+                                var tokenData = {
+                                    userId: user.userId,
+                                    scope: [user.scope],
+                                    id: user._id
+                                };
+                                var res = {
+                                    userId: user.userId,
+                                    scope: user.scope,
+                                    token: Jwt.sign(tokenData, privateKey)
+                                };
 
-                    reply(res);
+                                reply(res);
+                            }
+                        });
                 } else reply(Boom.forbidden("invalid username or password"));
             } else {
                 if (11000 === err.code || 11001 === err.code) {
