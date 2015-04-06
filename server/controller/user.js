@@ -1,6 +1,7 @@
 var Joi = require('joi'),
     Boom = require('boom'),
-    Common = require('./common'),
+    EmailServices = require('../Utility/emailServices'),
+    Crypto = require('../Utility/cryptolib'),
     Config = require('../config/config'),
     Jwt = require('jsonwebtoken'),
     User = require('../model/user').User;
@@ -9,7 +10,7 @@ var privateKey = Config.key.privateKey;
 
 exports.create = {
     handler: function(request, reply) {
-        request.payload.password = Common.encrypt(request.payload.password);
+        request.payload.password = Crypto.encrypt(request.payload.password);
         request.payload.scope = "Admin";
         User.saveUser(request.payload, function(err, user) {
             if (!err) {
@@ -30,10 +31,10 @@ exports.create = {
 
 exports.login = {
     handler: function(request, reply) {
-        User.findUser(request.payload.userName, function(err, user) {
+        User.findUser(request.payload.userId, function(err, user) {
             if (!err) {
                 if (user === null) return reply(Boom.forbidden("invalid username or password"));
-                if (request.payload.password === Common.decrypt(user.password)) {
+                if (request.payload.password === Crypto.decrypt(user.password)) {
 
 
                     var tokenData = {
@@ -67,7 +68,7 @@ exports.forgotPassword = {
         User.findUser(request.payload.userId, function(err, user) {
             if (!err) {
                 if (user === null) return reply(Boom.forbidden("invalid userId"));
-                Common.sentMailForgotPassword(user);
+                EmailServices.sentMailForgotPassword(user);
                 reply("password is send to registered email id");
             } else {       
                 console.error(err);

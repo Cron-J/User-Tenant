@@ -1,5 +1,7 @@
 'use strict';
 
+var validator = require('mongoose-validators');
+
 /**
  * @class Address
  * @classdesc address class contains the address details
@@ -11,7 +13,8 @@ var address = {
     */
 
     unit: {
-        type: String
+        type: String,
+        validate:[validator.isLength(1, 20)]
     },
 
     /** 
@@ -19,7 +22,8 @@ var address = {
     */
 
     building: {
-        type: String
+        type: String,
+        validate:[validator.isLength(1, 20)]
     },
 
     /** 
@@ -27,7 +31,8 @@ var address = {
     */
 
     street: {
-        type: String
+        type: String,
+        validate:[validator.isLength(1, 20)]
     },
 
     /** 
@@ -35,7 +40,9 @@ var address = {
     */
 
     city: {
-        type: String
+        type: String,
+        required:true, 
+        validate:[validator.isLength(1, 20)]
     },
 
     /** 
@@ -43,7 +50,8 @@ var address = {
     */
 
     region: {
-        type: String
+        type: String,
+        validate:[validator.isLength(1, 20)]
     },
 
     /** 
@@ -51,7 +59,9 @@ var address = {
     */
 
     country: {
-        type: String
+        type: String,
+        required:true, 
+        validate:[validator.isLength(1, 50)]
     },
 
     /** 
@@ -59,7 +69,9 @@ var address = {
     */
 
     addressCode: {
-        type: String
+        type: String,
+        required:true,
+        validate:[validator.isAlphanumeric(), validator.isLength(3, 10)]
     }
 };
 

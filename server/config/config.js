@@ -16,8 +16,8 @@ module.exports = {
         tokenExpiry: 1 * 30 * 1000 * 60 //1 hour
     },
     email: {
-        username: "test@test.com",
-        password: "password",
+        username: "cronjtest@gmail.com",
+        password: "cronj@123",
         accountName: "Cronj"
     }
 };

@@ -1,6 +1,8 @@
 var mongoose = require('mongoose'),
     Schema = mongoose.Schema,
     timestamps = require('mongoose-timestamp'),
+    constants = require('../Utility/constants').constants,
+    validator = require('mongoose-validators'),
     Address = require('./address').Address;
 
 /**
@@ -16,7 +18,8 @@ var User = new Schema({
     userId: {
         type: String,
         unique: true,
-        required: true
+        required: true,
+        validate: [validator.matches(constants.eMailRegex)]
     },
 
     /** 
@@ -41,7 +44,8 @@ var User = new Schema({
     */
     firstName: {
         type: String,
-        required: true
+        required: true,
+        validate: [validator.isLength(2,30), validator.matches(constants.nameRegex)]
     },
 
     /** 
@@ -49,7 +53,8 @@ var User = new Schema({
     */
     lastName: {
         type: String,
-        required: true
+        required: true,
+        validate: [validator.isLength(2,30), validator.matches(constants.nameRegex)]
     },
 
     /** 
