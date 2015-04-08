@@ -5,9 +5,33 @@
   <title>Hapi-Mongoose-Angular</title>
   <meta name="description" content="app, web app, responsive, responsive layout, admin, admin panel, admin dashboard, flat, flat ui, ui kit, AngularJS, ui route, charts, widgets, components" />
   <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1" />
-  
+  <!-- css files -->
+  <link rel="stylesheet" href="app/assets/css/bootstrap.css" type="text/css" />
+  <link rel="stylesheet" href="app/assets/css/growl.css" type="text/css" />
+  <link rel="stylesheet" href="app/assets/css/font-awesome.min.css" type="text/css" />
+  <link rel="stylesheet" href="app/assets/css/custom.css" type="text/css" />
 </head>
 <body>
-  Welcome!
+  <div data-growl=""></div>
+  <div class="container" ui-view></div>
+
+  <!-- dependency js files -->
+  <script src="bower_components/angular/angular.js"></script>
+  <script src="bower_components/jquery/dist/jquery.js"></script>
+  
+  <script src="bower_components/angular-animate/angular-animate.js"></script>
+  <script src="bower_components/angular-sanitize/angular-sanitize.js"></script>
+  <script src="bower_components/angular-cookies/angular-cookies.js"></script>
+  <script src="bower_components/angular-bootstrap/ui-bootstrap-tpls.js"></script>
+  <script src="bower_components/angular-ui-router/release/angular-ui-router.js"></script>
+  <script src="bower_components/angular-growl/build/angular-growl.js"></script>
+  <script src="bower_components/angular-utils-pagination/dirPagination.js"></script>
+  <script src="bower_components/ngStorage/ngStorage.js"></script>
+  <!--js files -->
+  <script src="app/assets/js/bootstrap.js"></script>
+ 	<!--contoller files -->
+ 	<script src="app/app.js"></script>
+    <script src="app/factories/factory.js"></script>
+  <script src="app/controllers/accountCtrl.js"></script>
 </body>
 </html>
