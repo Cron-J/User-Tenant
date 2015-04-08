@@ -1,3 +1,5 @@
+'use strict';
+
 var mongoose = require('mongoose'),
     Schema = mongoose.Schema,
     timestamps = require('mongoose-timestamp'),
@@ -10,14 +12,15 @@ var mongoose = require('mongoose'),
  * @description tenant class contains the details of tenant
  */
 
-var tenantSchema = new Schema({
+var Tenant = new Schema({
 
     /**
      * tenant id is indexed 
      */
     tenantId: {
-        type: Schema.Types.ObjectId,
-        index: true,
+        type: String,
+        required: true,
+        unique: true,
         validate: [validator.isLength(2,30), validator.matches(constants.idRegex)]
     },
 
@@ -55,8 +58,7 @@ var tenantSchema = new Schema({
      */
     validFrom: {
         type: Date,
-        required: true,
-        trim: true,
+        required: true
 
     },
 
@@ -65,9 +67,8 @@ var tenantSchema = new Schema({
      */
     validTo: {
         type: Date,
-        required: true,
-        trim: true
-    }
+        required: true
+    },
 
     /** 
       Address. It stores address information.
@@ -79,6 +80,7 @@ var tenantSchema = new Schema({
      */
     createdBy: {
         type: String,
+        required: true,
         enum: ['Self', 'Admin']
     },
 
@@ -87,6 +89,7 @@ var tenantSchema = new Schema({
      */
     updatedBy: {
         type: String,
+        required: true,
         enum: ['Self', 'Admin', 'Tenant-Admin']
     },
 });
@@ -97,7 +100,24 @@ var tenantSchema = new Schema({
  */
 Tenant.plugin(timestamps);
 
-var tenant = Mongoose.model('tenant', tenantSchema);
+Tenant.statics.saveTenant = function(requestData, callback) {
+    var tenant = new this(requestData);
+    tenant.save(callback);
+};
+
+Tenant.statics.updateTenant = function(id, tenant, callback) {
+    this.update({
+        '_id': id
+    }, tenant, callback);
+};
+
+Tenant.statics.findTenant = function(tenantId, callback) {
+    this.findOne({
+        tenantId: tenantId
+    }, callback);
+};
+
+var tenant = mongoose.model('tenant', Tenant);
 
 module.exports = {
     Tenant: tenant

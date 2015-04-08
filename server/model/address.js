@@ -11,7 +11,6 @@ var address = {
     /** 
       Unit. It can only contain string.
     */
-
     unit: {
         type: String,
         validate:[validator.isLength(1, 20)]
@@ -20,7 +19,6 @@ var address = {
     /** 
       Building. It can only contain string.
     */
-
     building: {
         type: String,
         validate:[validator.isLength(1, 20)]
@@ -29,7 +27,6 @@ var address = {
     /** 
       Street. It can only contain string.
     */
-
     street: {
         type: String,
         validate:[validator.isLength(1, 20)]
@@ -38,7 +35,6 @@ var address = {
     /** 
       City. It can only contain string.
     */
-
     city: {
         type: String,
         required:true, 
@@ -48,7 +44,6 @@ var address = {
     /** 
       Region. It can only contain string.
     */
-
     region: {
         type: String,
         validate:[validator.isLength(1, 20)]
@@ -57,7 +52,6 @@ var address = {
     /** 
       Country. It can only contain string.
     */
-
     country: {
         type: String,
         required:true, 
@@ -67,7 +61,6 @@ var address = {
     /** 
       Address Code Or Postal Code. It can only contain string.
     */
-
     addressCode: {
         type: String,
         required:true,

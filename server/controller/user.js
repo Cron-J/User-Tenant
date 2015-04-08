@@ -1,5 +1,6 @@
-var Joi = require('joi'),
-    Boom = require('boom'),
+'use strict';
+
+var Boom = require('boom'),
     EmailServices = require('../Utility/emailServices'),
     Crypto = require('../Utility/cryptolib'),
     Config = require('../config/config'),
@@ -8,24 +9,34 @@ var Joi = require('joi'),
 
 var privateKey = Config.key.privateKey;
 
-exports.create = {
+exports.createAdmin = {
     handler: function(request, reply) {
-        request.payload.password = Crypto.encrypt(request.payload.password);
-        request.payload.scope = "Admin";
-        User.saveUser( request.payload, function(err, user) {
-            if (!err) {
-                var tokenData = {
-                    userId: user.userId,
-                    scope: [user.scope],
-                    id: user._id
-                };
-                reply( "user successfully created" );
-            } else {
-                if ( 11000 === err.code || 11001 === err.code ) {
-                    reply(Boom.forbidden("user email already registered"));
-                } else reply( Boom.forbidden(err) ); // HTTP 403
+         User.findAdmin(function(err, result){
+            if( result.length != 0 ){
+                reply(Boom.forbidden("Admin already exist"));
             }
-        });
+            else{
+                if(request.payload.tenantId) {
+                    request.payload.tenantId = undefined;
+                }
+                request.payload.password = Crypto.encrypt(request.payload.password);
+                request.payload.scope = "Admin";
+                User.saveUser( request.payload, function(err, user) {
+                    if (!err) {
+                        var tokenData = {
+                            userId: user.userId,
+                            scope: [user.scope],
+                            id: user._id
+                        };
+                        reply( "user successfully created" );
+                    } else {
+                        if ( 11000 === err.code || 11001 === err.code ) {
+                            reply(Boom.forbidden("user email already registered"));
+                        } else reply( Boom.forbidden(err) ); // HTTP 403
+                    }
+                });
+            }
+         });
     }
 };
 
@@ -50,11 +61,13 @@ exports.login = {
                                 var tokenData = {
                                     userId: user.userId,
                                     scope: [user.scope],
+                                    tenantId : user.tenantId,
                                     id: user._id
-                                };
-                                var res = {
+                                },
+                                res = {
                                     userId: user.userId,
                                     scope: user.scope,
+                                    tenantId: user.tenantId,
                                     token: Jwt.sign(tokenData, privateKey)
                                 };
 

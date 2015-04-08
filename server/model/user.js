@@ -1,3 +1,5 @@
+'use strict';
+
 var mongoose = require('mongoose'),
     Schema = mongoose.Schema,
     timestamps = require('mongoose-timestamp'),
@@ -35,7 +37,7 @@ var User = new Schema({
     */
     scope: {
         type: String,
-        enum: ['Admin', 'Tenant', 'Tenant-User'],
+        enum: ['Admin', 'Tenant-Admin', 'Tenant-User'],
         required: true
     },
 
@@ -68,6 +70,7 @@ var User = new Schema({
      */
     createdBy: {
         type: String,
+        required: true,
         enum: ['Self', 'Admin', 'Tenant-Admin']
     },
 
@@ -76,22 +79,32 @@ var User = new Schema({
      */
     updatedBy: {
         type: String,
+        required: true,
         enum: ['Self', 'Admin', 'Tenant-Admin']
     },
 
     /**
      * User last login timestamp.
      */
-    lastLogin:{
+    lastLogin: {
         type: Date
     },
 
     /**
      * User first login timestamp.
      */
-    firstLogin:{
+    firstLogin: {
         type: Date
-    }
+    },
+
+    /**
+     * Identifier of tenant.
+     */
+    tenantId: { 
+        type: Schema.Types.ObjectId,
+        ref: 'tenant', 
+    },
+
 
 });
 
@@ -119,6 +132,13 @@ User.statics.findUser = function(userId, callback) {
         userId: userId
     }, callback);
 };
+
+User.statics.findAdmin = function(callback) {
+    this.find({
+        scope: 'Admin'
+    }, callback);
+};
+
 
 
 var user = mongoose.model('user', User);
