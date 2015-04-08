@@ -4,19 +4,21 @@ var mongoose = require('mongoose'),
     constants = require('../Utility/constants').constants,
     validator = require('mongoose-validators'),
     Address = require('./address').Address;
+
 /** 
  * @module tenant
  * @description tenant class contains the details of tenant
  */
 
-
 var tenantSchema = new Schema({
+
     /**
      * tenant id is indexed 
      */
     tenantId: {
         type: Schema.Types.ObjectId,
-        index: true
+        index: true,
+        validate: [validator.isLength(2,30), validator.matches(constants.idRegex)]
     },
 
     /**
@@ -25,7 +27,8 @@ var tenantSchema = new Schema({
     name: {
         type: String,
         required: true,
-        trim: true
+        trim: true,
+        validate: [validator.isLength(2,30), validator.matches(constants.nameRegex)]
     },
 
     /**
@@ -34,7 +37,8 @@ var tenantSchema = new Schema({
     status: {
         type: String,
         required: true,
-        trim: true
+        trim: true,
+        validate: [validator.isLength(2,30), validator.matches(constants.nameRegex)]
     },
 
     /**
@@ -42,23 +46,25 @@ var tenantSchema = new Schema({
      */
     description: {
         type: String,
-        trim: true
+        trim: true,
+        validate: [validator.isLength(2,30), validator.matches(constants.nameRegex)]
     },
 
     /**
      * valid from must be string and required field
      */
     validFrom: {
-        type: String,
+        type: Date,
         required: true,
-        trim: true
+        trim: true,
+
     },
 
     /**
      * valid to must be string and required field
      */
     validTo: {
-        type: String,
+        type: Date,
         required: true,
         trim: true
     }
