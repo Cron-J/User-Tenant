@@ -43,3 +43,14 @@ exports.createTenant = {
     }
 };
 
+exports.getAllTenants = {
+    handler: function(request, reply) {
+        Tenant.getAllTenant( function( err, tenant ) {
+            if (!err) {
+                return reply(tenant);
+            } else {
+                reply( Boom.forbidden( err ) ); // HTTP 403
+            }
+        });
+    }
+};

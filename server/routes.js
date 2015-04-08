@@ -13,5 +13,6 @@ exports.endpoints = [
     { method: 'POST', path: '/user', config: User.createAdmin},
     { method: 'POST', path: '/login', config: User.login},
     { method: 'POST', path: '/forgotPassword', config: User.forgotPassword},
-    { method: 'POST', path: '/tenant', config: Tenant.createTenant}
+    { method: 'POST', path: '/tenant', config: Tenant.createTenant},
+    { method: 'GET', path: '/tenant', config: Tenant.getAllTenants}
 ];
