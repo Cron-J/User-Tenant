@@ -117,6 +117,12 @@ Tenant.statics.findTenant = function(tenantId, callback) {
     }, callback);
 };
 
+Tenant.statics.remove = function(id, callback) {
+    this.find({
+        _id: id
+    }).remove(callback);
+};
+
 var tenant = mongoose.model('tenant', Tenant);
 
 module.exports = {

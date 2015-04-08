@@ -4,6 +4,7 @@ var Boom = require('boom'),
     Config = require('../config/config'),
     Jwt = require('jsonwebtoken'),
     EmailServices = require('../Utility/emailServices'),
+    constants = require('../Utility/constants').constants,
     Crypto = require('../Utility/cryptolib'),
     User = require('../model/user').User,
     Tenant = require('../model/tenant').Tenant;
@@ -24,13 +25,17 @@ exports.createTenant = {
                         };
                         reply( "user successfully created" );
                     } else {
-                        if ( 11000 === err.code || 11001 === err.code ) {
-                            reply(Boom.forbidden("user email already registered"));
-                        } else reply( Boom.forbidden(err) ); // HTTP 403
-                    }
+                        var errMessage = "Opps something went wrong.."
+		                if ( constants.kDuplicateKeyError === err.code || constants.kDuplicateKeyErrorForMongoDBv2_1_1 === err.code ) {
+		                	errMessage = "user id already exist";
+		                } 
+		                Tenant.remove( tenant._id, function(err, user) {
+		                	 reply(Boom.forbidden( errMessage ));
+		                }); 
+		            }
                 });
             } else {
-                if ( 11000 === err.code || 11001 === err.code ) {
+                if ( constants.kDuplicateKeyError === err.code || constants.kDuplicateKeyErrorForMongoDBv2_1_1 === err.code ) {
                     reply(Boom.forbidden( "tennant Id already exist" ));
                 } else reply( Boom.forbidden( err ) ); // HTTP 403
             }

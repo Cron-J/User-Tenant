@@ -4,6 +4,7 @@ var Boom = require('boom'),
     EmailServices = require('../Utility/emailServices'),
     Crypto = require('../Utility/cryptolib'),
     Config = require('../config/config'),
+    constants = require('../Utility/constants').constants,
     Jwt = require('jsonwebtoken'),
     User = require('../model/user').User;
 
@@ -30,7 +31,7 @@ exports.createAdmin = {
                         };
                         reply( "user successfully created" );
                     } else {
-                        if ( 11000 === err.code || 11001 === err.code ) {
+                        if ( constants.kDuplicateKeyError === err.code || constants.kDuplicateKeyErrorForMongoDBv2_1_1 === err.code ) {
                             reply(Boom.forbidden("user email already registered"));
                         } else reply( Boom.forbidden(err) ); // HTTP 403
                     }
@@ -76,7 +77,7 @@ exports.login = {
                         });
                 } else reply(Boom.forbidden("invalid username or password"));
             } else {
-                if (11000 === err.code || 11001 === err.code) {
+                if ( constants.kDuplicateKeyError === err.code || constants.kDuplicateKeyErrorForMongoDBv2_1_1 === err.code ) {
                     reply(Boom.forbidden("please provide another user email"));
                 } else {
                         console.error(err);
