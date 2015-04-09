@@ -5,25 +5,36 @@ app.controller('accountCtrl', ['$scope', '$http', '$location',
     function ($scope, $http, $location, AuthServ, growl, $filter) {
         var _scope = {};
         _scope.init = function() {
-           $scope.isUser = true;
+           $scope.loginForm = {
+                remember: true
+            };
+            $scope.user = {};
+            $scope.authError = null;
         }
-        $scope.loginForm = {
-            remember: true
-        };
-        $scope.user = {};
-        $scope.authError = null;
         
-        //create account
-        $scope.createAccount = function (account_info, valid) {
+        //Tenant account creation
+        $scope.createTenantAccount = function (account_info, valid) {
             if(valid){
-                 var type = "Self";
-                account_info.tenant.createdBy = type;
-                account_info.tenant.updatedBy = type;
-                account_info.user.createdBy = type;
-                account_info.user.updatedBy = type;
                 account_info.tenant.validFrom = $filter('date')(account_info.tenant.validFrom, "MM/dd/yyyy");
                 account_info.tenant.validTo = $filter('date')(account_info.tenant.validTo, "MM/dd/yyyy");
                  $http.post('/tenant', account_info)
+                .success(function (data, status) {
+                    // AuthServ.setUserToken(data, $scope.loginForm.remember);
+                    growl.addSuccessMessage('Account has been created successfully');
+                    $location.path('app');
+                })
+                .error(function (data, status) {
+                    growl.addErrorMessage(data.message);
+                });
+            }
+        }
+
+        //Tenant-User account creation
+        $scope.createTenantUserAccount = function (account_info, valid) {
+            if(valid){
+                account_info.tenant.validFrom = $filter('date')(account_info.tenant.validFrom, "MM/dd/yyyy");
+                account_info.tenant.validTo = $filter('date')(account_info.tenant.validTo, "MM/dd/yyyy");
+                 $http.post('/tenantUser', account_info)
                 .success(function (data, status) {
                     // AuthServ.setUserToken(data, $scope.loginForm.remember);
                     growl.addSuccessMessage('Account has been created successfully');
