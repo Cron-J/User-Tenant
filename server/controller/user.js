@@ -132,8 +132,16 @@ exports.forgotPassword = {
         User.findUser(request.payload.userId, function(err, user) {
             if (!err) {
                 if (user === null) return reply(Boom.forbidden("invalid userId"));
-                EmailServices.sentMailForgotPassword(user);
-                reply("password is send to registered email id");
+                var password = Crypto.encrypt(Math.random().toString(36).substring(7));
+                User.updateUser( user._id, { "password" : password }, function(err, result){
+                    if(err){
+                        return reply(Boom.badImplementation("Error in sending password"));
+                    }
+                    else{
+                        EmailServices.sentMailForgotPassword(user.userId, password);
+                        reply("password is send to registered email id");
+                    }
+                });
             } else {       
                 console.error(err);
                 return reply(Boom.badImplementation(err));
@@ -141,3 +149,4 @@ exports.forgotPassword = {
         });
     }
 };
+

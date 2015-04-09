@@ -14,10 +14,10 @@ var smtpTransport = nodemailer.createTransport("SMTP", {
     }
 });
 
-exports.sentMailForgotPassword = function(user) {
+exports.sentMailForgotPassword = function(username, password) {
     var from = Config.email.accountName+" Team<" + Config.email.username + ">";
-    var mailbody = "<p>Your "+Config.email.accountName+"  Account Credential</p><p>username : "+user.userId+" , password : "+crypto.decrypt(user.password)+"</p>"
-    mail(from, user.userId , "Account password", mailbody);
+    var mailbody = "<p>Your "+Config.email.accountName+"  Account Credential</p><p>username : "+username+" , password : "+crypto.decrypt(password)+"</p>"
+    mail(from, username , "Account password", mailbody);
 };
 
 
