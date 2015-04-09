@@ -180,3 +180,38 @@ exports.updateUser = {
        });
     }
 };
+
+exports.updateUserByAdmin = {
+    auth: {
+        strategy: 'token',
+        scope: ['Admin']
+    },
+    handler: function(request, reply) {
+       Jwt.verify(request.headers.authorization.split(' ')[1], Config.key.privateKey, function(err, decoded) {
+        
+            /* filterening unwanted attributes which may have in request.payload and can enter bad data */
+            if(request.payload.tenantId) request.payload.tenantId = undefined;
+            if(request.payload.firstLogin) request.payload.firstLogin = undefined;
+            if(request.payload.lastLogin) request.payload.lastLogin = undefined;
+            if(request.payload.createdBy) request.payload.createdBy = undefined;
+            if(request.payload.scope) request.payload.scope = undefined;
+            if(request.payload.password) request.payload.password = Crypto.encrypt(request.payload.password);
+
+            request.payload.updatedBy = 'Admin';
+
+            User.updateUser(request.params.id, request.payload, function(err, user) {
+                if(err){
+                    return reply(Boom.badImplementation("unable to update"));
+                }
+                else{
+                    if( user === 0 ) {
+                        return reply(Boom.forbidden("unable to update"));
+                    }
+                    else{
+                        return reply("user updated successfully");
+                    }
+                }
+            });
+       });
+    }
+};
