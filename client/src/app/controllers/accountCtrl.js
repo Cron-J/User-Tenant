@@ -23,7 +23,7 @@ app.controller('accountCtrl', ['$scope', '$http', '$location',
                 account_info.user.updatedBy = type;
                 account_info.tenant.validFrom = $filter('date')(account_info.tenant.validFrom, "MM/dd/yyyy");
                 account_info.tenant.validTo = $filter('date')(account_info.tenant.validTo, "MM/dd/yyyy");
-                 $http.post('/user', account_info)
+                 $http.post('/tenant', account_info)
                 .success(function (data, status) {
                     // AuthServ.setUserToken(data, $scope.loginForm.remember);
                     growl.addSuccessMessage('Account has been created successfully');
@@ -35,6 +35,7 @@ app.controller('accountCtrl', ['$scope', '$http', '$location',
             }
         }
 
+        //User login
         $scope.login = function (user) {
             $http.post('/login', user)
                 .success(function (data, status) {
@@ -48,6 +49,14 @@ app.controller('accountCtrl', ['$scope', '$http', '$location',
 
         }
 
+        //User logout
+        $scope.logOut = function() {
+            AuthServ.clearCookie();
+            AuthServ.removeUser();
+            $location.path('/login');
+        }
+
+        //forgot password
         $scope.forgotPassword = function (email_add) {
             $http.post('/forgotPassword', {userId:email_add})
                 .success(function (data, status) {
@@ -60,28 +69,29 @@ app.controller('accountCtrl', ['$scope', '$http', '$location',
                 })
         }
 
-    $scope.open1 = function($event) {
-        $event.preventDefault();
-        $event.stopPropagation();
+        //Date picker
+        $scope.open1 = function($event) {
+            $event.preventDefault();
+            $event.stopPropagation();
 
-        $scope.opened1 = true;
-    };
+            $scope.opened1 = true;
+        };
 
-    $scope.open2 = function($event) {
-        $event.preventDefault();
-        $event.stopPropagation();
+        $scope.open2 = function($event) {
+            $event.preventDefault();
+            $event.stopPropagation();
 
-        $scope.opened2 = true;
-    };
+            $scope.opened2 = true;
+        };
 
-    // $scope.dateOptions = {
-    //     formatYear: 'yy',
-    //     startingDay: 1
-    // };
+        // $scope.dateOptions = {
+        //     formatYear: 'yy',
+        //     startingDay: 1
+        // };
 
-    $scope.formats = ['MM/dd/yyyy', 'yyyy/MM/dd', 'dd.MM.yyyy', 'shortDate'];
-    $scope.format = $scope.formats[0];
+        $scope.formats = ['MM/dd/yyyy', 'yyyy/MM/dd', 'dd.MM.yyyy', 'shortDate'];
+        $scope.format = $scope.formats[0];
 
-    _scope.init();
+        _scope.init();
 }]);
 

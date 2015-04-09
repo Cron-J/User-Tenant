@@ -32,6 +32,27 @@ angular.module('app.factory', [])
     },
     loadFromCookie: function () {
       user = $cookieStore.get('user');
+    },
+    removeUser: function() {
+        user = null;
+        $cookieStore.put('user', user);
+
+    },
+    isAuthorized: function(authorizedRoles) {
+        if (!angular.isArray(authorizedRoles)) {
+            authorizedRoles = [authorizedRoles];
+        }
+        if (authorizedRoles[0] == "*")
+            return true;
+        return (authorizedRoles.indexOf($cookieStore.get('user').scope) !== -1);
+    },
+
+    isLoggedInAsync: function(cb) {
+        if (user && user.scope) {
+            return true;
+        }
+        return false;
     }
+
   };
 })
