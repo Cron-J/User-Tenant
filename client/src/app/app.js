@@ -3,6 +3,7 @@
 // Declare app level module which depends on filters, and services
 var app = angular.module('app', [
     'ngCookies',
+    'ngStorage',
     'ngSanitize',
     'angular-growl',
     'ui.router',
@@ -22,19 +23,26 @@ var app = angular.module('app', [
         $stateProvider
           .state('login', {
             url: "/login",
-              templateUrl: "app/views/account/login.html",
+              templateUrl: "app/views/common/login.html",
               data: {
                   authorizedRoles: [USER_ROLES.all]
               }
           })
-          .state('signup', {
-            url: "/signup",
-              templateUrl: "app/views/account/signup.html"
+          .state('createTenant', {
+            url: "/tenantSignup",
+              templateUrl: "app/views/tenant/signup.html",
+              controller: 'tenantCtrl'
+
+          }) 
+          .state('createTenantUser', {
+            url: "/tenantUserSignup",
+              templateUrl: "app/views/tenant_user/signup.html",
+              controller: 'tenantUserCtrl'
 
           }) 
           .state('forgotPassword', {
             url: "/forgotPassword",
-              templateUrl: "app/views/account/forgot_password.html",
+              templateUrl: "app/views/common/forgot_password.html",
               data: {
                   authorizedRoles: [USER_ROLES.all]
               }
