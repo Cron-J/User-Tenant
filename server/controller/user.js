@@ -6,6 +6,7 @@ var Boom = require('boom'),
     Config = require('../config/config'),
     constants = require('../Utility/constants').constants,
     Jwt = require('jsonwebtoken'),
+    Tenant = require('../model/tenant').Tenant,
     User = require('../model/user').User;
 
 var privateKey = Config.key.privateKey;
@@ -22,6 +23,8 @@ exports.createAdmin = {
                 }
                 request.payload.password = Crypto.encrypt(request.payload.password);
                 request.payload.scope = "Admin";
+                request.payload.createdBy = "Self";
+                request.payload.updatedBy = "Self";
                 User.saveUser( request.payload, function(err, user) {
                     if (!err) {
                         var tokenData = {
@@ -29,7 +32,7 @@ exports.createAdmin = {
                             scope: [user.scope],
                             id: user._id
                         };
-                        reply( "user successfully created" );
+                        reply( "Admin successfully created" );
                     } else {
                         if ( constants.kDuplicateKeyError === err.code || constants.kDuplicateKeyErrorForMongoDBv2_1_1 === err.code ) {
                             reply(Boom.forbidden("user email already registered"));
@@ -38,6 +41,41 @@ exports.createAdmin = {
                 });
             }
          });
+    }
+};
+
+exports.createTenantUser = {
+    handler: function(request, reply) {            
+        if(!request.payload.tenantId) {
+            reply(Boom.forbidden("Please select tenant"));
+        }
+        else{
+            Tenant.findTenantById( request.payload.tenantId, function( err, tenant ) {
+                if( tenant ){
+                    request.payload.password = Crypto.encrypt(request.payload.password);
+                    request.payload.scope = "Tenant-User";
+                    request.payload.createdBy = "Self";
+                    request.payload.updatedBy = "Self";
+                    User.saveUser( request.payload, function(err, user) {
+                        if (!err) {
+                            var tokenData = {
+                                userId: user.userId,
+                                scope: [user.scope],
+                                id: user._id
+                            };
+                            reply( "Tenant user successfully created" );
+                        } else {
+                            if ( constants.kDuplicateKeyError === err.code || constants.kDuplicateKeyErrorForMongoDBv2_1_1 === err.code ) {
+                                reply(Boom.forbidden("user email already registered"));
+                            } else reply( Boom.forbidden(err) ); // HTTP 403
+                        }
+                    });
+                }
+                else {
+                    reply(Boom.forbidden("Invalid tenant selected"));
+                }
+            });
+        }
     }
 };
 

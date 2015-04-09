@@ -16,6 +16,8 @@ exports.createTenant = {
                 request.payload.user.tenantId = tenant._id;
                 request.payload.user.password = Crypto.encrypt(request.payload.user.password);
                 request.payload.user.scope = "Tenant-Admin";
+                request.payload.createdBy = "Tenant-Admin";
+                request.payload.updatedBy = "Tenant-Admin";
                 User.saveUser( request.payload.user, function(err, user) {
                     if (!err) {
                         var tokenData = {

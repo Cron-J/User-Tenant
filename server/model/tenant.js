@@ -81,7 +81,7 @@ var Tenant = new Schema({
     createdBy: {
         type: String,
         required: true,
-        enum: ['Self', 'Admin']
+        enum: ['Tenant-Admin', 'Admin']
     },
 
     /**
@@ -90,7 +90,7 @@ var Tenant = new Schema({
     updatedBy: {
         type: String,
         required: true,
-        enum: ['Self', 'Admin', 'Tenant-Admin']
+        enum: ['Admin', 'Tenant-Admin']
     },
 });
 
@@ -111,9 +111,15 @@ Tenant.statics.updateTenant = function(id, tenant, callback) {
     }, tenant, callback);
 };
 
-Tenant.statics.findTenant = function(tenantId, callback) {
+Tenant.statics.findTenantByDisplayId = function(tenantId, callback) {
     this.findOne({
         tenantId: tenantId
+    }, callback);
+};
+
+Tenant.statics.findTenantById = function(id, callback) {
+    this.findOne({
+        '_id': id
     }, callback);
 };
 
