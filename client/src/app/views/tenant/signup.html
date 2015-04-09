@@ -90,13 +90,10 @@
                 <div class="col-md-6 col-xs-12">
                   <div class="input-group">
                     <div class="row">
-                      <div class="col-md-10">
+                      <div class="col-md-9">
                         <p class="input-group">
-                          <input type="text" class="form-control" datepicker-popup="{{format}}" ng-model="account.tenant.validFrom" is-open="opened1" ng-required="true" close-text="Close" name="date1"/>
-                          <span class="input-group-btn">
-                            <button type="button" class="btn btn-default" ng-click="open1($event)"><i class="glyphicon glyphicon-calendar"></i></button>
-                          </span>
-                        </p>
+                        <span class="input-group-addon"><i class="fa fa-calendar"></i></span>
+                        <input type="text" class="form-control" datepicker-popup="{{format}}" ng-model="account.tenant.validFrom" is-open="opened1" ng-required="true" close-text="Close" name="date1" ng-click="open1($event)"/>
                       </div>
                     </div>
                   </div>
@@ -112,18 +109,17 @@
                 <div class="col-md-6 col-xs-12">
                   <div class="input-group">
                     <div class="row">
-                      <div class="col-md-10">
+                      <div class="col-md-9">
                         <p class="input-group">
-                          <input type="text" class="form-control" datepicker-popup="{{format}}" ng-model="account.tenant.validTo" is-open="opened2" min-date="minDate" max-date="'2015-06-22'" datepicker-options="dateOptions" date-disabled="disabled(date, mode)" ng-required="true" close-text="Close" name="date2"/>
-                          <span class="input-group-btn">
-                            <button type="button" class="btn btn-default" ng-click="open2($event)"><i class="glyphicon glyphicon-calendar"></i></button>
-                          </span>
+                          <span class="input-group-addon"><i class="fa fa-calendar"></i></span>
+                          <input type="text" class="form-control" datepicker-popup="{{format}}" ng-model="account.tenant.validTo" is-open="opened2" min-date="account.tenant.validFrom" datepicker-options="dateOptions" date-disabled="disabled(date, mode)" ng-required="true" close-text="Close" name="date2" ng-click="open2($event)"/>
                         </p>
                       </div>
                     </div>
                   </div>
-                  <div class="error" ng-show="signupForm.date2.$dirty && signupForm.date2.$invalid">Invalid:
+                  <div class="error" ng-show="(signupForm.date2.$dirty && signupForm.date2.$invalid) || (account.tenant.validTo <account.tenant.validFrom)">Invalid:
                       <span ng-show="signupForm.date2.$error.required">Tell us Valid to</span>
+                      <span ng-show="account.tenant.validTo <account.tenant.validFrom">Valid to should be greater than valid from</span>
                   </div>
                 </div>
               </div>
