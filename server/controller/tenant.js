@@ -58,3 +58,40 @@ exports.getAllTenants = {
         });
     }
 };
+
+exports.updateTenantByAdminOrTenantAdmim = {
+    auth: {
+        strategy: 'token',
+        scope: ['Admin', 'Tenant-Admin']
+    },
+    handler: function(request, reply) {
+       Jwt.verify(request.headers.authorization.split(' ')[1], Config.key.privateKey, function(err, decoded) {
+        
+            /* filterening unwanted attributes which may have in request.payload and can enter bad data */
+            if(request.payload.tenantId) request.payload.tenantId = undefined;
+            if(request.payload.createdBy) request.payload.createdBy = undefined;
+
+            if(decoded.scope === 'Admin'){
+                request.payload.updatedBy = 'Admin';
+            }
+            else if(decoded.scope === 'Tenant-Admin'){
+                request.payload.updatedBy = 'Tenant-Admin';
+                request.params.id = decoded.tenantId;
+            }
+
+            Tenant.updateTenant(request.params.id, request.payload, function(err, user) {
+                if(err){
+                    return reply(Boom.badImplementation("unable to update"));
+                }
+                else{
+                    if( user === 0 ) {
+                        return reply(Boom.forbidden("unable to update"));
+                    }
+                    else{
+                        return reply("tenant updated successfully");
+                    }
+                }
+            });
+       });
+    }
+};

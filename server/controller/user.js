@@ -99,7 +99,7 @@ exports.login = {
                             else{
                                 var tokenData = {
                                     userId: user.userId,
-                                    scope: [user.scope],
+                                    scope: user.scope,
                                     tenantId : user.tenantId,
                                     id: user._id
                                 },
