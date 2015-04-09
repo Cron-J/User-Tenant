@@ -12,6 +12,7 @@ exports.endpoints = [
     { method: 'GET',  path: '/{somethingss*}', config: Static.get },
     { method: 'POST', path: '/user', config: User.createAdmin},
     { method: 'PUT', path: '/user', config: User.updateUser},
+    { method: 'GET', path: '/user', config: User.getUser},
     { method: 'PUT', path: '/userByAdmin/{id}', config: User.updateUserByAdmin},
     { method: 'POST', path: '/login', config: User.login},
     { method: 'POST', path: '/forgotPassword', config: User.forgotPassword},

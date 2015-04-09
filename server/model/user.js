@@ -133,6 +133,12 @@ User.statics.findUser = function(userId, callback) {
     }, callback);
 };
 
+User.statics.findUserById = function(id, callback) {
+    this.findOne({
+        '_id': id
+    }, callback);
+};
+
 User.statics.findAdmin = function(callback) {
     this.find({
         scope: 'Admin'

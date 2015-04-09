@@ -126,7 +126,6 @@ exports.login = {
     }
 };
 
-
 exports.forgotPassword = {
     handler: function(request, reply) {
         User.findUser(request.payload.userId, function(err, user) {
@@ -147,6 +146,31 @@ exports.forgotPassword = {
                 return reply(Boom.badImplementation(err));
              }
         });
+    }
+};
+
+exports.getUser = {
+    auth: {
+        strategy: 'token',
+        scope: ['Admin', 'Tenant-Admin', 'Tenant-User']
+    },
+    handler: function(request, reply) {
+       Jwt.verify(request.headers.authorization.split(' ')[1], Config.key.privateKey, function(err, decoded) {        
+            User.findUserById(decoded.id, function(err, user) {
+                if(err){
+                    return reply(Boom.badImplementation("unable to get user detail"));
+                }
+                else{
+                    if(user){
+                        user.password = undefined;
+                        user.scope = undefined;
+                        return reply(user);    
+                    }
+                    return reply(Boom.forbidden("unable to get user detail"));
+                }
+            });
+
+       });
     }
 };
 
