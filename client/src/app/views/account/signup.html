@@ -17,13 +17,13 @@
                             <div class="col-lg-6 col-md-6">            
                                 <div class="input-group">
                                     <span class="input-group-addon"><i class="fa fa-pencil"></i></span>
-                                    <input id="login-username" type="text" class="form-control" name="firstName" ng-model="account.user.firstName" ng-minlength="2" ng-maxlength="30" ng-pattern="/^[a-zA-Z ]*$/" required>
+                                    <input id="login-username" type="text" class="form-control" name="firstName" ng-model="account.user.firstName" ng-minlength="2" ng-maxlength="30" ng-pattern="/^[a-zA-Z0-9 ]*$/" required>
                                 </div>
                                 <div class="error" ng-show="signupForm.firstName.$dirty && signupForm.firstName.$invalid">Invalid:
                                     <span ng-show="signupForm.firstName.$error.required">Tell us your First name</span>
                                     <span ng-show="signupForm.firstName.$error.minlength">First name should be minimum of 3 characters</span>
                                     <span ng-show="signupForm.firstName.$error.maxlength">First name should be maximum of 25 characters</span>
-                                    <span ng-show="signupForm.firstName.$error.pattern">First name won't allow numbers and special characters</span>
+                                    <span ng-show="signupForm.firstName.$error.pattern">First name won't allow special characters</span>
                                     </span>
                                 </div>
                             </div>
@@ -35,13 +35,13 @@
                             <div class="col-lg-6 col-md-6">            
                                 <div class="input-group">
                                     <span class="input-group-addon"><i class="fa fa-pencil"></i></span>
-                                    <input id="login-username" type="text" class="form-control" name="lastName" ng-model="account.user.lastName" ng-minlength="2" ng-maxlength="30" ng-pattern="/^[a-zA-Z ]*$/" required>
+                                    <input id="login-username" type="text" class="form-control" name="lastName" ng-model="account.user.lastName" ng-minlength="2" ng-maxlength="30" ng-pattern="/^[a-zA-Z0-9 ]*$/" required>
                                 </div>
                                 <div class="error" ng-show="signupForm.lastName.$dirty && signupForm.lastName.$invalid">Invalid:
                                     <span ng-show="signupForm.lastName.$error.required">Tell us your Last Name</span>
                                     <span ng-show="signupForm.lastName.$error.minlength">Last name should be minimum of 3 characters</span>
                                     <span ng-show="signupForm.lastName.$error.maxlength">Last name should be maximum of 25 characters</span>
-                                    <span ng-show="signupForm.lastName.$error.pattern">Last name won't allow numbers and special characters</span>
+                                    <span ng-show="signupForm.lastName.$error.pattern">Last name won't allow special characters</span>
                                     </span>
                                 </div>
                             </div>
@@ -84,7 +84,7 @@
                                     <span class="input-group-addon"><i class="fa fa-user"></i></span>
                                     <select class="form-control" name="usertype" ng-model="account.user.scope" required>
                                         <option value="">Select type</option>
-                                        <option value="Admin">Admin</option>
+                                        <!-- <option value="Admin">Admin</option> -->
                                         <option value="Tenant">Tenant</option>
                                         <option value="Tenant-User">Tenant-User</option>
                                     </select>
@@ -105,13 +105,13 @@
                                 <div class="col-md-6 col-xs-12">
                                     <div class="input-group">
                                         <span class="input-group-addon"><span class="fa fa-th"></span></span>
-                                        <input type="text" class="form-control" name="unit1" ng-model="account.user.address.unit" ng-minlength="1" ng-maxlength="10" ng-pattern=" /^[0-9]+$/ ">
+                                        <input type="text" class="form-control" name="unit1" ng-model="account.user.address.unit" ng-minlength="1" ng-maxlength="10" ng-pattern="/^[a-zA-Z0-9 ]*$/">
                                     </div>
                                     <span class="error" ng-show="signupForm.unit1.$dirty && signupForm.unit1.$invalid">Invalid:
                                         <span ng-show="signupForm.unit1.$error.required"> Unit field is required</span>
                                         <span ng-show="signupForm.unit1.$error.minlength">Unit field should be minimum of 1 digit</span>
                                         <span ng-show="signupForm.unit1.$error.maxlength">Unit field should be maximum of 20 digit</span>
-                                        <span ng-show="signupForm.unit1.$error.pattern">Unit field should have digits only</span>
+                                        <span ng-show="signupForm.unit1.$error.pattern">Unit won't allow special characters</span>
                                     </span>
                                 </div>
                             </div>
@@ -120,13 +120,13 @@
                                 <div class="col-md-6 col-xs-12">
                                     <div class="input-group">
                                         <span class="input-group-addon"><span class="fa fa-building"></span></span>
-                                        <input type="text" class="form-control" name="building1" ng-model="account.user.address.building" ng-minlength="1" ng-maxlength="25" ng-pattern="/^[a-zA-Z ]*$/">
+                                        <input type="text" class="form-control" name="building1" ng-model="account.user.address.building" ng-minlength="1" ng-maxlength="25" ng-pattern="/^[a-zA-Z0-9 ]*$/">
                                     </div>
                                     <span class="error" ng-show="signupForm.building1.$dirty && signupForm.building1.$invalid">Invalid:
                                         <span ng-show="signupForm.building1.$error.required">Tell us your Building Name</span>
                                         <span ng-show="signupForm.building1.$error.minlength">Building Name should be minimum of 1 character</span>
                                         <span ng-show="signupForm.building1.$error.maxlength">Building name should be maximum of 20 characters</span>
-                                        <span ng-show="signupForm.building1.$error.pattern">Building name won't allow numbers and special characters</span>
+                                        <span ng-show="signupForm.building1.$error.pattern">Building name won't allow special characters</span>
                                     </span>
                                 </div>
                             </div>
@@ -135,13 +135,13 @@
                                 <div class="col-md-6 col-xs-12">
                                     <div class="input-group">
                                         <span class="input-group-addon"><span class="fa fa-map-marker"></span></span>
-                                        <input type="text" class="form-control" name="street1" ng-model="account.user.address.street" ng-minlength="1" ng-maxlength="25" ng-pattern="/^[a-zA-Z ]*$/">
+                                        <input type="text" class="form-control" name="street1" ng-model="account.user.address.street" ng-minlength="1" ng-maxlength="25" ng-pattern="/^[a-zA-Z0-9 ]*$/">
                                     </div>
                                     <span class="error" ng-show="signupForm.street1.$dirty && signupForm.street1.$invalid">Invalid:
                                         <span ng-show="signupForm.street1.$error.required">Street  is required</span>
                                         <span ng-show="signupForm.street1.$error.minlength">Street should be minimum of 1 character</span>
                                         <span ng-show="signupForm.street1.$error.maxlength">Street name should be maximum of 20 characters</span>
-                                        <span ng-show="signupForm.street1.$error.pattern">Street name won't allow numbers and special characters</span>
+                                        <span ng-show="signupForm.street1.$error.pattern">Street name won't allow special characters</span>
                                     </span>
                                 </div>
                             </div>
@@ -150,13 +150,13 @@
                                 <div class="col-md-6 col-xs-12">
                                     <div class="input-group">
                                         <span class="input-group-addon"><span class="fa fa-map-marker"></span></span>
-                                        <input type="text" class="form-control" name="city1" ng-model="account.user.address.city" ng-minlength="1" ng-maxlength="20" ng-pattern="/^[a-zA-Z ]*$/" required>
+                                        <input type="text" class="form-control" name="city1" ng-model="account.user.address.city" ng-minlength="1" ng-maxlength="20" ng-pattern="/^[a-zA-Z0-9 ]*$/" required>
                                     </div>
                                     <span class="error" ng-show="signupForm.city1.$dirty && signupForm.city1.$invalid">Invalid:
                                         <span ng-show="signupForm.city1.$error.required">City name is required</span>
                                         <span ng-show="signupForm.city1.$error.minlength">City name should be minimum of 1 character</span>
                                         <span ng-show="signupForm.city1.$error.maxlength">City name should be maximum of 20 characters</span>
-                                        <span ng-show="signupForm.city1.$error.pattern">City name won't allow numbers and special characters</span>
+                                        <span ng-show="signupForm.city1.$error.pattern">City name won't allow special characters</span>
                                     </span>
                                 </div>
                             </div>
@@ -165,12 +165,12 @@
                                 <div class="col-md-6 col-xs-12">
                                     <div class="input-group">
                                         <span class="input-group-addon"><span class="fa fa-map-marker"></span></span>
-                                        <input type="text" class="form-control" name="region1" ng-model="account.user.address.region" ng-minlength="1" ng-maxlength="20" ng-pattern="/^[a-zA-Z ]*$/">
+                                        <input type="text" class="form-control" name="region1" ng-model="account.user.address.region" ng-minlength="1" ng-maxlength="20" ng-pattern="/^[a-zA-Z0-9 ]*$/">
                                     </div>
                                     <span class="error" ng-show="signupForm.region1.$dirty && signupForm.region1.$invalid">Invalid:
                                         <span ng-show="signupForm.region1.$error.minlength">Region should be minimum of 1 character</span>
                                         <span ng-show="signupForm.region1.$error.maxlength">Region should be maximum of 20 characters</span>
-                                        <span ng-show="signupForm.region1.$error.pattern">Region won't allow numbers and special characters</span>
+                                        <span ng-show="signupForm.region1.$error.pattern">Region won't allow special characters</span>
                                     </span>
                                 </div>
                             </div>
@@ -179,13 +179,13 @@
                                 <div class="col-md-6 col-xs-12">
                                     <div class="input-group">
                                         <span class="input-group-addon"><span class="fa fa-map-marker"></span></span>
-                                        <input type="text" class="form-control" name="country1" ng-model="account.user.address.country" ng-minlength="1" ng-maxlength="50" ng-pattern="/^[a-zA-Z ]*$/" required>
+                                        <input type="text" class="form-control" name="country1" ng-model="account.user.address.country" ng-minlength="1" ng-maxlength="50" ng-pattern="/^[a-zA-Z0-9 ]*$/" required>
                                     </div>
                                     <span class="error" ng-show="signupForm.country1.$dirty && signupForm.country1.$invalid">Invalid:
                                         <span ng-show="signupForm.country1.$error.required">Tell us your Country Name</span>
                                         <span ng-show="signupForm.country1.$error.minlength">Country name should be minimum of 1 character</span>
                                         <span ng-show="signupForm.country1.$error.maxlength">Country name should be maximum of 50 characters</span>
-                                        <span ng-show="signupForm.country1.$error.pattern">Country won't allow numbers and special characters</span>
+                                        <span ng-show="signupForm.country1.$error.pattern">Country won't allow special characters</span>
                                     </span>
                                     </span>
                                 </div>
@@ -195,13 +195,13 @@
                                 <div class="col-md-6 col-xs-12">
                                     <div class="input-group">
                                         <span class="input-group-addon"><span class="fa fa-link"></span></span>
-                                        <input type="text" class="form-control" name="zipcode1" ng-model="account.user.address.addressCode" ng-minlength="3" ng-maxlength="10" ng-pattern=" /^[0-9]+$/ " required>
+                                        <input type="text" class="form-control" name="zipcode1" ng-model="account.user.address.addressCode" ng-minlength="3" ng-maxlength="10" ng-pattern=" /^[a-zA-Z0-9]*$/" required>
                                     </div>
                                     <span class="error" ng-show="signupForm.zipcode1.$dirty && signupForm.zipcode1.$invalid">Invalid:
-                                        <span ng-show="signupForm.zipcode1.$error.required">Zip is required</span>
-                                    <span ng-show="signupForm.zipcode1.$error.minlength">Zip number should be minimum of 3 digit</span>
-                                    <span ng-show="signupForm.zipcode1.$error.maxlength">Zip number should be maximum of 10 digit</span>
-                                    <span ng-show="signupForm.zipcode1.$error.pattern">Zip Number should have digits only<span>
+                                        <span ng-show="signupForm.zipcode1.$error.required">Zip code is required</span>
+                                    <span ng-show="signupForm.zipcode1.$error.minlength">Zip code should be minimum of 3 digit</span>
+                                    <span ng-show="signupForm.zipcode1.$error.maxlength">Zip code should be maximum of 10 digit</span>
+                                    <span ng-show="signupForm.zipcode1.$error.pattern">Zip code won't allow special characters<span>
                                     </span>
                                 </div>
                             </div>
@@ -224,13 +224,13 @@
                             <div class="col-lg-6 col-md-6">            
                                 <div class="input-group">
                                     <span class="input-group-addon"><i class="fa fa-user"></i></span>
-                                    <input id="login-username" type="text" class="form-control" name="tenantId" ng-model="account.tenant.tenantId" ng-minlength="2" ng-maxlength="30" ng-pattern="/^[a-zA-Z ]*$/" required>
+                                    <input id="login-username" type="text" class="form-control" name="tenantId" ng-model="account.tenant.tenantId" ng-minlength="2" ng-maxlength="30" ng-pattern="/^[a-zA-Z0-9]*$/" required>
                                 </div>
                                 <div class="error" ng-show="signupForm.tenantId.$dirty && signupForm.tenantId.$invalid">Invalid:
                                     <span ng-show="signupForm.tenantId.$error.required">Tell us your tenant id</span>
                                     <span ng-show="signupForm.tenantId.$error.minlength">Tenant id should be minimum of 3 characters</span>
                                     <span ng-show="signupForm.tenantId.$error.maxlength">Tenant id should be maximum of 25 characters</span>
-                                    <span ng-show="signupForm.tenantId.$error.pattern">Tenant id won't allow numbers and special characters</span>
+                                    <span ng-show="signupForm.tenantId.$error.pattern">Tenant id won't special characters</span>
                                     </span>
                                 </div>
                             </div>
@@ -242,13 +242,13 @@
                             <div class="col-lg-6 col-md-6">            
                                 <div class="input-group">
                                     <span class="input-group-addon"><i class="fa fa-pencil"></i></span>
-                                    <input id="login-username" type="text" class="form-control" name="name" ng-model="account.tenant.name" ng-minlength="2" ng-maxlength="30" ng-pattern="/^[a-zA-Z ]*$/" required>
+                                    <input id="login-username" type="text" class="form-control" name="name" ng-model="account.tenant.name" ng-minlength="2" ng-maxlength="30" ng-pattern="/^[a-zA-Z0-9 ]*$/" required>
                                 </div>
                                 <div class="error" ng-show="signupForm.name.$dirty && signupForm.name.$invalid">Invalid:
                                     <span ng-show="signupForm.name.$error.required">Tell us your name</span>
                                     <span ng-show="signupForm.name.$error.minlength">Name should be minimum of 2 characters</span>
                                     <span ng-show="signupForm.name.$error.maxlength">Name should be maximum of 30 characters</span>
-                                    <span ng-show="signupForm.name.$error.pattern">Name won't allow numbers and special characters</span>
+                                    <span ng-show="signupForm.name.$error.pattern">Name won't allow special characters</span>
                                     </span>
                                 </div>
                             </div>
@@ -260,13 +260,13 @@
                             <div class="col-lg-6 col-md-6">            
                                 <div class="input-group">
                                     <span class="input-group-addon"><i class="fa fa-pencil"></i></span>
-                                    <input id="login-username" type="text" class="form-control" name="status" ng-model="account.tenant.status" ng-minlength="2" ng-maxlength="30" ng-pattern="/^[a-zA-Z ]*$/" required>
+                                    <input id="login-username" type="text" class="form-control" name="status" ng-model="account.tenant.status" ng-minlength="2" ng-maxlength="30" ng-pattern="/^[a-zA-Z0-9]*$/" required>
                                 </div>
                                 <div class="error" ng-show="signupForm.status.$dirty && signupForm.status.$invalid">Invalid:
                                     <span ng-show="signupForm.status.$error.required">Tell us your status</span>
                                     <span ng-show="signupForm.status.$error.minlength">Status should be minimum of 2 characters</span>
                                     <span ng-show="signupForm.status.$error.maxlength">Status should be maximum of 30 characters</span>
-                                    <span ng-show="signupForm.status.$error.pattern">Status won't allow numbers and special characters</span>
+                                    <span ng-show="signupForm.status.$error.pattern">Status won't allow special characters</span>
                                     </span>
                                 </div>
                             </div>
@@ -278,13 +278,13 @@
                             <div class="col-lg-6 col-md-6">            
                                 <div class="input-group">
                                     <span class="input-group-addon"><i class="fa fa-pencil"></i></span>
-                                    <textarea id="login-username" type="text" class="form-control" rows="4" name="description" ng-model="account.tenant.description" ng-minlength="2" ng-maxlength="30" ng-pattern="/^[a-zA-Z ]*$/" required></textarea>
+                                    <textarea id="login-username" type="text" class="form-control" rows="4" name="description" ng-model="account.tenant.description" ng-minlength="2" ng-maxlength="30" ng-pattern="/^[a-zA-Z0-9 ]*$/" required></textarea>
                                 </div>
                                 <div class="error" ng-show="signupForm.description.$dirty && signupForm.description.$invalid">Invalid:
                                     <span ng-show="signupForm.description.$error.required">Tell us your description</span>
                                     <span ng-show="signupForm.description.$error.minlength">Description should be minimum of 2 characters</span>
                                     <span ng-show="signupForm.description.$error.maxlength">Description should be maximum of 30 characters</span>
-                                    <span ng-show="signupForm.description.$error.pattern">Description won't allow numbers and special characters</span>
+                                    <span ng-show="signupForm.description.$error.pattern">Description won't allow special characters</span>
                                     </span>
                                 </div>
                             </div>
@@ -344,13 +344,13 @@
                                 <div class="col-md-6 col-xs-12">
                                     <div class="input-group">
                                         <span class="input-group-addon"><span class="fa fa-th"></span></span>
-                                        <input type="text" class="form-control" name="unit" ng-model="account.tenant.address.unit" ng-minlength="1" ng-maxlength="10" ng-pattern=" /^[0-9]+$/ ">
+                                        <input type="text" class="form-control" name="unit" ng-model="account.tenant.address.unit" ng-minlength="1" ng-maxlength="10" ng-pattern="/^[a-zA-Z0-9 ]*$/">
                                     </div>
                                     <span class="error" ng-show="signupForm.unit.$dirty && signupForm.unit.$invalid">Invalid:
                                         <span ng-show="signupForm.unit.$error.required"> Unit field is required</span>
                                         <span ng-show="signupForm.unit.$error.minlength">Unit field should be minimum of 1 digit</span>
                                         <span ng-show="signupForm.unit.$error.maxlength">Unit field should be maximum of 20 digit</span>
-                                        <span ng-show="signupForm.unit.$error.pattern">Unit field should have digits only</span>
+                                        <span ng-show="signupForm.unit.$error.pattern">Unit field won't allow special characters</span>
                                     </span>
                                 </div>
                             </div>
@@ -359,13 +359,13 @@
                                 <div class="col-md-6 col-xs-12">
                                     <div class="input-group">
                                         <span class="input-group-addon"><span class="fa fa-building"></span></span>
-                                        <input type="text" class="form-control" name="building" ng-model="account.tenant.address.building" ng-minlength="1" ng-maxlength="25" ng-pattern="/^[a-zA-Z ]*$/">
+                                        <input type="text" class="form-control" name="building" ng-model="account.tenant.address.building" ng-minlength="1" ng-maxlength="25" ng-pattern="/^[a-zA-Z0-9 ]*$/">
                                     </div>
                                     <span class="error" ng-show="signupForm.building.$dirty && signupForm.building.$invalid">Invalid:
                                         <span ng-show="signupForm.building.$error.required">Tell us your Building Name</span>
                                         <span ng-show="signupForm.building.$error.minlength">Building Name should be minimum of 1 character</span>
                                         <span ng-show="signupForm.building.$error.maxlength">Building name should be maximum of 20 characters</span>
-                                        <span ng-show="signupForm.building.$error.pattern">Building name won't allow numbers and special characters</span>
+                                        <span ng-show="signupForm.building.$error.pattern">Building name won't allow special characters</span>
                                     </span>
                                 </div>
                             </div>
@@ -374,13 +374,13 @@
                                 <div class="col-md-6 col-xs-12">
                                     <div class="input-group">
                                         <span class="input-group-addon"><span class="fa fa-map-marker"></span></span>
-                                        <input type="text" class="form-control" name="street" ng-model="account.tenant.address.street" ng-minlength="1" ng-maxlength="25" ng-pattern="/^[a-zA-Z ]*$/">
+                                        <input type="text" class="form-control" name="street" ng-model="account.tenant.address.street" ng-minlength="1" ng-maxlength="25" ng-pattern="/^[a-zA-Z0-9 ]*$/">
                                     </div>
                                     <span class="error" ng-show="signupForm.street.$dirty && signupForm.street.$invalid">Invalid:
                                         <span ng-show="signupForm.street.$error.required">Street  is required</span>
                                         <span ng-show="signupForm.street.$error.minlength">Street should be minimum of 1 character</span>
                                         <span ng-show="signupForm.street.$error.maxlength">Street name should be maximum of 20 characters</span>
-                                        <span ng-show="signupForm.street.$error.pattern">Street name won't allow numbers and special characters</span>
+                                        <span ng-show="signupForm.street.$error.pattern">Street name won't allow  special characters</span>
                                     </span>
                                 </div>
                             </div>
@@ -389,13 +389,13 @@
                                 <div class="col-md-6 col-xs-12">
                                     <div class="input-group">
                                         <span class="input-group-addon"><span class="fa fa-map-marker"></span></span>
-                                        <input type="text" class="form-control" name="city" ng-model="account.tenant.address.city" ng-minlength="1" ng-maxlength="20" ng-pattern="/^[a-zA-Z ]*$/" required>
+                                        <input type="text" class="form-control" name="city" ng-model="account.tenant.address.city" ng-minlength="1" ng-maxlength="20" ng-pattern="/^[a-zA-Z0-9 ]*$/" required>
                                     </div>
                                     <span class="error" ng-show="signupForm.city.$dirty && signupForm.city.$invalid">Invalid:
                                         <span ng-show="signupForm.city.$error.required">City name is required</span>
                                         <span ng-show="signupForm.city.$error.minlength">City name should be minimum of 1 character</span>
                                         <span ng-show="signupForm.city.$error.maxlength">City name should be maximum of 20 characters</span>
-                                        <span ng-show="signupForm.city.$error.pattern">City name won't allow numbers and special characters</span>
+                                        <span ng-show="signupForm.city.$error.pattern">City name won't allow special characters</span>
                                     </span>
                                 </div>
                             </div>
@@ -404,12 +404,12 @@
                                 <div class="col-md-6 col-xs-12">
                                     <div class="input-group">
                                         <span class="input-group-addon"><span class="fa fa-map-marker"></span></span>
-                                        <input type="text" class="form-control" name="region" ng-model="account.tenant.address.region" ng-minlength="1" ng-maxlength="20" ng-pattern="/^[a-zA-Z ]*$/">
+                                        <input type="text" class="form-control" name="region" ng-model="account.tenant.address.region" ng-minlength="1" ng-maxlength="20" ng-pattern="/^[a-zA-Z0-9 ]*$/">
                                     </div>
                                     <span class="error" ng-show="signupForm.region.$dirty && signupForm.region.$invalid">Invalid:
                                         <span ng-show="signupForm.region.$error.minlength">Region should be minimum of 1 character</span>
                                         <span ng-show="signupForm.region.$error.maxlength">Region should be maximum of 20 characters</span>
-                                        <span ng-show="signupForm.region.$error.pattern">Region won't allow numbers and special characters</span>
+                                        <span ng-show="signupForm.region.$error.pattern">Region won't allow special characters</span>
                                     </span>
                                 </div>
                             </div>
@@ -418,13 +418,13 @@
                                 <div class="col-md-6 col-xs-12">
                                     <div class="input-group">
                                         <span class="input-group-addon"><span class="fa fa-map-marker"></span></span>
-                                        <input type="text" class="form-control" name="country" ng-model="account.tenant.address.country" ng-minlength="1" ng-maxlength="50" ng-pattern="/^[a-zA-Z ]*$/" required>
+                                        <input type="text" class="form-control" name="country" ng-model="account.tenant.address.country" ng-minlength="1" ng-maxlength="50" ng-pattern="/^[a-zA-Z0-9 ]*$/" required>
                                     </div>
                                     <span class="error" ng-show="signupForm.country.$dirty && signupForm.country.$invalid">Invalid:
                                         <span ng-show="signupForm.country.$error.required">Tell us your Country Name</span>
                                         <span ng-show="signupForm.country.$error.minlength">Country name should be minimum of 1 character</span>
                                         <span ng-show="signupForm.country.$error.maxlength">Country name should be maximum of 50 characters</span>
-                                        <span ng-show="signupForm.country.$error.pattern">Country won't allow numbers and special characters</span>
+                                        <span ng-show="signupForm.country.$error.pattern">Country won't allow special characters</span>
                                     </span>
                                     </span>
                                 </div>
@@ -434,13 +434,13 @@
                                 <div class="col-md-6 col-xs-12">
                                     <div class="input-group">
                                         <span class="input-group-addon"><span class="fa fa-link"></span></span>
-                                        <input type="text" class="form-control" name="zipcode" ng-model="account.tenant.address.addressCode" ng-minlength="3" ng-maxlength="10" ng-pattern=" /^[0-9]+$/ " required>
+                                        <input type="text" class="form-control" name="zipcode" ng-model="account.tenant.address.addressCode" ng-minlength="3" ng-maxlength="10" ng-pattern="/^[a-zA-Z0-9]*$/" required>
                                     </div>
                                     <span class="error" ng-show="signupForm.zipcode.$dirty && signupForm.zipcode.$invalid">Invalid:
-                                        <span ng-show="signupForm.zipcode.$error.required">Zip is required</span>
-                                    <span ng-show="signupForm.zipcode.$error.minlength">Zip number should be minimum of 3 digit</span>
-                                    <span ng-show="signupForm.zipcode.$error.maxlength">Zip number should be maximum of 10 digit</span>
-                                    <span ng-show="signupForm.zipcode.$error.pattern">Zip Number should have digits only<span>
+                                        <span ng-show="signupForm.zipcode.$error.required">Zip code is required</span>
+                                    <span ng-show="signupForm.zipcode.$error.minlength">Zip code should be minimum of 3 digit</span>
+                                    <span ng-show="signupForm.zipcode.$error.maxlength">Zip code should be maximum of 10 digit</span>
+                                    <span ng-show="signupForm.zipcode.$error.pattern">Zip code won't allow special characters<span>
                                     </span>
                                 </div>
                             </div>
