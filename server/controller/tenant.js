@@ -59,6 +59,29 @@ exports.getAllTenants = {
     }
 };
 
+exports.getTenant = {
+    auth: {
+        strategy: 'token',
+        scope: ['Admin', 'Tenant-Admin']
+    },
+    handler: function(request, reply) {
+        Jwt.verify(request.headers.authorization.split(' ')[1], Config.key.privateKey, function(err, decoded) {
+
+            if(decoded.scope === 'Tenant-Admin'){
+                request.params.id = decoded.tenantId;
+            }
+
+            Tenant.findTenantById( request.params.id, function( err, tenant ) {
+                if (!err) {
+                    return reply(tenant);
+                } else {
+                    reply( Boom.forbidden( err ) ); // HTTP 403
+                }
+            });
+        });
+    }
+};
+
 exports.updateTenantByAdminOrTenantAdmim = {
     auth: {
         strategy: 'token',
