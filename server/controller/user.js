@@ -87,6 +87,29 @@ exports.createTenantUser = {
     }
 };
 
+exports.searchUser = {
+    auth: {
+        strategy: 'token',
+        scope: ['Admin']
+    },
+    handler: function(request, reply) {
+        var query = {};
+        if (request.payload.firstName) query['firstName'] = new RegExp(request.payload.firstName, "i");
+        if (request.payload.lastName) query['lastName'] = new RegExp(request.payload.lastName, "i");
+        if (request.payload.userId) query['userId'] = new RegExp(request.payload.userId, "i");
+        query['scope'] = {'$ne': 'Admin'};
+
+        User.searchUser(query, function(err, user) {
+            if (!err) {
+                for (var i = 0; i< user.length; i++) {
+                   if( user[i].password ) { user[i].password = undefined; }
+                }
+                return reply(user);
+            } else reply(Boom.forbidden(err));
+        });
+    }
+};
+
 exports.login = {
     handler: function(request, reply) {
         User.findUser(request.payload.userId, function(err, user) {

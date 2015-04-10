@@ -152,7 +152,9 @@ User.statics.findAdmin = function(callback) {
     }, callback);
 };
 
-
+User.statics.searchUser = function(query, callback) {
+    this.find(query, callback);
+};
 
 var user = mongoose.model('user', User);
 
