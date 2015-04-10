@@ -1,6 +1,12 @@
-<div class="container">
-	<div class="col-lg-12 col-md-12">
-		<div class="row">Welcome</div>
-		<a ng-click="logOut()" ng-controller="accountCtrl">logout</a>
+<!-- <div ng-include="'app/views/common/header.html'"></div> -->
+<div class="ut-container">
+	<div ng-show="user.scope == 'Admin'">
+		<div ng-include="'app/views/admin/home.html'" ></div>
 	</div>
+	<!-- <div ng-show="user.scope == 'Tenant-Admin'">
+		<div ng-include="'app/views/tenant/home.html'" ng-controller="tenantCtrl"></div>
+	</div>
+	<div ng-show="user.scope == 'Tenant-User'">
+		<div ng-include="'app/views/tenant_user/home.html'" ng-controller="tenantUserCtrl"></div>
+	</div> -->
 </div>

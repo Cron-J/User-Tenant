@@ -12,8 +12,9 @@
   <link rel="stylesheet" href="app/assets/css/custom.css" type="text/css" />
 </head>
 <body>
+  <div ng-include="'app/views/common/header.html'"></div>
+  <div ui-view ></div>
   <div data-growl=""></div>
-  <div ui-view></div>
 
   <!-- dependency js files -->
   <script src="bower_components/angular/angular.js"></script>
@@ -33,6 +34,7 @@
  	<script src="app/app.js"></script>
   <script src="app/factories/factory.js"></script>
   <script src="app/controllers/accountCtrl.js"></script>
+  <script src="app/controllers/adminCtrl.js"></script>
   <script src="app/controllers/tenantCtrl.js"></script>
   <script src="app/controllers/tenantUserCtrl.js"></script>
 </body>

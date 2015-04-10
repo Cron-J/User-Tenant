@@ -13,7 +13,9 @@ app.controller('tenantUserCtrl', ['$scope', '$http', '$location',
 
         //Get all tenants
         var getAllTenants = function () {
-            $http.get('/tenant')
+            $http.get('/tenant' , {
+                headers: AuthServ.getAuthHeader()
+            })
             .success(function (data, status) {
                 $scope.tenantsList = data
             })

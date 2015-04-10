@@ -1,8 +1,8 @@
 'use strict';
 
-app.controller('accountCtrl', ['$scope', '$http', '$location', 
+app.controller('accountCtrl', ['$scope', '$rootScope', '$http', '$location', 
     'AuthServ', 'growl', '$filter',
-    function ($scope, $http, $location, AuthServ, growl, $filter) {
+    function ($scope, $rootScope, $http, $location, AuthServ, growl, $filter) {
         var _scope = {};
         _scope.init = function() {
            $scope.loginForm = {
@@ -52,7 +52,14 @@ app.controller('accountCtrl', ['$scope', '$http', '$location',
                 .success(function (data, status) {
                     AuthServ.setUserToken(data, $scope.loginForm.remember);
                     growl.addSuccessMessage('Successfully logged in');
-                    $location.path('home');
+                    console.log('******************', data);
+                    $rootScope.user = data;
+                    if(user.scope == 'Admin')
+                        $location.path('/users');
+                    else if(user.scope == 'Tenant-Admin')
+                        $location.path('/users');
+                    else 
+                         $location.path('/users');
                 })
                 .error(function (data, status) {
                     growl.addErrorMessage(data.message);
@@ -64,6 +71,7 @@ app.controller('accountCtrl', ['$scope', '$http', '$location',
         $scope.logOut = function() {
             AuthServ.clearCookie();
             AuthServ.removeUser();
+            delete $rootScope.user;
             $location.path('/login');
         }
 

@@ -5,8 +5,12 @@
 
 angular.module('app.factory', [])
 
-.factory('AuthServ', function ($cookieStore) {
+.factory('AuthServ', function ($cookieStore,$rootScope) {
   var user;
+  if($cookieStore.get('user')){
+      user = $cookieStore.get('user');
+      $rootScope.user=user;
+    }
   return {
     getToken: function () {
       return user.token;
@@ -17,9 +21,9 @@ angular.module('app.factory', [])
     getAuthHeader: function () {
       return (user && user.token) ? { 'Authorization': 'Bearer ' + user.token } : {};
     },
-    setUserToken: function (newUser, save) {
+    setUserToken: function (newUser) {
       user = newUser;
-      if(!save) {
+      if(!user) {
         return this.clearCookie();
       }
       this.saveToCookie();
@@ -42,16 +46,20 @@ angular.module('app.factory', [])
         if (!angular.isArray(authorizedRoles)) {
             authorizedRoles = [authorizedRoles];
         }
-        if (authorizedRoles[0] == "*")
-            return true;
-        return (authorizedRoles.indexOf($cookieStore.get('user').scope) !== -1);
+        if (authorizedRoles[0] == "*") 
+          return true;
+          return (authorizedRoles.indexOf($cookieStore.get('user').scope) !== -1);
+        
     },
 
     isLoggedInAsync: function(cb) {
         if (user && user.scope) {
-            return true;
+            cb(true);
         }
-        return false;
+        else{
+           cb(false);
+        }
+       
     }
 
   };

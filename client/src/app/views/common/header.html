@@ -2,14 +2,39 @@
   <div class="container-fluid">
     <!-- Brand and toggle get grouped for better mobile display -->
     <div class="navbar-header">
-      <button type="button" class="navbar-toggle collapsed" data-toggle="collapse" data-target="#bs-example-navbar-collapse-1">
-        <span class="sr-only">Toggle navigation</span>
-        <span class="icon-bar"></span>
-        <span class="icon-bar"></span>
-        <span class="icon-bar"></span>
-      </button>
-      <a class="navbar-brand" href="#">User-Tenant</a>
+      <img src="app/assets/img/jc-logo-rgb.svg" style="height: 1.5em; margin-top: 1.00em; margin-bottom: 0.75em;">
+      
     </div>
-
+    <!-- <ul class="nav navbar-nav navbar-right">
+        <li class="dropdown" ng-show="user">
+          <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-expanded="false">{{user.userId}}<span class="caret"></span></a>
+          <ul class="dropdown-menu" role="menu">
+            <li><a ng-click="logOut()" ng-controller="accountCtrl">logout</a></li>
+          </ul>
+        </li>
+      </ul> -->
+    <ul class="nav navbar-nav navbar-right" ng-show="user">
+        <li class="dropdown">
+          <a href="#" class="dropdown-toggle" data-toggle="dropdown">
+            {{user.userId}} <b class="caret"></b>
+          </a>
+          <ul class="dropdown-menu">
+            <li><a >Account</a></li>
+            <li><a ng-click="logOut()"  ng-controller="accountCtrl">Log Off</a></li>
+            <li class="divider"></li>
+            <li class="dropdown-header">Language</li>
+            <li class="active"><a href="#">English</a></li>
+            <!-- <li><a href="#">Deutsch</a></li> -->
+          </ul>
+        </li> 
+        <li class="dropdown">
+          <a href="#" class="icon-nav-item dropdown-toggle" data-toggle="dropdown"><span class="fa fa-cog fa-1x"></span>  <b class="caret"></b></a>
+          <ul class="dropdown-menu">
+            <li class="dropdown-header">Roles</li>
+            <li><a >User</a></li>
+            <li><a >Tenant</a></li>
+          </ul>
+        </li> 
+      </ul>
   </div><!-- /.container-fluid -->
 </nav>

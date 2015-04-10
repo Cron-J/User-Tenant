@@ -1,0 +1,29 @@
+<div class="row">
+	<div class="col-lg-12 col-md-12">
+		<h3>Tenants List</h3>	
+	</div>
+	<div class="col-lg-12 col-md-12"> 
+		
+		<div ng-hide="tenantList.length>0">
+			<h2>Sorry ! There are no tenants.</h2>
+    </div>
+		<table class="table table-bordered table-advance table-hover" ng-show="tenantList.length>0">
+		    <thead>
+		      <tr>
+		        <th>#</th>
+		        <th>Name</th>
+		        <th>Valid from</th>
+		        <th>Valid to</th>
+		      </tr>
+		    </thead>
+		    <tbody>
+		       <tr class="hoverptr" ng-repeat="tenant in tenantList">
+		        <td  ng-click="tenant_view(tenant._id)">{{$index+1}}</td>
+		        <td ng-click="tenant_view(tenant._id)">{{tenant.name}}</td>
+		        <td ng-click="tenant_view(tenant._id)">{{tenant.validFrom | date:"dd-MM-yyyy"}}</td>
+		        <td ng-click="tenant_view(tenant._id)">{{tenant.validTo | date:"dd-MM-yyyy"}}</td>
+		      </tr>
+		    </tbody>
+		</table>
+	</div>
+</div>
