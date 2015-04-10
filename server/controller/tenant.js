@@ -26,12 +26,8 @@ exports.createTenant = {
                 request.payload.user.updatedBy = "Admin";
                 User.saveUser( request.payload.user, function(err, user) {
                     if (!err) {
-                        var tokenData = {
-                            userId: user.userId,
-                            scope: [user.scope],
-                            id: user._id
-                        };
-                        reply( "user successfully created" );
+                        EmailServices.sentMailUserCreation(user.userId, user.password);
+                        return reply( "user successfully created" );
                     } else {
                         var errMessage = "Opps something went wrong.."
 		                if ( constants.kDuplicateKeyError === err.code || constants.kDuplicateKeyErrorForMongoDBv2_1_1 === err.code ) {

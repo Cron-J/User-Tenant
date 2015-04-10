@@ -50,41 +50,40 @@ exports.createTenantUser = {
         strategy: 'token',
         scope: ['Admin', 'Tenant-Admin']
     },
-    handler: function(request, reply) {            
-        if(decoded.scope === 'Tenant-Admin'){
-            request.payload.tenantId = decoded.tenantId;
-        }
+    handler: function(request, reply) {
+        Jwt.verify(request.headers.authorization.split(' ')[1], Config.key.privateKey, function(err, decoded) {
+            if(decoded.scope === 'Tenant-Admin'){
+                request.payload.tenantId = decoded.tenantId;
+            }
 
-        if( !request.payload.tenantId ){
-            return reply(Boom.forbidden("Please select tenant"));
-        }
-        else {
-            Tenant.findTenantById( request.payload.tenantId, function( err, tenant ) {
-                if( tenant ){
-                    request.payload.password = Crypto.encrypt(request.payload.password);
-                    request.payload.scope = "Tenant-User";
-                    request.payload.createdBy = "Self";
-                    request.payload.updatedBy = "Self";
-                    User.saveUser( request.payload, function(err, user) {
-                        if (!err) {
-                            var tokenData = {
-                                userId: user.userId,
-                                scope: [user.scope],
-                                id: user._id
-                            };
-                            reply( "Tenant user successfully created" );
-                        } else {
-                            if ( constants.kDuplicateKeyError === err.code || constants.kDuplicateKeyErrorForMongoDBv2_1_1 === err.code ) {
-                                reply(Boom.forbidden("user email already registered"));
-                            } else reply( Boom.forbidden(err) ); // HTTP 403
-                        }
-                    });
-                }
-                else {
-                    reply(Boom.forbidden("Invalid tenant selected"));
-                }
-            });
-        }
+            if( !request.payload.tenantId ){
+                return reply(Boom.forbidden("Please select tenant"));
+            }
+            else {
+                Tenant.findTenantById( request.payload.tenantId, function( err, tenant ) {
+                    if( tenant ){
+                        request.payload.password = Crypto.encrypt(request.payload.password);
+                        request.payload.scope = "Tenant-User";
+                        request.payload.createdBy = "Self";
+                        request.payload.updatedBy = "Self";
+                        User.saveUser( request.payload, function(err, user) {
+                            if (!err) {
+                                EmailServices.sentMailUserCreation(user.userId, user.password);
+                                reply( "Tenant user successfully created" );
+                            } else {
+                                if ( constants.kDuplicateKeyError === err.code || constants.kDuplicateKeyErrorForMongoDBv2_1_1 === err.code ) {
+                                    reply(Boom.forbidden("user email already registered"));
+                                } else reply( Boom.forbidden(err) ); // HTTP 403
+                            }
+                        });
+                    }
+                    else {
+                        reply(Boom.forbidden("Invalid tenant selected"));
+                    }
+                });
+            }
+
+        });
     }
 };
 

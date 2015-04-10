@@ -18,6 +18,6 @@ module.exports = {
     email: {
         username: "cronjtest@gmail.com",
         password: "cronj@123",
-        accountName: "Cronj"
+        accountName: "JCatlog"
     }
 };
