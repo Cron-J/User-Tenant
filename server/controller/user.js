@@ -4,6 +4,7 @@ var Boom = require('boom'),
     EmailServices = require('../Utility/emailServices'),
     Crypto = require('../Utility/cryptolib'),
     Config = require('../config/config'),
+    json2csv = require('json2csv'),
     constants = require('../Utility/constants').constants,
     Jwt = require('jsonwebtoken'),
     Tenant = require('../model/tenant').Tenant,
@@ -105,6 +106,26 @@ exports.searchUser = {
                    if( user[i].password ) { user[i].password = undefined; }
                 }
                 return reply(user);
+            } else reply(Boom.forbidden(err));
+        });
+    }
+};
+
+exports.exportUser = {
+    auth: {
+        strategy: 'token',
+        scope: ['Admin']
+    },
+    handler: function(request, reply) {
+        var query = {};
+            query['scope'] = {'$ne': 'Admin'};
+
+        User.searchUser(query, function(err, user) {
+            if (!err) {
+                json2csv({data: user,  fields: ['userId', 'firstName', 'lastName', 'scope'], fieldNames: ['User Id/ user email', 'First Name', 'Last Name', 'Userrole']}, function(err, csv) {
+                  if (err) console.log(err);
+                  return reply(csv).header('Content-Type', 'application/octet-stream').header('content-disposition', 'attachment; filename=user.csv;');
+                });
             } else reply(Boom.forbidden(err));
         });
     }

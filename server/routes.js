@@ -13,6 +13,7 @@ exports.endpoints = [
     { method: 'POST', path: '/user', config: User.createAdmin},
     { method: 'PUT', path: '/user', config: User.updateUser},
     { method: 'POST', path: '/searchUser', config: User.searchUser},
+    { method: 'GET', path: '/exportUser', config: User.exportUser},
     { method: 'GET', path: '/user', config: User.getUser},
     { method: 'PUT', path: '/userByAdmin/{id}', config: User.updateUserByAdmin},
     { method: 'POST', path: '/login', config: User.login},
