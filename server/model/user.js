@@ -139,6 +139,13 @@ User.statics.findUserById = function(id, callback) {
     }, callback);
 };
 
+User.statics.findUserByTenantIdScope = function(id, scope, callback) {
+    this.find({
+        'tenantId': id,
+        'scope': scope
+    }, callback);
+};
+
 User.statics.findAdmin = function(callback) {
     this.find({
         scope: 'Admin'
