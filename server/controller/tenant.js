@@ -10,16 +10,20 @@ var Boom = require('boom'),
     Tenant = require('../model/tenant').Tenant;
 
 exports.createTenant = {
+    auth: {
+        strategy: 'token',
+        scope: ['Admin']
+    },
     handler: function(request, reply) {
-        request.payload.tenant.createdBy = "Tenant-Admin";
-        request.payload.tenant.updatedBy = "Tenant-Admin";
+        request.payload.tenant.createdBy = "Admin";
+        request.payload.tenant.updatedBy = "Admin";
         Tenant.saveTenant( request.payload.tenant, function( err, tenant ) {
             if (!err) {
                 request.payload.user.tenantId = tenant._id;
                 request.payload.user.password = Crypto.encrypt(request.payload.user.password);
                 request.payload.user.scope = "Tenant-Admin";
-                request.payload.user.createdBy = "Tenant-Admin";
-                request.payload.user.updatedBy = "Tenant-Admin";
+                request.payload.user.createdBy = "Admin";
+                request.payload.user.updatedBy = "Admin";
                 User.saveUser( request.payload.user, function(err, user) {
                     if (!err) {
                         var tokenData = {
@@ -48,6 +52,10 @@ exports.createTenant = {
 };
 
 exports.getAllTenants = {
+    auth: {
+        strategy: 'token',
+        scope: ['Admin']
+    },
     handler: function(request, reply) {
         Tenant.getAllTenant( function( err, tenant ) {
             if (!err) {

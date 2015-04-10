@@ -45,11 +45,19 @@ exports.createAdmin = {
 };
 
 exports.createTenantUser = {
+    auth: {
+        strategy: 'token',
+        scope: ['Admin', 'Tenant-Admin']
+    },
     handler: function(request, reply) {            
-        if(!request.payload.tenantId) {
-            reply(Boom.forbidden("Please select tenant"));
+        if(decoded.scope === 'Tenant-Admin'){
+            request.payload.tenantId = decoded.tenantId;
         }
-        else{
+
+        if( !request.payload.tenantId ){
+            return reply(Boom.forbidden("Please select tenant"));
+        }
+        else {
             Tenant.findTenantById( request.payload.tenantId, function( err, tenant ) {
                 if( tenant ){
                     request.payload.password = Crypto.encrypt(request.payload.password);
