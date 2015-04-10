@@ -47,13 +47,19 @@ exports.createTenant = {
     }
 };
 
-exports.getAllTenants = {
+exports.searchTenant = {
     auth: {
         strategy: 'token',
         scope: ['Admin']
     },
     handler: function(request, reply) {
-        Tenant.getAllTenant( function( err, tenant ) {
+        var query = {};
+        if (request.payload.tenantId) query['tenantId'] = new RegExp(request.payload.tenantId, "i");
+        if (request.payload.name) query['name'] = new RegExp(request.payload.name, "i");
+        if (request.payload.description) query['description'] = new RegExp(request.payload.description, "i");
+        if (request.payload.status) query['status'] = new RegExp(request.payload.status, "i");
+        
+        Tenant.searchTenant(query, function( err, tenant ) {
             if (!err) {
                 return reply(tenant);
             } else {

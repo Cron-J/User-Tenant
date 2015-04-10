@@ -123,8 +123,8 @@ Tenant.statics.findTenantById = function(id, callback) {
     }, callback);
 };
 
-Tenant.statics.getAllTenant = function(callback) {
-    this.find({}, callback);
+Tenant.statics.searchTenant = function(query, callback) {
+    this.find(query, callback);
 };
 
 Tenant.statics.remove = function(id, callback) {
