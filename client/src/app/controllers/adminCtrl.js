@@ -2,7 +2,8 @@
 
 app.controller('adminCtrl', ['$scope', '$rootScope', '$http', '$location', 
     'AuthServ', 'growl', '$filter','$cookieStore',
-    function ($scope, $rootScope, $http, $location, AuthServ, growl, $filter,$cookieStore) {
+    function ($scope, $rootScope, $http, $location, AuthServ, growl, $filter, 
+        $cookieStore) {
         var _scope = {};
         _scope.init = function() {
            // getAccountInfo();
@@ -82,39 +83,11 @@ app.controller('adminCtrl', ['$scope', '$rootScope', '$http', '$location',
             });
         }
 
-        //Get Tenant
-        var getTenant = function (id) {
-            $http.get('/tenant/'+id, {
-                headers: AuthServ.getAuthHeader()
-            })
-            .success(function (data, status) {
-                // AuthServ.setUserToken(data, $scope.loginForm.remember);
-                // growl.addSuccessMessage('Account has been updated successfully');
-                // $location.path('app');
-                $scope.tenant = data;
-            })
-            .error(function (data, status) {
-                growl.addErrorMessage(data.message);
-            });
+        //Get Tenant Details
+        $scope.getTenant = function (id) {
+             $location.path('/tenant/'+id);
         }
 
-
-        //Update tenant account
-        $scope.updateTenantAccount = function (account_info, valid) {
-            if(valid){
-                $http.put('/tenant/'+account_info._id, account_info, {
-                    headers: AuthServ.getAuthHeader()
-                })
-                .success(function (data, status) {
-                    // AuthServ.setUserToken(data, $scope.loginForm.remember);
-                    growl.addSuccessMessage('Account has been updated successfully');
-                    $location.path('/users');
-                })
-                .error(function (data, status) {
-                    growl.addErrorMessage(data.message);
-                });
-            }
-        }
 
         //Pagination
         $scope.pagedItems = [];
@@ -181,6 +154,7 @@ app.controller('adminCtrl', ['$scope', '$rootScope', '$http', '$location',
                 })
                 .success(function (data, status) {
                     $scope.showResult = true;
+                    console.log('$scope.showResult : ', $scope.showResult);
                     $scope.resultList = data;
                     // $scope.data = data;
                      $scope.currentPage = 0;
@@ -192,33 +166,6 @@ app.controller('adminCtrl', ['$scope', '$rootScope', '$http', '$location',
                     growl.addErrorMessage(data.message);
                 });
         }
-                    
-        //       
-       
-
-        var customTransform = function(){
-            var temp = [];
-            console.log($scope.srch);
-            var srchObj = $scope.search;
-            for (key in srchObj){
-                switch(key){
-                    case 'tenantId':
-                    case 'name':
-                    case 'description':
-                    case 'status':
-                    // the above are those keys which need to be sent to api search request
-                    if(srchObj[key]!=""){
-                        temp.push({
-                            "key": key,
-                            "value": srchObj[key]
-                        })                      
-                    }
-                }
-
-            }
-            return temp;
-        }
-
 
         //Date picker
         $scope.open1 = function($event) {

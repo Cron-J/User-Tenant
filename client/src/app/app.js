@@ -3,10 +3,11 @@
 // Declare app level module which depends on filters, and services
 var app = angular.module('app', [
     'ngCookies',
-    'ngStorage',
+    'angularLocalStorage',
     'ngSanitize',
     'angular-growl',
     'ui.router',
+    'ngRoute',
     'ui.bootstrap',
     'angularUtils.directives.dirPagination',
     'app.factory',
@@ -40,7 +41,7 @@ var app = angular.module('app', [
         
         growlProvider.globalTimeToLive(3000);
         growlProvider.globalEnableHtml(true);
-        $urlRouterProvider.otherwise("/login")
+        $urlRouterProvider.otherwise("/login");
         // $stateProvider
         // .state('root',{
         //   url: '',
@@ -102,10 +103,28 @@ var app = angular.module('app', [
               }
 
           })
-          .state('adminHome', {
-            url: "/users",
-              templateUrl: "app/views/admin/home.html",
+          .state('tenants', {
+            url: "/tenants",
+              templateUrl: "app/views/tenant/home.html",
               controller: "adminCtrl",
+              data: {
+                  authorizedRoles: [USER_ROLES.admin]
+              }
+
+          })
+          .state('tenant', {
+            url: "/tenant/:tenantId",
+              templateUrl: "app/views/tenant/edit.html",
+              controller: "tenantCtrl",
+              data: {
+                  authorizedRoles: [USER_ROLES.admin]
+              }
+
+          })
+          .state('users', {
+            url: "/users",
+              templateUrl: "app/views/tenant_user/home.html",
+              controller: "tenantCtrl",
               data: {
                   authorizedRoles: [USER_ROLES.admin]
               }

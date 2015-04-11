@@ -62,5 +62,5 @@ angular.module('app.factory', [])
        
     }
 
-  };
+};
 })

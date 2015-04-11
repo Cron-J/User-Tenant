@@ -54,9 +54,9 @@ app.controller('accountCtrl', ['$scope', '$rootScope', '$http', '$location',
                     growl.addSuccessMessage('Successfully logged in');
                     console.log('******************', data);
                     $rootScope.user = data;
-                    if(user.scope == 'Admin')
-                        $location.path('/users');
-                    else if(user.scope == 'Tenant-Admin')
+                    if($rootScope.user.scope == 'Admin')
+                        $location.path('/tenants');
+                    else if($rootScope.user.scope == 'Tenant-Admin')
                         $location.path('/users');
                     else 
                          $location.path('/users');
