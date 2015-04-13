@@ -68,15 +68,21 @@ var app = angular.module('app', [
               }
           })
           .state('createTenant', {
-            url: "/tenantSignup",
-              templateUrl: "app/views/tenant/signup.html",
-              controller: 'tenantCtrl'
+            url: "/tenantCreation",
+              templateUrl: "app/views/tenant/create.html",
+              controller: 'tenantCtrl',
+              data: {
+                  authorizedRoles: [USER_ROLES.admin]
+              }
 
           }) 
           .state('createTenantUser', {
-            url: "/tenantUserSignup",
-              templateUrl: "app/views/tenant_user/signup.html",
-              controller: 'tenantUserCtrl'
+            url: "/tenantUserCreation",
+              templateUrl: "app/views/tenant_user/tenant_user.html",
+              controller: 'adminCtrl',
+              data: {
+                  authorizedRoles: [USER_ROLES.admin, USER_ROLES.tenantadmin]
+              }
 
           }) 
           .state('forgotPassword', {
@@ -132,7 +138,7 @@ var app = angular.module('app', [
           })
           .state('user', {
             url: "/user/:tenantUserId",
-              templateUrl: "app/views/tenant_user/edit.html",
+              templateUrl: "app/views/tenant_user/tenant_user.html",
               controller: "tenantUserCtrl",
               data: {
                   authorizedRoles: [USER_ROLES.admin]

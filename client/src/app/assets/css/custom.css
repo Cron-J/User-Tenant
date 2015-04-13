@@ -2,7 +2,7 @@
 *** Custom css
 */
 .ut-container{
-	margin-top: 70px;
+	margin-top: 50px;
 	margin-bottom: 60px;
 }
 .ut-title {
@@ -17,4 +17,10 @@
 }
 .ut-pointer {
 	 cursor: pointer;
+}
+.ut-lead {
+	font-size: 25px;
+}
+.ut-button-set {
+	margin-top: 10px;
 }

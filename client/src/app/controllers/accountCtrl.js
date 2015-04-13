@@ -11,40 +11,6 @@ app.controller('accountCtrl', ['$scope', '$rootScope', '$http', '$location',
             $scope.user = {};
             $scope.authError = null;
         }
-        
-        //Tenant account creation
-        $scope.createTenantAccount = function (account_info, valid) {
-            if(valid){
-                account_info.tenant.validFrom = $filter('date')(account_info.tenant.validFrom, "MM/dd/yyyy");
-                account_info.tenant.validTo = $filter('date')(account_info.tenant.validTo, "MM/dd/yyyy");
-                 $http.post('/tenant', account_info)
-                .success(function (data, status) {
-                    // AuthServ.setUserToken(data, $scope.loginForm.remember);
-                    growl.addSuccessMessage('Account has been created successfully');
-                    $location.path('app');
-                })
-                .error(function (data, status) {
-                    growl.addErrorMessage(data.message);
-                });
-            }
-        }
-
-        //Tenant-User account creation
-        $scope.createTenantUserAccount = function (account_info, valid) {
-            if(valid){
-                account_info.tenant.validFrom = $filter('date')(account_info.tenant.validFrom, "MM/dd/yyyy");
-                account_info.tenant.validTo = $filter('date')(account_info.tenant.validTo, "MM/dd/yyyy");
-                 $http.post('/tenantUser', account_info)
-                .success(function (data, status) {
-                    // AuthServ.setUserToken(data, $scope.loginForm.remember);
-                    growl.addSuccessMessage('Account has been created successfully');
-                    $location.path('app');
-                })
-                .error(function (data, status) {
-                    growl.addErrorMessage(data.message);
-                });
-            }
-        }
 
         //User login
         $scope.login = function (user) {

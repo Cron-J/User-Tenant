@@ -20,7 +20,7 @@ exports.endpoints = [
     { method: 'POST', path: '/login', config: User.login},
     { method: 'POST', path: '/forgotPassword', config: User.forgotPassword},
     { method: 'POST', path: '/tenant', config: Tenant.createTenant},
-    { method: 'POST', path: '/serarchTenant', config: Tenant.searchTenant},
+    { method: 'POST', path: '/searchTenant', config: Tenant.searchTenant},
     { method: 'GET', path: '/tenant/{id}', config: Tenant.getTenant},
     { method: 'PUT', path: '/tenant/{id}', config: Tenant.updateTenantByAdminOrTenantAdmim},
     { method: 'POST', path: '/tenantUser', config: User.createTenantUser},

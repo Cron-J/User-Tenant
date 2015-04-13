@@ -12,26 +12,14 @@ app.controller('tenantUserCtrl', ['$scope', '$http', '$location',
         $scope.user = {};
         $scope.authError = null;
 
-        //Get all tenants
-        var getAllTenants = function () {
-            $http.get('/tenant' , {
-                headers: AuthServ.getAuthHeader()
-            })
-            .success(function (data, status) {
-                $scope.tenantsList = data;
-            })
-            .error(function (data, status) {
-                growl.addErrorMessage(data.message);
-            });
-        }
 
         //Get Tenant-User account details
-       var getUserAccountDetails = function () {
+        var getUserAccountDetails = function () {
             $http.get('/user/'+$stateParams.tenantUserId, {
                 headers: AuthServ.getAuthHeader()
             })
             .success(function (data, status) {
-                $scope.user = data;
+                $scope.account = data;
                 $scope.view = 'view';
             })
             .error(function (data, status) {

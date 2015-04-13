@@ -6,8 +6,9 @@ app.controller('tenantCtrl', ['$scope', '$rootScope','$http', '$location',
         $stateParams) {
         var _scope = {};
         _scope.init = function() {
-        if($stateParams.tenantId)
-           $scope.getTenant();
+            $scope.isUser = true;
+            if($stateParams.tenantId)
+               $scope.getTenant();
         }
        
         $scope.user = {};
@@ -33,11 +34,13 @@ app.controller('tenantCtrl', ['$scope', '$rootScope','$http', '$location',
             if(valid){
                 account_info.tenant.validFrom = $filter('date')(account_info.tenant.validFrom, "MM/dd/yyyy");
                 account_info.tenant.validTo = $filter('date')(account_info.tenant.validTo, "MM/dd/yyyy");
-                 $http.post('/tenant', account_info)
+                $http.post('/tenant', account_info, {
+                    headers: AuthServ.getAuthHeader()
+                })
                 .success(function (data, status) {
                     // AuthServ.setUserToken(data, $scope.loginForm.remember);
                     growl.addSuccessMessage('Account has been created successfully');
-                    $location.path('app');
+                    $location.path('tenants');
                 })
                 .error(function (data, status) {
                     growl.addErrorMessage(data.message);

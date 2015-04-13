@@ -1,6 +1,6 @@
 <div class="container" >
   <header>
-    <p class="lead">Search Tenants</p>
+    <p class="ut-lead">Search Tenants</p>
   </header>  
   <section class="row">
     <div class="col-md-4 col-md-offset-8" style="margin-bottom: 70px; margin-top: -50px;">
@@ -72,7 +72,7 @@
             </tr>
           </thead>
           <tbody>
-            <tr ng-repeat="tenant in pagedItems[currentPage]" ng-click="getTenant(tenant._id)">
+            <tr class="ut-pointer" ng-repeat="tenant in pagedItems[currentPage]" ng-click="getTenant(tenant._id)">
               {{tenant.tenantId}}
               <td>{{$index+1}}
               </td>
@@ -82,7 +82,7 @@
               <td>{{tenant.description}}</td>
               <td>
                 <button type="button" class="btn btn-default btn-sm">
-                  <span class="fa fa-hand-o-right"></span></button>
+                  <span class="fa fa-pencil"></span> Edit</button>
               </td>
             </tr>
           </tbody>
