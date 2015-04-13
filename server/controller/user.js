@@ -225,6 +225,31 @@ exports.getUser = {
     }
 };
 
+exports.getUserByAdmin = {
+    auth: {
+        strategy: 'token',
+        scope: ['Admin']
+    },
+    handler: function(request, reply) {
+       Jwt.verify(request.headers.authorization.split(' ')[1], Config.key.privateKey, function(err, decoded) {        
+            User.findUserById(request.params.id, function(err, user) {
+                if(err){
+                    return reply(Boom.badImplementation("unable to get user detail"));
+                }
+                else{
+                    if(user){
+                        user.password = undefined;
+                        user.scope = undefined;
+                        return reply(user);    
+                    }
+                    return reply(Boom.forbidden("unable to get user detail"));
+                }
+            });
+
+       });
+    }
+};
+
 exports.getAllTenantUserByTenant = {
     auth: {
         strategy: 'token',
