@@ -1,14 +1,13 @@
 'use strict';
 
 app.controller('adminCtrl', ['$scope', '$rootScope', '$http', '$location', 
-    'AuthServ', 'growl', '$filter','$cookieStore',
+    'AuthServ', 'growl', '$filter','$cookieStore', '$stateParams',
     function ($scope, $rootScope, $http, $location, AuthServ, growl, $filter, 
-        $cookieStore) {
+        $cookieStore, $stateParams) {
         var _scope = {};
         _scope.init = function() {
            // getAccountInfo();
-           // getTenantsList();
-           $rootScope.user.scope = 'Tenant-Admin'
+           // getTenantsList(); 
         }
 
        
@@ -49,23 +48,6 @@ app.controller('adminCtrl', ['$scope', '$rootScope', '$http', '$location',
             }
         }
         
-        //Update user account
-        $scope.updateUserAccount = function (account_info, valid) {
-            if(valid){
-                $http.put('/userByAdmin/'+account_info._id, account_info, {
-                    headers: AuthServ.getAuthHeader()
-                })
-                .success(function (data, status) {
-                    // AuthServ.setUserToken(data, $scope.loginForm.remember);
-                    growl.addSuccessMessage('Account has been updated successfully');
-                    // $location.path('app');
-                })
-                .error(function (data, status) {
-                    growl.addErrorMessage(data.message);
-                });
-            }
-        }
-
         //Get tenant-admins list
         var getTenantsList = function () {
             $http.get('/tenant', {
@@ -81,11 +63,6 @@ app.controller('adminCtrl', ['$scope', '$rootScope', '$http', '$location',
             .error(function (data, status) {
                 growl.addErrorMessage(data.message);
             });
-        }
-
-        //Get Tenant Details
-        $scope.getTenant = function (id) {
-             $location.path('/tenant/'+id);
         }
 
 
@@ -143,10 +120,11 @@ app.controller('adminCtrl', ['$scope', '$rootScope', '$http', '$location',
  
   $scope.groupToPages();
 
-        //Search
-        $scope.search = function(searchObj){
+        //Search Tenant
+        $scope.searchTenant = function(searchObj){
             
                 // var rqstData = customTransform();
+                console.log('hdukas', AuthServ.getAuthHeader());
                 if(!searchObj) searchObj = {};
                 console.log(searchObj);
                 $http.post('/serarchTenant', searchObj,  {
@@ -166,6 +144,37 @@ app.controller('adminCtrl', ['$scope', '$rootScope', '$http', '$location',
                     growl.addErrorMessage(data.message);
                 });
         }
+
+        //Get Tenant Details
+        $scope.getTenant = function (id) {
+             $location.path('/tenant/'+id);
+        }
+
+        //Search Tenant-User
+        $scope.searchTenantUser = function(searchObj){
+            if(!searchObj) searchObj = {};
+            console.log(searchObj);
+            $http.post('/searchUser', searchObj,  {
+                headers: AuthServ.getAuthHeader()
+            })
+            .success(function (data, status) {
+                $scope.showUserResult = true;
+                $scope.resultList = data;
+                $scope.currentPage = 0;
+                $scope.groupToPages();
+             
+            })
+            .error(function (data, status) {
+                growl.addErrorMessage(data.message);
+            });
+        }
+
+        //Get Tenant-User Details
+        $scope.getTenantUser = function (id) {
+             $location.path('/user/'+id);
+        }
+    
+
 
         //Date picker
         $scope.open1 = function($event) {

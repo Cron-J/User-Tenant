@@ -1,11 +1,12 @@
 'use strict';
 
 app.controller('tenantUserCtrl', ['$scope', '$http', '$location', 
-    'AuthServ', 'growl', '$filter',
-    function ($scope, $http, $location, AuthServ, growl, $filter) {
+    'AuthServ', 'growl', '$filter', '$stateParams',
+    function ($scope, $http, $location, AuthServ, growl, $filter, $stateParams) {
         var _scope = {};
         _scope.init = function() {
-           getAllTenants();
+           if($stateParams.tenantUserId)
+                getUserAccountDetails()
         }
         
         $scope.user = {};
@@ -17,21 +18,35 @@ app.controller('tenantUserCtrl', ['$scope', '$http', '$location',
                 headers: AuthServ.getAuthHeader()
             })
             .success(function (data, status) {
-                $scope.tenantsList = data
+                $scope.tenantsList = data;
             })
             .error(function (data, status) {
                 growl.addErrorMessage(data.message);
             });
         }
 
-        //Tenant-User account creation
-        $scope.createTenantUserAccount = function (account_info, valid) {
+        //Get Tenant-User account details
+       var getUserAccountDetails = function () {
+            $http.get('/user/'+$stateParams.tenantUserId, {
+                headers: AuthServ.getAuthHeader()
+            })
+            .success(function (data, status) {
+                $scope.user = data;
+                $scope.view = 'view';
+            })
+            .error(function (data, status) {
+                growl.addErrorMessage(data.message);
+            });
+        }
+
+        //Update Tenant-User account
+        $scope.updateUserAccount = function (account_info, valid) {
             if(valid){
-                 $http.post('/tenantUser', account_info)
+                $http.put('/userByAdmin/'+account_info._id, account_info, {
+                    headers: AuthServ.getAuthHeader()
+                })
                 .success(function (data, status) {
-                    // AuthServ.setUserToken(data, $scope.loginForm.remember);
-                    growl.addSuccessMessage('Account has been created successfully');
-                    $location.path('app');
+                    growl.addSuccessMessage('Account has been updated successfully');
                 })
                 .error(function (data, status) {
                     growl.addErrorMessage(data.message);

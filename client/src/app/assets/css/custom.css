@@ -15,3 +15,6 @@
 .error{
 	color: red;
 }
+.ut-pointer {
+	 cursor: pointer;
+}

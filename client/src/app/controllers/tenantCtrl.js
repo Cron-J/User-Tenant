@@ -6,6 +6,7 @@ app.controller('tenantCtrl', ['$scope', '$rootScope','$http', '$location',
         $stateParams) {
         var _scope = {};
         _scope.init = function() {
+        if($stateParams.tenantId)
            $scope.getTenant();
         }
        
@@ -20,9 +21,7 @@ app.controller('tenantCtrl', ['$scope', '$rootScope','$http', '$location',
             .success(function (data, status) {
                 $scope.tenant = data;
                 $scope.view = 'view';
-                // $location.path('/tenant/'+id);
-                console.log('changed', $scope.tenant);
-                console.log('changed', $scope.view);
+
             })
             .error(function (data, status) {
                 growl.addErrorMessage(data.message);

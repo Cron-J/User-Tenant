@@ -124,7 +124,16 @@ var app = angular.module('app', [
           .state('users', {
             url: "/users",
               templateUrl: "app/views/tenant_user/home.html",
-              controller: "tenantCtrl",
+              controller: "adminCtrl",
+              data: {
+                  authorizedRoles: [USER_ROLES.admin]
+              }
+
+          })
+          .state('user', {
+            url: "/user/:tenantUserId",
+              templateUrl: "app/views/tenant_user/edit.html",
+              controller: "tenantUserCtrl",
               data: {
                   authorizedRoles: [USER_ROLES.admin]
               }
