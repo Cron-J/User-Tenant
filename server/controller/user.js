@@ -97,7 +97,10 @@ exports.searchUser = {
         if (request.payload.firstName) query['firstName'] = new RegExp(request.payload.firstName, "i");
         if (request.payload.lastName) query['lastName'] = new RegExp(request.payload.lastName, "i");
         if (request.payload.userId) query['userId'] = new RegExp(request.payload.userId, "i");
-        query['scope'] = {'$ne': 'Admin'};
+        if (request.payload.scope) {
+            query['scope'] = request.payload.scope;   
+        }
+        else query['scope'] = {'$ne': 'Admin'};
 
         User.searchUser(query, function(err, user) {
             if (!err) {
