@@ -37,13 +37,14 @@ app.controller('tenantCtrl', ['$scope', '$rootScope', '$http', '$location',
             if(valid){
                 account_info.tenant.validFrom = $filter('date')(account_info.tenant.validFrom, "MM/dd/yyyy");
                 account_info.tenant.validTo = $filter('date')(account_info.tenant.validTo, "MM/dd/yyyy");
-                $http.post('/tenant', account_info, {
-                    headers: AuthServ.getAuthHeader()
-                })
+                $http.post('/tenant', account_info)
                 .success(function (data, status) {
                     // AuthServ.setUserToken(data, $scope.loginForm.remember);
                     growl.addSuccessMessage('Account has been created successfully');
-                    $location.path('tenants');
+                    if($rootScope.user)
+                        $location.path('tenants');
+                    else
+                        $location.path('login');
                 })
                 .error(function (data, status) {
                     growl.addErrorMessage(data.message);

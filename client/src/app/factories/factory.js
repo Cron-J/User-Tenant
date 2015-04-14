@@ -48,7 +48,7 @@ angular.module('app.factory', [])
         }
         if (authorizedRoles[0] == "*") 
           return true;
-          return (authorizedRoles.indexOf($cookieStore.get('user').scope) !== -1);
+          // return (authorizedRoles.indexOf($cookieStore.get('user').scope) !== -1);
         
     },
 

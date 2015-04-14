@@ -2,7 +2,7 @@
 *** Custom css
 */
 .ut-container{
-	margin-top: 50px;
+	margin-top: 20px;
 	margin-bottom: 60px;
 }
 .ut-title {
@@ -27,5 +27,9 @@
 
 .ut-search-result {
 	margin-top: 15px;
+}
+
+.ut-sub-heading {
+	font-size: 19px; 
 }
 

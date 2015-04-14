@@ -14,27 +14,7 @@ var app = angular.module('app', [
     'cons'
 ])
 
-.factory('authInterceptor', function ($rootScope, $q, $cookieStore, $location) {
-  return {
-    request: function (config) {
 
-      config.headers = config.headers || {};
-      
-      return config;
-    },
-    responseError: function(response) {
-      if(($location.path() != '/login') || ($location.path() != '/signup'))
-          $cookieStore.put('url',$location.path())
-      if(response.status === 401) {
-        $location.path('/login');
-        return $q.reject(response);
-      }
-      else {
-        return $q.reject(response);
-      }
-    }
-  };
-})
 .config(
   ['$stateProvider', '$urlRouterProvider', 'growlProvider', '$httpProvider', 'USER_ROLES',
     function ($stateProvider,   $urlRouterProvider,   growlProvider, $httpProvider, USER_ROLES) {
@@ -70,11 +50,7 @@ var app = angular.module('app', [
           .state('createTenant', {
             url: "/tenantCreation",
               templateUrl: "app/views/tenant/create.html",
-              controller: 'tenantCtrl',
-              data: {
-                  authorizedRoles: [USER_ROLES.admin]
-              }
-
+              controller: 'tenantCtrl'
           }) 
           .state('createTenantUser', {
             url: "/tenantUserCreation",
@@ -93,14 +69,14 @@ var app = angular.module('app', [
               }
 
           }) 
-          // .state('home', {
-          //   url: "/home",
-          //     templateUrl: "app/views/home.html",
-          //     data: {
-          //         authorizedRoles: [USER_ROLES.all]
-          //     }
+          .state('home', {
+            url: "/home",
+              templateUrl: "app/views/home.html",
+              data: {
+                  authorizedRoles: [USER_ROLES.all]
+              }
 
-          // })
+          })
           .state('error', {
             url: "/error",
               templateUrl: "app/views/common/error.html",
@@ -159,11 +135,14 @@ var app = angular.module('app', [
           AuthServ.isLoggedInAsync(function(loggedIn) {
              
             if(!loggedIn){
+               event.preventDefault();
                $location.path('/login');
               //$rootScope.$broadcast(AUTH_EVENTS.notAuthenticated);
             }
             else{
-             $location.path('/error');
+              if($rootScope.user.scope == 'Admin')
+              $location.path('/tenants');
+             //$location.path('/home');
              //$rootScope.$broadcast(AUTH_EVENTS.notAuthorized);
             }
           }) 
@@ -173,14 +152,36 @@ var app = angular.module('app', [
             if (!loggedIn) {              
                 $location.path('/login');
             }
-            // else if(loggedIn){
-            //     if($scope.user.scope == 'Admin')
-            //       $location.path('/users');
-            // }
+            else if(loggedIn){
+                if($rootScope.user.scope == 'Admin')
+                  $location.path('/users');
+            }
           });
         }
       });
     })
+
+.factory('authInterceptor', function ($rootScope, $q, $cookieStore, $location) {
+  return {
+    request: function (config) {
+
+      config.headers = config.headers || {};
+      
+      return config;
+    },
+    responseError: function(response) {
+      if(($location.path() != '/login') || ($location.path() != '/signup'))
+          $cookieStore.put('url',$location.path())
+      if(response.status === 401) {
+        $location.path('/login');
+        return $q.reject(response);
+      }
+      else {
+        return $q.reject(response);
+      }
+    }
+  };
+})
 
 
 

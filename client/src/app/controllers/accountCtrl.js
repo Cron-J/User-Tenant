@@ -22,10 +22,9 @@ app.controller('accountCtrl', ['$scope', '$rootScope', '$http', '$location',
                     if($rootScope.user.scope == 'Admin')
                         $location.path('/tenants');
                     else if($rootScope.user.scope == 'Tenant-Admin')
-                        $location.path('/users');
+                        $location.path('/home');
                     else 
-                         $location.path('/users');
-                    console.log('******************', $rootScope.user);
+                         $location.path('/home');
                     getAccountInfo();
                 })
                 .error(function (data, status) {
@@ -40,8 +39,6 @@ app.controller('accountCtrl', ['$scope', '$rootScope', '$http', '$location',
                 headers: AuthServ.getAuthHeader()
             })
             .success(function (data, status) {
-                console.log('##########', data);
-                // $rootScope.user.push(data);
                 if($rootScope.user.scope == 'Admin' || $rootScope.user.scope == 'Tenant-User') {
                     $rootScope.user.firstName = data.firstName;
                     $rootScope.user.lastName = data.lastName;
@@ -51,8 +48,6 @@ app.controller('accountCtrl', ['$scope', '$rootScope', '$http', '$location',
                     $rootScope.user.lastName = '';
                 }
                 $rootScope.userDump = $rootScope.user;
-                console.log('##### User #####', $rootScope.user);
-                console.log('##### User Dump #####', $rootScope.userDump);
             })
             .error(function (data, status) {
                 growl.addErrorMessage(data.message);
