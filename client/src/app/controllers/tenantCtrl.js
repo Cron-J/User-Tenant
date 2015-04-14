@@ -1,6 +1,6 @@
 'use strict';
 
-app.controller('tenantCtrl', ['$scope', '$rootScope','$http', '$location', 
+app.controller('tenantCtrl', ['$scope', '$rootScope', '$http', '$location', 
     'AuthServ', 'growl', '$filter', '$stateParams',
     function ($scope, $rootScope, $http, $location, AuthServ, growl, $filter, 
         $stateParams) {
@@ -21,8 +21,11 @@ app.controller('tenantCtrl', ['$scope', '$rootScope','$http', '$location',
             })
             .success(function (data, status) {
                 $scope.tenant = data;
+                // $rootScope.userDump = angular.copy($rootScope.user);
+                // $rootScope.user.firstName = data.name;
+                // $rootScope.user.lastName = '';
                 $scope.view = 'view';
-
+                console.log('Tenant:', $rootScope.user);
             })
             .error(function (data, status) {
                 growl.addErrorMessage(data.message);

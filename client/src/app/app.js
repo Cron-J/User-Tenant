@@ -79,7 +79,7 @@ var app = angular.module('app', [
           .state('createTenantUser', {
             url: "/tenantUserCreation",
               templateUrl: "app/views/tenant_user/tenant_user.html",
-              controller: 'adminCtrl',
+              controller: 'tenantUserCtrl',
               data: {
                   authorizedRoles: [USER_ROLES.admin, USER_ROLES.tenantadmin]
               }

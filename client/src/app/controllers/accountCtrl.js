@@ -18,19 +18,45 @@ app.controller('accountCtrl', ['$scope', '$rootScope', '$http', '$location',
                 .success(function (data, status) {
                     AuthServ.setUserToken(data, $scope.loginForm.remember);
                     growl.addSuccessMessage('Successfully logged in');
-                    console.log('******************', data);
-                    $rootScope.user = data;
+                    $rootScope.user =  data;
                     if($rootScope.user.scope == 'Admin')
                         $location.path('/tenants');
                     else if($rootScope.user.scope == 'Tenant-Admin')
                         $location.path('/users');
                     else 
                          $location.path('/users');
+                    console.log('******************', $rootScope.user);
+                    getAccountInfo();
                 })
                 .error(function (data, status) {
                     growl.addErrorMessage(data.message);
                 });
 
+        }
+
+        //Get User personal details
+        var getAccountInfo = function () {
+            $http.get('/user', {
+                headers: AuthServ.getAuthHeader()
+            })
+            .success(function (data, status) {
+                console.log('##########', data);
+                // $rootScope.user.push(data);
+                if($rootScope.user.scope == 'Admin' || $rootScope.user.scope == 'Tenant-User') {
+                    $rootScope.user.firstName = data.firstName;
+                    $rootScope.user.lastName = data.lastName;
+                } 
+                if($rootScope.user.scope == 'Tenant-Admin') {
+                    $rootScope.user.firstName = data.name;
+                    $rootScope.user.lastName = '';
+                }
+                $rootScope.userDump = $rootScope.user;
+                console.log('##### User #####', $rootScope.user);
+                console.log('##### User Dump #####', $rootScope.userDump);
+            })
+            .error(function (data, status) {
+                growl.addErrorMessage(data.message);
+            });
         }
 
         //User logout

@@ -7,6 +7,10 @@ app.controller('adminCtrl', ['$scope', '$rootScope', '$http', '$location',
         var _scope = {};
         _scope.init = function() {
             $scope.view = 'create';
+            // if($rootScope.user.dump){
+            //     $rootScope.user.data = angular.copy($rootScope.user.dump);
+            // }
+             console.log('********User info********', $rootScope.user);
            // getAccountInfo();
            // getTenantsList(); 
         }
@@ -14,22 +18,6 @@ app.controller('adminCtrl', ['$scope', '$rootScope', '$http', '$location',
        
         $scope.user = $cookieStore.get('user');
         $scope.authError = null;
-
-        //Get personal account details
-        var getAccountInfo = function () {
-            $http.get('/user', {
-                headers: AuthServ.getAuthHeader()
-            })
-            .success(function (data, status) {
-                console.log('##########', data);
-                // AuthServ.setUserToken(data, $scope.loginForm.remember);
-                // growl.addSuccessMessage('Your account has been updated successfully');
-                // $location.path('app');
-            })
-            .error(function (data, status) {
-                growl.addErrorMessage(data.message);
-            });
-        }
 
         //Update account
         $scope.updateAccount = function (account_info, valid) {
@@ -59,37 +47,19 @@ app.controller('adminCtrl', ['$scope', '$rootScope', '$http', '$location',
                 // growl.addSuccessMessage('Account has been updated successfully');
                 // $location.path('app');
                 $scope.tenantList = data;
-                console.log('fgsdfj', $scope.tenantList);
             })
             .error(function (data, status) {
                 growl.addErrorMessage(data.message);
             });
         }
 
-        //Tenant-User account creation
-        $scope.createTenantUserAccount = function (account_info, valid) {
-            if(valid){
-                 $http.post('/tenantUser', account_info, {
-                    headers: AuthServ.getAuthHeader()
-                })
-                .success(function (data, status) {
-                    // AuthServ.setUserToken(data, $scope.loginForm.remember);
-                    growl.addSuccessMessage('Tenant-User account has been created successfully');
-                    $location.path('users');
-                })
-                .error(function (data, status) {
-                    growl.addErrorMessage(data.message);
-                });
-            }
-        }
-
-
         //Pagination
         $scope.pagedItems = [];
-       $scope.currentPage = 0;
-         $scope.filteredItems = [];
-       $scope.filteredItems1 = [];
-         $scope.itemsPerPage = 20;
+        $scope.currentPage = 0;
+        $scope.filteredItems = [];
+        $scope.itemsPerPage = 5;
+        $scope.min = 0;
+        $scope.max =5;
          $scope.range = function (start, end) {
             var ret = [];
             if (!end) {
@@ -138,6 +108,10 @@ app.controller('adminCtrl', ['$scope', '$rootScope', '$http', '$location',
  
   $scope.groupToPages();
 
+  //Reset search
+  $scope.reset = function(){
+    $scope.srch = {};
+  }
         //Search Tenant
         $scope.searchTenant = function(searchObj){
             
@@ -196,7 +170,7 @@ app.controller('adminCtrl', ['$scope', '$rootScope', '$http', '$location',
         $scope.searchModal = function(size) {
             var modalInstance = $modal.open({
                 templateUrl: 'myModalContent.html',
-                controller: searchModalInstanceCtrl,
+                controller: 'searchModalInstanceCtrl',
                 size: size
             });
 
@@ -237,94 +211,95 @@ app.controller('adminCtrl', ['$scope', '$rootScope', '$http', '$location',
 
 
 //Search Tenant Modal
-var searchModalInstanceCtrl = function($scope, $modalInstance, $http, AuthServ, growl) {
-//Pagination
-        $scope.pagedItems = [];
-       $scope.currentPage = 0;
-         $scope.filteredItems = [];
-       $scope.filteredItems1 = [];
-         $scope.itemsPerPage = 20;
-         $scope.range = function (start, end) {
-            var ret = [];
-            if (!end) {
-                end = start;
-                start = 0;
-            }
-            for (var i = start; i < end; i++) {
-                ret.push(i);
-            }
-            return ret;
-        };
+// var searchModalInstanceCtrl = function($scope, $modalInstance, $http, AuthServ, growl) {
+//     //Pagination
+//     $scope.pagedItems = [];
+//     $scope.currentPage = 0;
+//     $scope.filteredItems = [];
+//     $scope.itemsPerPage = 5;
+//     $scope.min = 0;
+//     $scope.max =5;
+//      $scope.range = function (start, end) {
+//         var ret = [];
+//         if (!end) {
+//             end = start;
+//             start = 0;
+//         }
+//         for (var i = start; i < end; i++) {
+//             ret.push(i);
+//         }
+//         return ret;
+//     };
 
-             $scope.prevPage = function () {
-        if ($scope.currentPage > 0) {
-            $scope.currentPage--;
-        }
-    };
+//     $scope.prevPage = function () {
+//         if ($scope.currentPage > 0) {
+//             $scope.currentPage--;
+//         }
+//     };
     
-    $scope.nextPage = function () {
-        if ($scope.currentPage < $scope.pagedItems.length - 1) {
-            $scope.currentPage++;
-        }
-    };
+//     $scope.nextPage = function () {
+//         if ($scope.currentPage < $scope.pagedItems.length - 1) {
+//             $scope.currentPage++;
+//         }
+//     };
     
-    $scope.setPage = function () {
-        $scope.currentPage = this.n;
-    };
+//     $scope.setPage = function () {
+//         $scope.currentPage = this.n;
+//     };
   
-    $scope.groupToPages = function () {
-      $scope.pagedItems = [];
-      $scope.filteredItems = $scope.resultList;
-      $scope.filtered();
-    };
+//     $scope.groupToPages = function () {
+//       $scope.pagedItems = [];
+//       $scope.filteredItems = $scope.resultList;
+//       $scope.filtered();
+//     };
 
-    $scope.filtered = function () {
-      if($scope.filteredItems){
-        for (var i = 0; i < $scope.filteredItems.length; i++) {
-            if (i % $scope.itemsPerPage === 0) {
-                $scope.pagedItems[Math.floor(i / $scope.itemsPerPage)] = [ $scope.filteredItems[i] ];
-            } else {
-                $scope.pagedItems[Math.floor(i / $scope.itemsPerPage)].push($scope.filteredItems[i]);
-            }
-        }
-      }   
-    }
+//     $scope.filtered = function () {
+//       if($scope.filteredItems){
+//         for (var i = 0; i < $scope.filteredItems.length; i++) {
+//             if (i % $scope.itemsPerPage === 0) {
+//                 $scope.pagedItems[Math.floor(i / $scope.itemsPerPage)] = [ $scope.filteredItems[i] ];
+//             } else {
+//                 $scope.pagedItems[Math.floor(i / $scope.itemsPerPage)].push($scope.filteredItems[i]);
+//             }
+//         }
+//       }   
+//     }
  
-  $scope.groupToPages();
-    //Search Tenant
-    $scope.searchTenant = function(searchObj){
-        if(!searchObj) searchObj = {};
-        console.log(searchObj);
-        $http.post('/searchTenant', searchObj,  {
-            headers: AuthServ.getAuthHeader()
-        })
-        .success(function (data, status) {
-            $scope.resultList = data;
-            $scope.showTableData = true;
-            $scope.currentPage = 0;
-            $scope.groupToPages();
-        })
-        .error(function (data, status) {
-            growl.addErrorMessage(data.message);
-        });
-    }
+//     $scope.groupToPages();
 
 
-    $scope.getTenantId = function(id) {
-        $scope.submitted = true;
-        $modalInstance.close(id);
-    }
+//     //Search Tenant
+//     $scope.searchTenant = function(searchObj){
+//         if(!searchObj) searchObj = {};
+//         console.log(searchObj);
+//         $http.post('/searchTenant', searchObj,  {
+//             headers: AuthServ.getAuthHeader()
+//         })
+//         .success(function (data, status) {
+//             $scope.resultList = data;
+//             $scope.showTableData = true;
+//             $scope.currentPage = 0;
+//             $scope.groupToPages();
+//         })
+//         .error(function (data, status) {
+//             growl.addErrorMessage(data.message);
+//         });
+//     }
 
-    $scope.cancel = function() {
-        $modalInstance.dismiss('cancel');
-        $scope.setError = false;
-    };
 
-    $scope.reset_search = function () {
-        $scope.searchQuery = {};
-    }
+//     $scope.getTenantId = function(id) {
+//         $scope.submitted = true;
+//         $scope.reset_search();
+//         $modalInstance.close(id);
+//     }
 
-    
+//     $scope.cancel = function() {
+//         $modalInstance.dismiss('cancel');
+//     };
 
-};
+//     $scope.reset_search = function () {
+//         $scope.searchQuery = {};
+//     }
+
+// };
 

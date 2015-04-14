@@ -130,13 +130,13 @@ User.statics.updateUser = function(id, user, callback) {
 User.statics.findUser = function(userId, callback) {
     this.findOne({
         userId: userId
-    }).populate('tenantId').exec(callback);
+    }, callback);
 };
 
 User.statics.findUserById = function(id, callback) {
     this.findOne({
         '_id': id
-    }, callback);
+    }).populate('tenantId').exec(callback);
 };
 
 User.statics.findUserByTenantIdScope = function(id, scope, callback) {

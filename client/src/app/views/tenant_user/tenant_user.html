@@ -3,8 +3,8 @@
         <p ng-show="view == 'create'" class="ut-lead">Create Tenant-User</p>
         <p ng-show="view == 'view'" class="ut-lead">Tenant-User Details</p>
         <p ng-show="view == 'edit'" class="ut-lead">Edit Tenant-User</p>
-   </header>
-    <div class="row">
+    </header>
+    <div class="col-lg-9 col-md-9 ut-container">
         <form id="signupForm" class="form-horizontal ut-form ng-pristine ng-valid" role="form" name="signupForm" novalidate>
             <div class="row">
                 <div class="form-group">
@@ -15,10 +15,7 @@
                             <input id="login-username" type="text" class="form-control" name="tenantId" ng-model="account.tenant"ng-pattern="/^[a-zA-Z0-9 ]*$/" ng-disabled="view == 'view'" required>
                         </div>
                         <div class="col-lg-1 col-md-1 pull-right">
-
-                              <div ng-include="'app/views/tenant/search_tenants.html'"></div>
-                            </script>
-                            <button class="btn btn-primary" ng-click="searchModal('lg')"><i class="fa fa-search"></i></button>
+                            <button class="btn btn-primary btn-sm" ng-click="searchModal('lg')" ng-disabled="view == 'view'"><i class="fa fa-search"></i></button>
                             <div ng-include="'app/views/tenant/search_tenants.html'"></div>
                         </div>
                         <div class="error" ng-show="signupForm.tenantId.$dirty 
@@ -36,13 +33,12 @@
                     <div class="col-lg-6 col-md-6">        
                         <div class="input-group">
                             <span class="input-group-addon"><i class="fa fa-pencil"></i></span>
-                            <input id="login-username" type="text" class="form-control" name="firstName" ng-model="account.firstName" ng-minlength="2" ng-maxlength="30" ng-pattern="/^[a-zA-Z0-9 ]*$/" ng-disabled="view == 'view'" required>
+                            <input id="login-username" type="text" class="form-control" name="firstName" ng-model="account.firstName" ng-minlength="2" maxlength="30" ng-pattern="/^[a-zA-Z0-9 ]*$/" ng-disabled="view == 'view'" required>
                         </div>
                         <div class="error" ng-show="signupForm.firstName.$dirty 
                         && signupForm.firstName.$invalid">Invalid:
                             <span ng-show="signupForm.firstName.$error.required">Tell us your first name</span>
                             <span ng-show="signupForm.firstName.$error.minlength">First name should be minimum of 3 characters</span>
-                            <span ng-show="signupForm.firstName.$error.maxlength">First name should be maximum of 25 characters</span>
                             <span ng-show="signupForm.firstName.$error.pattern">First name won't allow special characters</span>
                             </span>
                         </div>
@@ -55,13 +51,12 @@
                     <div class="col-lg-6 col-md-6">            
                         <div class="input-group">
                             <span class="input-group-addon"><i class="fa fa-pencil"></i></span>
-                            <input id="login-username" type="text" class="form-control" name="lastName" ng-model="account.lastName" ng-minlength="2" ng-maxlength="30" ng-pattern="/^[a-zA-Z0-9 ]*$/" ng-disabled="view == 'view'" required>
+                            <input id="login-username" type="text" class="form-control" name="lastName" ng-model="account.lastName" ng-minlength="2" maxlength="30" ng-pattern="/^[a-zA-Z0-9 ]*$/" ng-disabled="view == 'view'" required>
                         </div>
                         <div class="error" ng-show="signupForm.lastName.$dirty 
                         && signupForm.lastName.$invalid">Invalid:
                             <span ng-show="signupForm.lastName.$error.required">Tell us your last Name</span>
                             <span ng-show="signupForm.lastName.$error.minlength">Last name should be minimum of 3 characters</span>
-                            <span ng-show="signupForm.lastName.$error.maxlength">Last name should be maximum of 25 characters</span>
                             <span ng-show="signupForm.lastName.$error.pattern">Last name won't allow special characters</span>
                             </span>
                         </div>
@@ -89,7 +84,7 @@
                     <div class="col-lg-6 col-md-6">            
                         <div class="input-group">
                             <span class="input-group-addon"><i class="fa fa-lock"></i></span>
-                            <input id="password" type="password" class="form-control" name="password" value="" ng-model="account.password" required>
+                            <input id="password" type="password" class="form-control" name="password" value="" ng-model="account.password" ng-required="view == 'create'">
                         </div>
                         <div class="error" ng-show="signupForm.password.$dirty 
                         && signupForm.password.$invalid">Invalid:
@@ -108,12 +103,11 @@
                         <div class="col-md-6 col-xs-12">
                             <div class="input-group">
                                 <span class="input-group-addon"><span class="fa fa-th"></span></span>
-                                <input type="text" class="form-control" name="unit1" ng-model="account.address.unit" ng-minlength="1" ng-maxlength="10" ng-pattern="/^[a-zA-Z0-9 ]*$/" ng-disabled="view == 'view'">
+                                <input type="text" class="form-control" name="unit1" ng-model="account.address.unit" ng-minlength="1" maxlength="10" ng-pattern="/^[a-zA-Z0-9 ]*$/" ng-disabled="view == 'view'">
                             </div>
                             <span class="error" ng-show="signupForm.unit1.$dirty && signupForm.unit1.$invalid">Invalid:
                                 <span ng-show="signupForm.unit1.$error.required"> Unit field is required</span>
                                 <span ng-show="signupForm.unit1.$error.minlength">Unit field should be minimum of 1 digit</span>
-                                <span ng-show="signupForm.unit1.$error.maxlength">Unit field should be maximum of 20 digit</span>
                                 <span ng-show="signupForm.unit1.$error.pattern">Unit won't allow special characters</span>
                             </span>
                         </div>
@@ -123,12 +117,11 @@
                         <div class="col-md-6 col-xs-12">
                             <div class="input-group">
                                 <span class="input-group-addon"><span class="fa fa-building"></span></span>
-                                <input type="text" class="form-control" name="building1" ng-model="account.address.building" ng-minlength="1" ng-maxlength="25" ng-pattern="/^[a-zA-Z0-9 ]*$/" ng-disabled="view == 'view'">
+                                <input type="text" class="form-control" name="building1" ng-model="account.address.building" ng-minlength="1" maxlength="25" ng-pattern="/^[a-zA-Z0-9 ]*$/" ng-disabled="view == 'view'">
                             </div>
                             <span class="error" ng-show="signupForm.building1.$dirty && signupForm.building1.$invalid">Invalid:
                                 <span ng-show="signupForm.building1.$error.required">Tell us your building Name</span>
                                 <span ng-show="signupForm.building1.$error.minlength">Building Name should be minimum of 1 character</span>
-                                <span ng-show="signupForm.building1.$error.maxlength">Building name should be maximum of 20 characters</span>
                                 <span ng-show="signupForm.building1.$error.pattern">Building name won't allow special characters</span>
                             </span>
                         </div>
@@ -138,12 +131,11 @@
                         <div class="col-md-6 col-xs-12">
                             <div class="input-group">
                                 <span class="input-group-addon"><span class="fa fa-map-marker"></span></span>
-                                <input type="text" class="form-control" name="street1" ng-model="account.address.street" ng-minlength="1" ng-maxlength="25" ng-pattern="/^[a-zA-Z0-9 ]*$/" ng-disabled="view == 'view'">
+                                <input type="text" class="form-control" name="street1" ng-model="account.address.street" ng-minlength="1" maxlength="25" ng-pattern="/^[a-zA-Z0-9 ]*$/" ng-disabled="view == 'view'">
                             </div>
                             <span class="error" ng-show="signupForm.street1.$dirty && signupForm.street1.$invalid">Invalid:
                                 <span ng-show="signupForm.street1.$error.required">Street  is required</span>
                                 <span ng-show="signupForm.street1.$error.minlength">Street should be minimum of 1 character</span>
-                                <span ng-show="signupForm.street1.$error.maxlength">Street name should be maximum of 20 characters</span>
                                 <span ng-show="signupForm.street1.$error.pattern">Street name won't allow special characters</span>
                             </span>
                         </div>
@@ -153,12 +145,11 @@
                         <div class="col-md-6 col-xs-12">
                             <div class="input-group">
                                 <span class="input-group-addon"><span class="fa fa-map-marker"></span></span>
-                                <input type="text" class="form-control" name="city1" ng-model="account.address.city" ng-minlength="1" ng-maxlength="20" ng-pattern="/^[a-zA-Z0-9 ]*$/" ng-disabled="view == 'view'" required>
+                                <input type="text" class="form-control" name="city1" ng-model="account.address.city" ng-minlength="1" maxlength="20" ng-pattern="/^[a-zA-Z0-9 ]*$/" ng-disabled="view == 'view'" required>
                             </div>
                             <span class="error" ng-show="signupForm.city1.$dirty && signupForm.city1.$invalid">Invalid:
                                 <span ng-show="signupForm.city1.$error.required">City name is required</span>
                                 <span ng-show="signupForm.city1.$error.minlength">City name should be minimum of 1 character</span>
-                                <span ng-show="signupForm.city1.$error.maxlength">City name should be maximum of 20 characters</span>
                                 <span ng-show="signupForm.city1.$error.pattern">City name won't allow special characters</span>
                             </span>
                         </div>
@@ -168,11 +159,10 @@
                         <div class="col-md-6 col-xs-12">
                             <div class="input-group">
                                 <span class="input-group-addon"><span class="fa fa-map-marker"></span></span>
-                                <input type="text" class="form-control" name="region1" ng-model="account.address.region" ng-minlength="1" ng-maxlength="20" ng-pattern="/^[a-zA-Z0-9 ]*$/" ng-disabled="view == 'view'">
+                                <input type="text" class="form-control" name="region1" ng-model="account.address.region" ng-minlength="1" maxlength="20" ng-pattern="/^[a-zA-Z0-9 ]*$/" ng-disabled="view == 'view'">
                             </div>
                             <span class="error" ng-show="signupForm.region1.$dirty && signupForm.region1.$invalid">Invalid:
                                 <span ng-show="signupForm.region1.$error.minlength">Region should be minimum of 1 character</span>
-                                <span ng-show="signupForm.region1.$error.maxlength">Region should be maximum of 20 characters</span>
                                 <span ng-show="signupForm.region1.$error.pattern">Region won't allow special characters</span>
                             </span>
                         </div>
@@ -182,12 +172,11 @@
                         <div class="col-md-6 col-xs-12">
                             <div class="input-group">
                                 <span class="input-group-addon"><span class="fa fa-map-marker"></span></span>
-                                <input type="text" class="form-control" name="country1" ng-model="account.address.country" ng-minlength="1" ng-maxlength="50" ng-pattern="/^[a-zA-Z0-9 ]*$/" ng-disabled="view == 'view'" required>
+                                <input type="text" class="form-control" name="country1" ng-model="account.address.country" ng-minlength="1" maxlength="50" ng-pattern="/^[a-zA-Z0-9 ]*$/" ng-disabled="view == 'view'" required>
                             </div>
                             <span class="error" ng-show="signupForm.country1.$dirty && signupForm.country1.$invalid">Invalid:
                                 <span ng-show="signupForm.country1.$error.required">Tell us your country Name</span>
                                 <span ng-show="signupForm.country1.$error.minlength">Country name should be minimum of 1 character</span>
-                                <span ng-show="signupForm.country1.$error.maxlength">Country name should be maximum of 50 characters</span>
                                 <span ng-show="signupForm.country1.$error.pattern">Country won't allow special characters</span>
                             </span>
                             </span>
@@ -198,13 +187,13 @@
                         <div class="col-md-6 col-xs-12">
                             <div class="input-group">
                                 <span class="input-group-addon"><span class="fa fa-link"></span></span>
-                                <input type="text" class="form-control" name="zipcode1" ng-model="account.address.addressCode" ng-minlength="3" ng-maxlength="10" ng-pattern=" /^[a-zA-Z0-9]*$/" ng-disabled="view == 'view'" required>
+                                <input type="text" class="form-control" name="zipcode1" ng-model="account.address.addressCode" ng-minlength="3" maxlength="10" ng-pattern=" /^[a-zA-Z0-9]*$/" ng-disabled="view == 'view'" required>
                             </div>
                             <span class="error" ng-show="signupForm.zipcode1.$dirty && signupForm.zipcode1.$invalid">Invalid:
                                 <span ng-show="signupForm.zipcode1.$error.required">Zip code is required</span>
                             <span ng-show="signupForm.zipcode1.$error.minlength">Zip code should be minimum of 3 digit</span>
                             <span ng-show="signupForm.zipcode1.$error.maxlength">Zip code should be maximum of 10 digit</span>
-                            <span ng-show="signupForm.zipcode1.$error.pattern">Zip code won't allow special characters<span>
+                            <span ng-show="signupForm.zipcode1.$error.pattern">Zip code won't allow special characters</span>
                             </span>
                         </div>
                     </div>
@@ -215,12 +204,13 @@
                     <div class="pull-right">
                         <button class="btn btn-primary" ng-show="view == 'create'" ng-disabled="!signupForm.$valid" ng-click="createTenantUserAccount(account, signupForm.$valid)">Submit</button>
                         <button class="btn btn-primary" ng-show="view == 'view'"  ng-click="view = 'edit';">Edit</button>
-                        <button class="btn btn-primary" ng-show="view == 'edit'" ng-disabled="!signupForm.$valid" ng-click="createTenantUserAccount(account, signupForm.$valid)">Update</button>
+                        <button class="btn btn-primary" ng-show="view == 'edit'" ng-disabled="!signupForm.$valid" ng-click="updateUserAccount(account, signupForm.$valid)">Update</button>
                         <button class="btn btn-default" ui-sref="users">Cancel</button>
                     </div>
                     
                 </div>
             </div>
         </form>
-    </div>   
+    </div> 
+ 
 </div>
