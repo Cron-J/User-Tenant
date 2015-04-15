@@ -1,18 +1,17 @@
 'use strict';
 
 app.controller('adminCtrl', ['$scope', '$rootScope', '$http', '$location', 
-    'AuthServ', 'growl', '$filter','$cookieStore', '$stateParams', '$modal', '$log',
+    'AuthServ', 'growl', '$filter','$cookieStore', '$stateParams', '$modal', 
+    '$log', 'userInfo',
     function ($scope, $rootScope, $http, $location, AuthServ, growl, $filter, 
-        $cookieStore, $stateParams, $modal, $log) {
+        $cookieStore, $stateParams, $modal, $log, userInfo) {
         var _scope = {};
         _scope.init = function() {
             $scope.view = 'create';
-            // if($rootScope.user.dump){
-            //     $rootScope.user.data = angular.copy($rootScope.user.dump);
-            // }
-             console.log('********User info********', $rootScope.user);
-           // getAccountInfo();
-           // getTenantsList(); 
+            userInfo.async().then(function(response) {
+                $scope.current_usr.firstName = response.data.firstName;
+                $scope.current_usr.lastName = response.data.lastName;
+            });
         }
 
        

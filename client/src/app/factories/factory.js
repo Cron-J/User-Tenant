@@ -46,10 +46,12 @@ angular.module('app.factory', [])
         if (!angular.isArray(authorizedRoles)) {
             authorizedRoles = [authorizedRoles];
         }
-        if (authorizedRoles[0] == "*") 
+        if (authorizedRoles[0] == '*') 
           return true;
-          // return (authorizedRoles.indexOf($cookieStore.get('user').scope) !== -1);
-        
+        if($cookieStore.get('user')) 
+          return (authorizedRoles.indexOf($cookieStore.get('user').scope) !== -1);
+        else
+          return false
     },
 
     isLoggedInAsync: function(cb) {
@@ -64,3 +66,42 @@ angular.module('app.factory', [])
 
 };
 })
+.factory('userInfo', function ($http, AuthServ) {
+  // return {
+  //    getAccountInfo : function () {
+  //       $http.get('/user', {
+  //           headers: AuthServ.getAuthHeader()
+  //       })
+  //       .then(function (data, status) {
+  //         return data;
+             
+  //       })
+  //       // .error(function (data, status) {
+  //       //     growl.addErrorMessage(data.message);
+  //       // });
+  //   }
+  // }
+   var promise;
+   var myService = {
+    async: function(dump) {
+
+        // $http returns a promise, which has a then function, which also returns a promise
+        promise = $http.get('/user', {
+            headers: AuthServ.getAuthHeader()
+        })
+        .success(function (data, status) {
+          console.log(data);
+          return data;
+             
+        })
+        .error(function (data, status) {
+            growl.addErrorMessage(data.message);
+        });
+
+      // Return the promise to the controller
+      return promise;
+    }
+  };
+  return myService;
+})
+

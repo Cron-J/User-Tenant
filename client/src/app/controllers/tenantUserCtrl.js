@@ -1,19 +1,23 @@
 'use strict';
 
 app.controller('tenantUserCtrl', ['$scope', '$rootScope', '$http', '$location', 
-    'AuthServ', 'growl', '$filter', '$stateParams', '$modal', '$log',
+    'AuthServ', 'growl', '$filter', '$stateParams', '$modal', '$log', 'userInfo',
     function ($scope, $rootScope, $http, $location, AuthServ, growl, $filter, 
-        $stateParams, $modal, $log) {
+        $stateParams, $modal, $log, userInfo) {
         var _scope = {};
         _scope.init = function() {
             $scope.view = 'create';
+            // userInfo.async().then(function(response) {
+            //   $scope.current_user = response.data;
+
+            // });
             if($stateParams.tenantUserId) {
                 $scope.view = 'view';
                 getUserAccountDetails();
             }
         }
         
-        $scope.user = {};
+        // $scope.user = {};
         $scope.authError = null;
 
 
@@ -27,8 +31,8 @@ app.controller('tenantUserCtrl', ['$scope', '$rootScope', '$http', '$location',
                 $scope.account.tenant = data.tenantId.name;
                 $scope.account.tenantId = data.tenantId._id;
                 // $rootScope.userDump = angular.copy($rootScope.user);
-                // $rootScope.user.firstName = data.firstName;
-                // $rootScope.user.lastName = data.lastName;
+                $scope.current_usr.firstName = data.firstName;
+                $scope.current_usr.lastName = data.lastName;
                 console.log('tenant get', $rootScope.userDump);
             })
             .error(function (data, status) {
@@ -67,7 +71,7 @@ app.controller('tenantUserCtrl', ['$scope', '$rootScope', '$http', '$location',
                 })
                 .success(function (data, status) {
                     // AuthServ.setUserToken(data, $scope.loginForm.remember);
-                    growl.addSuccessMessage('Tenant-User account has been created successfully');
+                    growl.addSuccessMessage('Tenant-User has been created successfully');
                     $location.path('users');
                 })
                 .error(function (data, status) {

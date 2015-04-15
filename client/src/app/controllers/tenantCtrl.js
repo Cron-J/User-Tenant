@@ -1,17 +1,19 @@
 'use strict';
 
 app.controller('tenantCtrl', ['$scope', '$rootScope', '$http', '$location', 
-    'AuthServ', 'growl', '$filter', '$stateParams',
+    'AuthServ', 'growl', '$filter', '$stateParams', 'userInfo', 
     function ($scope, $rootScope, $http, $location, AuthServ, growl, $filter, 
-        $stateParams) {
+        $stateParams, userInfo) {
         var _scope = {};
         _scope.init = function() {
             $scope.isUser = true;
+              if($location.path() == '/tenantHome')
+                getTenantUsers();
             if($stateParams.tenantId)
                $scope.getTenant();
         }
        
-        $scope.user = {};
+        // $scope.user = {};
         $scope.authError = null;
 
         //Get Tenant Details
@@ -21,11 +23,9 @@ app.controller('tenantCtrl', ['$scope', '$rootScope', '$http', '$location',
             })
             .success(function (data, status) {
                 $scope.tenant = data;
-                // $rootScope.userDump = angular.copy($rootScope.user);
-                // $rootScope.user.firstName = data.name;
-                // $rootScope.user.lastName = '';
+                $scope.current_usr.firstName = data.name;
+                $scope.current_usr.lastName = '';
                 $scope.view = 'view';
-                console.log('Tenant:', $rootScope.user);
             })
             .error(function (data, status) {
                 growl.addErrorMessage(data.message);
@@ -37,14 +37,13 @@ app.controller('tenantCtrl', ['$scope', '$rootScope', '$http', '$location',
             if(valid){
                 account_info.tenant.validFrom = $filter('date')(account_info.tenant.validFrom, "MM/dd/yyyy");
                 account_info.tenant.validTo = $filter('date')(account_info.tenant.validTo, "MM/dd/yyyy");
-                $http.post('/tenant', account_info)
+                $http.post('/tenant', account_info, {
+                    headers: AuthServ.getAuthHeader()
+                })
                 .success(function (data, status) {
                     // AuthServ.setUserToken(data, $scope.loginForm.remember);
-                    growl.addSuccessMessage('Account has been created successfully');
-                    if($rootScope.user)
-                        $location.path('tenants');
-                    else
-                        $location.path('login');
+                    growl.addSuccessMessage('Tenant has been created successfully');
+                    $location.path('tenants');
                 })
                 .error(function (data, status) {
                     growl.addErrorMessage(data.message);
@@ -70,6 +69,29 @@ app.controller('tenantCtrl', ['$scope', '$rootScope', '$http', '$location',
                     growl.addErrorMessage(data.message);
                 });
             }
+        }
+
+        //Get Tenant-User Details
+        $scope.getTenantUser = function (id) {
+             $location.path('/user/'+id);
+        }
+
+        //Get Tenant-Users List
+        var getTenantUsers = function () {
+            $http.get('/tenantUser/'+ $scope.current_user._id, {
+                headers: AuthServ.getAuthHeader()
+            })
+            .success(function (data, status) {
+                console.log('$scope.showResult : ', $scope.showResult);
+                $scope.resultList = data;
+                // $scope.data = data;
+                 $scope.currentPage = 0;
+                 $scope.groupToPages();
+                 console.log(data);
+            })
+            .error(function (data, status) {
+                growl.addErrorMessage(data.message);
+            });
         }
 
 

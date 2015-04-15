@@ -2,13 +2,24 @@
   <div class="container-fluid">
     <!-- Brand and toggle get grouped for better mobile display -->
     <div class="navbar-header">
-      <img src="app/assets/img/jc-logo-rgb.svg" style="height: 1.5em; margin-top: 1.00em; margin-bottom: 0.75em;">
-      
+      <a ui-sref="login" ng-hide="user">
+        <img src="app/assets/img/jc-logo-rgb.svg" style="height: 1.5em; margin-top: 1.00em; margin-bottom: 0.75em;">
+      </a>
+      <a ui-sref="tenants" ng-if="user.scope == 'Admin'">
+        <img src="app/assets/img/jc-logo-rgb.svg" style="height: 1.5em; margin-top: 1.00em; margin-bottom: 0.75em;">
+      </a>
+      <a ui-sref="home" ng-if="user.scope == 'Tenant-Admin'">
+        <img src="app/assets/img/jc-logo-rgb.svg" style="height: 1.5em; margin-top: 1.00em; margin-bottom: 0.75em;">
+      </a>
+      <a ui-sref="home" ng-if="user.scope == 'Tenant-User'">
+        <img src="app/assets/img/jc-logo-rgb.svg" style="height: 1.5em; margin-top: 1.00em; margin-bottom: 0.75em;">
+      </a>
     </div>
+<!--     <div ng-controller="accountCtrl">ergr:{{current_user}}</div> -->
     <ul class="nav navbar-nav navbar-right" ng-show="user">
         <li class="dropdown">
           <a href="#" class="dropdown-toggle" data-toggle="dropdown">
-              {{user.userId}} <b class="caret"></b>
+              {{current_usr.firstName}} {{current_usr.lastName}} <b class="caret"></b>
           </a>
           <ul class="dropdown-menu">
             <li><a class="ut-pointer">Account</a></li>

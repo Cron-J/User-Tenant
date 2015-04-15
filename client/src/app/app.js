@@ -21,7 +21,7 @@ var app = angular.module('app', [
         
         growlProvider.globalTimeToLive(3000);
         growlProvider.globalEnableHtml(true);
-        $urlRouterProvider.otherwise("/login");
+        $urlRouterProvider.otherwise("/error");
         // $stateProvider
         // .state('root',{
         //   url: '',
@@ -47,19 +47,13 @@ var app = angular.module('app', [
                   authorizedRoles: [USER_ROLES.all]
               }
           })
-          .state('createTenant', {
-            url: "/tenantCreation",
+          .state('tenantSignup', {
+            url: "/signup",
               templateUrl: "app/views/tenant/create.html",
-              controller: 'tenantCtrl'
-          }) 
-          .state('createTenantUser', {
-            url: "/tenantUserCreation",
-              templateUrl: "app/views/tenant_user/tenant_user.html",
-              controller: 'tenantUserCtrl',
+              controller: 'accountCtrl',
               data: {
-                  authorizedRoles: [USER_ROLES.admin, USER_ROLES.tenantadmin]
+                  authorizedRoles: [USER_ROLES.all]
               }
-
           }) 
           .state('forgotPassword', {
             url: "/forgotPassword",
@@ -85,6 +79,23 @@ var app = angular.module('app', [
               }
 
           })
+          .state('createTenant', {
+            url: "/tenantCreation",
+              templateUrl: "app/views/tenant/create.html",
+              controller: 'tenantCtrl',
+              data: {
+                  authorizedRoles: [USER_ROLES.admin, , USER_ROLES.tenantadmin]
+              }
+          }) 
+          .state('createTenantUser', {
+            url: "/tenantUserCreation",
+              templateUrl: "app/views/tenant_user/tenant_user.html",
+              controller: 'tenantUserCtrl',
+              data: {
+                  authorizedRoles: [USER_ROLES.admin, USER_ROLES.tenantadmin]
+              }
+
+          }) 
           .state('tenants', {
             url: "/tenants",
               templateUrl: "app/views/tenant/home.html",
@@ -103,6 +114,15 @@ var app = angular.module('app', [
               }
 
           })
+          .state('tenantHome', {
+            url: "/tenantHome",
+              templateUrl: "app/views/tenant_user/list.html",
+              controller: "tenantCtrl",
+              data: {
+                  authorizedRoles: [USER_ROLES.admin, USER_ROLES.tenantadmin]
+              }
+
+          })
           .state('users', {
             url: "/users",
               templateUrl: "app/views/tenant_user/home.html",
@@ -117,7 +137,7 @@ var app = angular.module('app', [
               templateUrl: "app/views/tenant_user/tenant_user.html",
               controller: "tenantUserCtrl",
               data: {
-                  authorizedRoles: [USER_ROLES.admin]
+                  authorizedRoles: [USER_ROLES.admin, USER_ROLES.tenantadmin]
               }
 
           })
@@ -128,37 +148,43 @@ var app = angular.module('app', [
   ]
 )
 .run(function($rootScope, $location, AuthServ,$cookieStore) {
+
     $rootScope.$on('$stateChangeStart', function(event, next) {
        var authorizedRoles = next.data ? next.data.authorizedRoles : null;
-       if(!AuthServ.isAuthorized(authorizedRoles)){
-          //event.preventDefault();
+       var isAuthorized = AuthServ.isAuthorized(authorizedRoles);
+       if(!isAuthorized){
+          event.preventDefault();
           AuthServ.isLoggedInAsync(function(loggedIn) {
              
             if(!loggedIn){
-               event.preventDefault();
-               $location.path('/login');
+               // event.preventDefault();
+                  $location.path('/login');
               //$rootScope.$broadcast(AUTH_EVENTS.notAuthenticated);
             }
             else{
-              if($rootScope.user.scope == 'Admin')
-              $location.path('/tenants');
+                $location.path('/error');
+
+              // $location.path('/tenants');
              //$location.path('/home');
              //$rootScope.$broadcast(AUTH_EVENTS.notAuthorized);
             }
           }) 
         }
-        else if(AuthServ.isAuthorized(authorizedRoles)){
+        else if(isAuthorized){
           AuthServ.isLoggedInAsync(function(loggedIn) {
-            if (!loggedIn) {              
+            if (!loggedIn) {      
+              if($location.path() == '/signup')
+                  $location.path('/signup');
+               else        
                 $location.path('/login');
             }
-            else if(loggedIn){
-                if($rootScope.user.scope == 'Admin')
-                  $location.path('/users');
-            }
+            // else if(loggedIn){
+            //       $location.path('/error');
+            // }
           });
         }
       });
+
     })
 
 .factory('authInterceptor', function ($rootScope, $q, $cookieStore, $location) {
@@ -170,7 +196,7 @@ var app = angular.module('app', [
       return config;
     },
     responseError: function(response) {
-      if(($location.path() != '/login') || ($location.path() != '/signup'))
+      if(($location.path() != '/login'))
           $cookieStore.put('url',$location.path())
       if(response.status === 401) {
         $location.path('/login');
@@ -183,8 +209,6 @@ var app = angular.module('app', [
   };
 })
 
-
-
 angular.module('cons', [])
   .constant('USER_ROLES', {
       all: '*',
@@ -192,3 +216,4 @@ angular.module('cons', [])
       tenantadmin: 'Tenant-Admin',
       tenantuser:'Tenant-User'
   })
+  

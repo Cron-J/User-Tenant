@@ -1,6 +1,7 @@
 <div class="container">
   <header>
-    <p class="ut-lead">Create Tenant</p>
+    <p class="ut-lead" ng-show="user.scope">Create Tenant</p>
+    <p class="ut-lead" ng-hide="user.scope">Tenant Registration</p>
   </header>
   <div class="col-lg-9 col-md-9 ut-container">
     <form id="signupForm" class="form-horizontal ut-form ng-pristine ng-valid" role="form" name="signupForm" novalidate>
@@ -409,7 +410,8 @@
             </div>
             <div class="col-lg-4 col-md-4 col-lg-offset-3 col-md-offset-3">
               <div class="pull-right">
-                <button class="btn btn-primary" ng-disabled="!signupForm.$valid" ng-click="createTenantAccount(account, signupForm.$valid)">Submit</button>
+                <button class="btn btn-primary" ng-disabled="!signupForm.$valid" ng-show="user.scope" ng-click="createTenantAccount(account, signupForm.$valid)">Submit</button>
+                <button class="btn btn-primary" ng-disabled="!signupForm.$valid" ng-hide="user.scope" ng-click="tenantSelfRegistration(account, signupForm.$valid)">Signup</button>
                 <button class="btn btn-default" ng-show="user.scope" ui-sref="tenants">Cancel</button>
                 <button class="btn btn-default" ng-hide="user.scope" ui-sref="login">Cancel</button>
               </div>  
