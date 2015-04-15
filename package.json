@@ -17,7 +17,8 @@
     "mongoose": "3.8.x",
     "mongoose-timestamp": "^0.4.0",
     "mongoose-validators": "^0.1.0",
-    "nodemailer": "^0.7.1"
+    "nodemailer": "^0.7.1",
+    "supertest": "^0.15.0"
   },
   "keywords": [
     "node.js",
