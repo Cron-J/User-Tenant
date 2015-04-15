@@ -1,18 +1,26 @@
-var Config = require('../config/config');
+var Mongoose = require('mongoose'),
+	config = require('../config/config');
 
-// exports.removeCollections = function(mongoose, callback){
-//     mongoose.connection.db.collectionNames(function(err, collections){
-//         console.log(collections);
-//         if(collections.map(function(e) { return e.name; }).indexOf('users') != -1) {
-//                 mongoose.connection.db.dropCollection('mappings', function(err) {
-//                 callback(err);
-//             });
-//         }
-//         else{
-//             callback();
-//         }
-//     });
-// };
+exports.removeCollections = function(callback){
+	Mongoose.connect('mongodb://' + config.database.host + '/' + config.database.db);  
+	var db = Mongoose.connection;
+	db.on('open', function(){
+	  Mongoose.connection.db.collectionNames(function(error, names) {
+	    if (error) {
+	      throw new Error(error);
+	    } else {
+	      names.map(function(cname) {
+	      	console.log(cname.name);
+	      	if( cname.name === 'users'){
+	      		Mongoose.connection.db.dropCollection('users', function(err) {
+	      			callback();	
+			    });
+	      	}      	
+	      });
+	    }
+	  });
+	});
+};
 
 exports.validAdminRegistraitionData = function(){
     var validAdminRegistraitionData = {
