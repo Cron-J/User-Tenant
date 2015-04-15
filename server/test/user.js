@@ -1,20 +1,18 @@
-var Mongoose = require("mongoose"),
-    Db = require('../config/db'),
-    Config = require("../config/config"),
+var Config = require("../config/config"),
     request = require("supertest"),
     testCommon = require("./commonHelper"),
     url = Config.server.host + ":" + Config.server.port;
 
 describe("user controller test", function() {
  
-  // beforeEach(function(done) {
-  //   testCommon.removeCollections(Mongoose, function(error) {
-  //     if (error) {
-  //       throw error;
-  //     }
-  //     done();
-  //   });
-  // });
+  beforeEach(function(done) {
+    testCommon.removeCollections(function(error) {
+      if (error) {
+        throw error;
+      }
+      done();
+    });
+  });
 
   describe("Admin registration", function() {
 
