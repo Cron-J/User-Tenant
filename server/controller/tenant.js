@@ -56,8 +56,8 @@ exports.createTenantSelfRegistration = {
                 request.payload.user.tenantId = tenant._id;
                 request.payload.user.password = Crypto.encrypt(request.payload.user.password);
                 request.payload.user.scope = "Tenant-Admin";
-                request.payload.user.createdBy = 'Self Registraition';
-                request.payload.user.updatedBy = 'Self Registraition';
+                request.payload.user.createdBy = 'Self';
+                request.payload.user.updatedBy = 'Self';
                 User.saveUser( request.payload.user, function(err, user) {
                     if (!err) {
                         EmailServices.sentMailUserCreation(user.userId, user.password);
