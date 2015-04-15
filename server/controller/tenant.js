@@ -47,6 +47,40 @@ exports.createTenant = {
     }
 };
 
+exports.createTenantSelfRegistration = {
+    handler: function(request, reply) {
+        request.payload.tenant.createdBy = 'Self Registraition';
+        request.payload.tenant.updatedBy = 'Self Registraition';
+        Tenant.saveTenant( request.payload.tenant, function( err, tenant ) {
+            if (!err) {
+                request.payload.user.tenantId = tenant._id;
+                request.payload.user.password = Crypto.encrypt(request.payload.user.password);
+                request.payload.user.scope = "Tenant-Admin";
+                request.payload.user.createdBy = 'Self Registraition';
+                request.payload.user.updatedBy = 'Self Registraition';
+                User.saveUser( request.payload.user, function(err, user) {
+                    if (!err) {
+                        EmailServices.sentMailUserCreation(user.userId, user.password);
+                        return reply( "user successfully created" );
+                    } else {
+                        var errMessage = "Opps something went wrong.."
+                        if ( constants.kDuplicateKeyError === err.code || constants.kDuplicateKeyErrorForMongoDBv2_1_1 === err.code ) {
+                            errMessage = "user id already exist";
+                        } 
+                        Tenant.remove( tenant._id, function(err, user) {
+                             reply(Boom.forbidden( errMessage ));
+                        }); 
+                    }
+                });
+            } else {
+                if ( constants.kDuplicateKeyError === err.code || constants.kDuplicateKeyErrorForMongoDBv2_1_1 === err.code ) {
+                    reply(Boom.forbidden( "tennant Id already exist" ));
+                } else reply( Boom.forbidden( err ) ); // HTTP 403
+            }
+        });
+    }
+};
+
 exports.searchTenant = {
     auth: {
         strategy: 'token',
