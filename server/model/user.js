@@ -71,7 +71,7 @@ var User = new Schema({
     createdBy: {
         type: String,
         required: true,
-        enum: ['Admin', 'Tenant-Admin']
+        enum: ['Self Registraition', 'Admin', 'Tenant-Admin']
     },
 
     /**
@@ -80,7 +80,7 @@ var User = new Schema({
     updatedBy: {
         type: String,
         required: true,
-        enum: ['Admin', 'Tenant-Admin']
+        enum: ['Self Registraition', 'Admin', 'Tenant-Admin']
     },
 
     /**
