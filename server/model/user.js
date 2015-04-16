@@ -139,6 +139,13 @@ User.statics.findUserById = function(id, callback) {
     }).populate('tenantId').exec(callback);
 };
 
+User.statics.findUserByIdTenantId = function(id, tenantId, callback) {
+    this.findOne({
+        '_id': id,
+        'tenantId': tenantId
+    }).populate('tenantId').exec(callback);
+};
+
 User.statics.findUserByTenantIdScope = function(id, scope, callback) {
     this.find({
         'tenantId': id,

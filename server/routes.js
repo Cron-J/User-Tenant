@@ -16,6 +16,7 @@ exports.endpoints = [
     { method: 'GET', path: '/exportUser', config: User.exportUser},
     { method: 'GET', path: '/user', config: User.getUser},
     { method: 'GET', path: '/user/{id}', config: User.getUserByAdmin},
+    { method: 'GET', path: '/userByTenant/{id}', config: User.getUserByTenant},
     { method: 'PUT', path: '/userByAdmin/{id}', config: User.updateUserByAdmin},
     { method: 'POST', path: '/login', config: User.login},
     { method: 'POST', path: '/forgotPassword', config: User.forgotPassword},

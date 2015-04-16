@@ -26,8 +26,7 @@ describe("user controller test", function() {
         done();
       });
     });
-
-
+    
   }); 
 
 });
