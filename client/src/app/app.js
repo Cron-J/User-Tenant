@@ -17,8 +17,7 @@ var app = angular.module('app', [
 
 .config(
   ['$stateProvider', '$urlRouterProvider', 'growlProvider', '$httpProvider', 'USER_ROLES',
-    function ($stateProvider,   $urlRouterProvider,   growlProvider, $httpProvider, USER_ROLES) {
-        
+    function ($stateProvider,   $urlRouterProvider,   growlProvider, $httpProvider, USER_ROLES) {       
         growlProvider.globalTimeToLive(3000);
         growlProvider.globalEnableHtml(true);
         $urlRouterProvider.otherwise("/error");   
@@ -48,9 +47,10 @@ var app = angular.module('app', [
           }) 
           .state('home', {
             url: "/home",
-              templateUrl: "app/views/home.html",
+              templateUrl: "app/views/common/home.html",
+              controller: 'tenantUserCtrl',
               data: {
-                  authorizedRoles: [USER_ROLES.all]
+                  authorizedRoles: [USER_ROLES.tenantuser]
               }
 
           })
@@ -107,7 +107,7 @@ var app = angular.module('app', [
 
           })
           .state('tenantUser', {
-            url: "/tenantUser/:tenant_userId",
+            url: "/tenantUser/:tUserId",
               templateUrl: "app/views/tenant_user/tenant_user.html",
               controller: "tenantUserCtrl",
               data: {
@@ -133,9 +133,18 @@ var app = angular.module('app', [
               }
 
           })
+          .state('editProfile', {
+            url: "/editProfile",
+              templateUrl: "app/views/common/profile.html",
+              controller: "accountCtrl",
+              data: {
+                  authorizedRoles: [USER_ROLES.all]
+              }
+
+          })
             
           
-            $httpProvider.interceptors.push('authInterceptor');
+          $httpProvider.interceptors.push('authInterceptor');
     }
   ]
 )
@@ -147,18 +156,11 @@ var app = angular.module('app', [
        if(!isAuthorized){
           event.preventDefault();
           AuthServ.isLoggedInAsync(function(loggedIn) {
-             
             if(!loggedIn){
-               // event.preventDefault();
                   $location.path('/login');
-              //$rootScope.$broadcast(AUTH_EVENTS.notAuthenticated);
             }
             else{
                 $location.path('/error');
-
-              // $location.path('/tenants');
-             //$location.path('/home');
-             //$rootScope.$broadcast(AUTH_EVENTS.notAuthorized);
             }
           }) 
         }
