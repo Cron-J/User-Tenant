@@ -1,22 +1,52 @@
 var Mongoose = require('mongoose'),
+	async = require('async'),
 	config = require('../config/config');
 
-exports.removeCollections = function(callback){
-	Mongoose.connect('mongodb://' + config.database.host + '/' + config.database.db);  
+exports.removeCollections = function(cb){
+	Mongoose.connect(config.database.url);  
 	var db = Mongoose.connection;
 	db.on('open', function(){
-	  Mongoose.connection.db.collectionNames(function(error, names) {
+	  Mongoose.connection.db.collectionNames(function(error, collections) {
 	    if (error) {
 	      throw new Error(error);
 	    } else {
-	      names.map(function(cname) {
-	      	console.log(cname.name);
-	      	if( cname.name === 'users'){
-	      		Mongoose.connection.db.dropCollection('users', function(err) {
-	      			callback();	
-			    });
-	      	}      	
-	      });
+	      	async.parallel([
+	            function(callback){
+	            	if(collections.map(function(e) { return e.name; }).indexOf('users') != -1) {
+	                        Mongoose.connection.db.dropCollection('users', function(err) {
+	                        callback(err);
+	                    });
+	                }
+	                else{
+	                    callback();
+	                }
+
+	            },
+	            function(callback){
+	            	if(collections.map(function(e) { return e.name; }).indexOf('tenants') != -1) {
+	                        Mongoose.connection.db.dropCollection('tenants', function(err) {	  
+	                        callback(err);
+	                    });
+	                }
+	                else{
+	                    callback();
+	                }
+
+	            }
+
+            ],
+            // optional callback
+	        function(err){
+	        	if (err){
+	        		cb(err);	
+	        	} 
+	        	else {
+	        		Mongoose.connection.close(function(err){
+		        		cb(err);
+		        	});	 
+	        	}           
+	        });  	
+
 	    }
 	  });
 	});
