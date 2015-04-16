@@ -20,7 +20,7 @@ exports.createAdmin = {
             }
             else{
                 if(request.payload.tenantId) {
-                    request.payload.tenantId = undefined;
+                    delete request.payload.tenantId;
                 }
                 request.payload.password = Crypto.encrypt(request.payload.password);
                 request.payload.scope = "Admin";
@@ -321,15 +321,16 @@ exports.updateUser = {
        Jwt.verify(request.headers.authorization.split(' ')[1], Config.key.privateKey, function(err, decoded) {
         
             /* filterening unwanted attributes which may have in request.payload and can enter bad data */
-            if(request.payload.tenantId) request.payload.tenantId = undefined;
-            if(request.payload.firstLogin) request.payload.firstLogin = undefined;
-            if(request.payload.lastLogin) request.payload.lastLogin = undefined;
-            if(request.payload.createdBy) request.payload.createdBy = undefined;
-            if(request.payload.scope) request.payload.scope = undefined;
+            if(request.payload.tenantId) delete request.payload.tenantId;
+            if(request.payload.firstLogin) delete request.payload.firstLogin;
+            if(request.payload.lastLogin) delete request.payload.lastLogin;
+            if(request.payload.createdBy) delete request.payload.createdBy;
+            if(request.payload.scope) delete request.payload.scope;
             if(request.payload.password) request.payload.password = Crypto.encrypt(request.payload.password);
 
             request.payload.updatedBy = 'Self';
-
+            
+            console.log(request.payload);
             User.updateUser(decoded.id, request.payload, function(err, user) {
                 if(err){
                     return reply(Boom.badImplementation("unable to update"));
@@ -352,11 +353,11 @@ exports.updateUserByAdmin = {
        Jwt.verify(request.headers.authorization.split(' ')[1], Config.key.privateKey, function(err, decoded) {
         
             /* filterening unwanted attributes which may have in request.payload and can enter bad data */
-            if(request.payload.tenantId) request.payload.tenantId = undefined;
-            if(request.payload.firstLogin) request.payload.firstLogin = undefined;
-            if(request.payload.lastLogin) request.payload.lastLogin = undefined;
-            if(request.payload.createdBy) request.payload.createdBy = undefined;
-            if(request.payload.scope) request.payload.scope = undefined;
+            if(request.payload.tenantId) delete request.payload.tenantId;
+            if(request.payload.firstLogin) delete request.payload.firstLogin;
+            if(request.payload.lastLogin) delete request.payload.lastLogin;
+            if(request.payload.createdBy) delete request.payload.createdBy;
+            if(request.payload.scope) delete request.payload.scope;
             if(request.payload.password) request.payload.password = Crypto.encrypt(request.payload.password);
 
             request.payload.updatedBy = 'Admin';
