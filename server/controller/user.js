@@ -220,7 +220,7 @@ exports.getUser = {
                         user.scope = undefined;
                         return reply(user);    
                     }
-                    return reply(Boom.forbidden("unable to get user detail"));
+                    return reply(Boom.forbidden("no user exist"));
                 }
             });
 
@@ -245,7 +245,7 @@ exports.getUserByAdmin = {
                         user.scope = undefined;
                         return reply(user);    
                     }
-                    return reply(Boom.forbidden("unable to get user detail"));
+                    return reply(Boom.forbidden("no user exist"));
                 }
             });
 
@@ -270,7 +270,7 @@ exports.getUserByTenant = {
                         user.scope = undefined;
                         return reply(user);    
                     }
-                    return reply(Boom.forbidden("unable to get user detail"));
+                    return reply(Boom.forbidden("no user exist"));
                 }
             });
 
