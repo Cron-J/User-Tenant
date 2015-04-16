@@ -7,8 +7,13 @@ app.controller('tenantCtrl', ['$scope', '$rootScope', '$http', '$location',
         var _scope = {};
         _scope.init = function() {
             $scope.isUser = true;
-              if($location.path() == '/tenantHome')
+            if($location.path() == '/tenantHome') {
+                userInfo.async().then(function(response) {
+                    $scope.current_usr.firstName = response.data.firstName;
+                    $scope.current_usr.lastName = response.data.lastName;
+                });
                 getTenantUsers();
+            }
             if($stateParams.tenantId)
                $scope.getTenant();
         }
@@ -73,12 +78,12 @@ app.controller('tenantCtrl', ['$scope', '$rootScope', '$http', '$location',
 
         //Get Tenant-User Details
         $scope.getTenantUser = function (id) {
-             $location.path('/user/'+id);
+           $location.path('/tenantUser/'+id);
         }
 
         //Get Tenant-Users List
         var getTenantUsers = function () {
-            $http.get('/tenantUser/'+ $scope.current_user._id, {
+            $http.get('/tenantUser/'+ $scope.current_usr._id, {
                 headers: AuthServ.getAuthHeader()
             })
             .success(function (data, status) {

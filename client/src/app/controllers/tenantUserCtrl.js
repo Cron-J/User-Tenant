@@ -6,14 +6,18 @@ app.controller('tenantUserCtrl', ['$scope', '$rootScope', '$http', '$location',
         $stateParams, $modal, $log, userInfo) {
         var _scope = {};
         _scope.init = function() {
-            $scope.view = 'create';
-            // userInfo.async().then(function(response) {
-            //   $scope.current_user = response.data;
-
-            // });
+            console.log($rootScope.user);
+            if($rootScope.user.scope == 'Admin')
+                $scope.view = 'create';
+            if($rootScope.user.scope == 'Tenant-Admin')
+                $scope.viewByTenant = 'create';
             if($stateParams.tenantUserId) {
                 $scope.view = 'view';
                 getUserAccountDetails();
+            }
+            if($stateParams.tenant_userId) {
+                $scope.viewByTenant = 'view';
+                getTenantUserbyTenant();
             }
         }
         
@@ -39,6 +43,22 @@ app.controller('tenantUserCtrl', ['$scope', '$rootScope', '$http', '$location',
                 growl.addErrorMessage(data.message);
             });
         }
+
+        //Get Tenant-User by Tenant-Admin
+        var getTenantUserbyTenant = function () {
+            $http.get('/userByTenant/'+ $stateParams.tenant_userId, {
+                headers: AuthServ.getAuthHeader()
+            })
+            .success(function (data, status) {
+                $scope.account = data;
+                $scope.current_usr.firstName = data.firstName;
+                $scope.current_usr.lastName = data.lastName;
+            })
+            .error(function (data, status) {
+                growl.addErrorMessage(data.message);
+            });
+        }
+
 
         //Get page view mode
         // $scope.getView = function (mode) {
@@ -72,7 +92,11 @@ app.controller('tenantUserCtrl', ['$scope', '$rootScope', '$http', '$location',
                 .success(function (data, status) {
                     // AuthServ.setUserToken(data, $scope.loginForm.remember);
                     growl.addSuccessMessage('Tenant-User has been created successfully');
-                    $location.path('users');
+                    if($rootScope.user.scope == 'Admin')
+                        $location.path('/users');
+                    if($rootScope.user.scope == 'Tenant-Admin')
+                        $location.path('/tenantHome');
+
                 })
                 .error(function (data, status) {
                     growl.addErrorMessage(data.message);

@@ -60,6 +60,7 @@ exports.createTenantUser = {
                 return reply(Boom.forbidden("Please select tenant"));
             }
             else {
+                request.payload.password = Crypto.encrypt(Math.random().toString(8).substring(2));
                 Tenant.findTenantById( request.payload.tenantId, function( err, tenant ) {
                     if( tenant ){
                         request.payload.password = Crypto.encrypt(request.payload.password);
@@ -185,7 +186,7 @@ exports.forgotPassword = {
         User.findUser(request.payload.userId, function(err, user) {
             if (!err) {
                 if (user === null) return reply(Boom.forbidden("invalid userId"));
-                var password = Crypto.encrypt(Math.random().toString(36).substring(7));
+                var password = Crypto.encrypt(Math.random().toString(8).substring(2));
                 User.updateUser( user._id, { "password" : password }, function(err, result){
                     if(err){
                         return reply(Boom.badImplementation("Error in sending password"));
@@ -259,8 +260,8 @@ exports.getUserByTenant = {
         scope: ['Tenant-Admin']
     },
     handler: function(request, reply) {
-       Jwt.verify(request.headers.authorization.split(' ')[1], Config.key.privateKey, function(err, decoded) {        
-            User.findUserById(request.params.id, decoded.tenantId, function(err, user) {
+       Jwt.verify(request.headers.authorization.split(' ')[1], Config.key.privateKey, function(err, decoded) {     
+            User.findUserByIdTenantId(request.params.id, decoded.tenantId, function(err, user) {
                 if(err){
                     return reply(Boom.badImplementation("unable to get user detail"));
                 }

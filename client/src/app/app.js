@@ -21,24 +21,7 @@ var app = angular.module('app', [
         
         growlProvider.globalTimeToLive(3000);
         growlProvider.globalEnableHtml(true);
-        $urlRouterProvider.otherwise("/error");
-        // $stateProvider
-        // .state('root',{
-        //   url: '',
-        //   views: {
-        //     'header': {
-        //       templateUrl: 'app/views/common/header.html'
-        //     }
-        //   }
-        // })
-        // .state('root.login', {
-        //   url: '/login',
-        //   views: {
-        //     'container@': {
-        //       templateUrl: 'app/views/common/login.html'
-        //     }
-        //   }
-        // });    
+        $urlRouterProvider.otherwise("/error");   
         $stateProvider
           .state('login', {
             url: "/login",
@@ -116,10 +99,19 @@ var app = angular.module('app', [
           })
           .state('tenantHome', {
             url: "/tenantHome",
-              templateUrl: "app/views/tenant_user/list.html",
+              templateUrl: "app/views/tenant/tenant_users_list.html",
               controller: "tenantCtrl",
               data: {
                   authorizedRoles: [USER_ROLES.admin, USER_ROLES.tenantadmin]
+              }
+
+          })
+          .state('tenantUser', {
+            url: "/tenantUser/:tenant_userId",
+              templateUrl: "app/views/tenant_user/tenant_user.html",
+              controller: "tenantUserCtrl",
+              data: {
+                  authorizedRoles: [USER_ROLES.tenantadmin]
               }
 
           })
