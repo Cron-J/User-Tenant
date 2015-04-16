@@ -15,9 +15,15 @@ app.controller('tenantUserCtrl', ['$scope', '$rootScope', '$http', '$location',
                 $scope.view = 'view';
                 getUserAccountDetails();
             }
-            if($stateParams.tenant_userId) {
+            if($stateParams.tUserId) {
                 $scope.viewByTenant = 'view';
                 getTenantUserbyTenant();
+            }
+            if($location.path() == '/home') {
+                userInfo.async().then(function(response) {
+                    $scope.current_usr.firstName = response.data.firstName;
+                    $scope.current_usr.lastName = response.data.lastName;
+                });
             }
         }
         
@@ -46,7 +52,7 @@ app.controller('tenantUserCtrl', ['$scope', '$rootScope', '$http', '$location',
 
         //Get Tenant-User by Tenant-Admin
         var getTenantUserbyTenant = function () {
-            $http.get('/userByTenant/'+ $stateParams.tenant_userId, {
+            $http.get('/userByTenant/'+ $stateParams.tUserId, {
                 headers: AuthServ.getAuthHeader()
             })
             .success(function (data, status) {
@@ -123,6 +129,24 @@ app.controller('tenantUserCtrl', ['$scope', '$rootScope', '$http', '$location',
             }
         }
 
+        //Update Tenant-User account by Tenant
+        $scope.updatetenantUserAccountByTenant = function (account_info, valid) {
+            if(valid){
+                delete account_info._id, delete account_info.createdAt, 
+                delete account_info.createdBy, delete account_info.updatedAt,
+                delete account_info.updatedBy;
+                $http.put('/tenantUser/'+$stateParams.tUserId, account_info, {
+                    headers: AuthServ.getAuthHeader()
+                })
+                .success(function (data, status) {
+                    growl.addSuccessMessage('Account has been updated successfully');
+                    $location.path('/tenantHome');
+                })
+                .error(function (data, status) {
+                    growl.addErrorMessage(data.message);
+                });
+            }
+        }
         _scope.init();
 }]);
 

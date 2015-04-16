@@ -5,12 +5,17 @@ app.controller('accountCtrl', ['$scope', '$rootScope', '$http', '$location',
     function ($scope, $rootScope, $http, $location, AuthServ, growl, $filter, userInfo,$cookieStore) {
         var _scope = {};
         _scope.init = function() {
-
-           $scope.loginForm = {
+            $scope.loginForm = {
                 remember: true
             };
-            $scope.user = {};
             $scope.authError = null;
+            if($location.path() == '/editProfile') {
+                $scope.profileView = 'view';
+                userInfo.async().then(function(response) {
+                    $scope.current_usr = response.data;
+                });
+            }
+            console.log('***data***', $scope.current_usr);
         }
 
         //User login
@@ -24,7 +29,7 @@ app.controller('accountCtrl', ['$scope', '$rootScope', '$http', '$location',
                         $location.path('/tenants');
                     else if($rootScope.user.scope == 'Tenant-Admin')
                         $location.path('/tenantHome');
-                    else 
+                    else if($rootScope.user.scope == 'Tenant-User')
                          $location.path('/home');
                     // getAccountInfo();
                     // userInfo.async().then(function(response) {
@@ -37,26 +42,6 @@ app.controller('accountCtrl', ['$scope', '$rootScope', '$http', '$location',
                 });
 
         }
-
-        // //Get User personal details
-        // var getAccountInfo = function () {
-        //     $http.get('/user', {
-        //         headers: AuthServ.getAuthHeader()
-        //     })
-        //     .success(function (data, status) {
-        //         if($rootScope.user.scope == 'Admin' || $rootScope.user.scope == 'Tenant-User') {
-        //             $rootScope.user.firstName = data.firstName;
-        //             $rootScope.user.lastName = data.lastName;
-        //         } 
-        //         if($rootScope.user.scope == 'Tenant-Admin') {
-        //             $rootScope.user.firstName = data.name;
-        //             $rootScope.user.lastName = '';
-        //         }
-        //     })
-        //     .error(function (data, status) {
-        //         growl.addErrorMessage(data.message);
-        //     });
-        // }
 
         //User logout
         $scope.logOut = function() {
@@ -88,6 +73,23 @@ app.controller('accountCtrl', ['$scope', '$rootScope', '$http', '$location',
                 .success(function (data, status) {
                     growl.addSuccessMessage('Tenant has been successfully registered');
                     $location.path('login');
+                })
+                .error(function (data, status) {
+                    growl.addErrorMessage(data.message);
+                });
+            }
+        }
+
+        //Update Personal Account Details
+        $scope.updateProfile = function (account_info, valid) {
+            if(valid){
+                delete account_info._id, 
+                $http.put('/user', account_info, {
+                    headers: AuthServ.getAuthHeader()
+                })
+                .success(function (data, status) {
+                    growl.addSuccessMessage('Account has been updated successfully');
+                    $scope.profileView = 'view';
                 })
                 .error(function (data, status) {
                     growl.addErrorMessage(data.message);
