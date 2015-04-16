@@ -16,6 +16,7 @@ app.controller('accountCtrl', ['$scope', '$rootScope', '$http', '$location',
                 });
             }
             $scope.setPassword = false;
+            $scope.isUser = true;
         }
 
         //User login

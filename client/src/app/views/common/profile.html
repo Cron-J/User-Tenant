@@ -11,7 +11,7 @@
                     <div class="col-lg-6 col-md-6">        
                         <div class="input-group">
                             <span class="input-group-addon"><i class="fa fa-pencil"></i></span>
-                            <input id="login-username" type="text" class="form-control" name="firstName" ng-model="current_usr.firstName" ng-minlength="2" maxlength="30" ng-pattern="/^[a-zA-Z0-9 ]*$/" ng-disabled="profileView == 'view'" required>
+                            <input type="text" class="form-control" name="firstName" ng-model="current_usr.firstName" ng-minlength="2" maxlength="30" ng-pattern="/^[a-zA-Z0-9 ]*$/" ng-disabled="profileView == 'view'" required>
                         </div>
                         <div class="error" ng-show="profileForm.firstName.$dirty 
                         && profileForm.firstName.$invalid">Invalid:
@@ -29,7 +29,7 @@
                     <div class="col-lg-6 col-md-6">            
                         <div class="input-group">
                             <span class="input-group-addon"><i class="fa fa-pencil"></i></span>
-                            <input id="login-username" type="text" class="form-control" name="lastName" ng-model="current_usr.lastName" ng-minlength="2" maxlength="30" ng-pattern="/^[a-zA-Z0-9 ]*$/" ng-disabled="profileView == 'view'" required>
+                            <input type="text" class="form-control" name="lastName" ng-model="current_usr.lastName" ng-minlength="2" maxlength="30" ng-pattern="/^[a-zA-Z0-9 ]*$/" ng-disabled="profileView == 'view'" required>
                         </div>
                         <div class="error" ng-show="profileForm.lastName.$dirty 
                         && profileForm.lastName.$invalid">Invalid:
@@ -48,7 +48,7 @@
                         <div class="col-lg-8 col-md-8 row"> 
                             <div class="input-group">
                                 <span class="input-group-addon"><i class="glyphicon "> <b>@</b> </i></span>
-                                <input id="login-username" type="email" class="form-control" style="width:329px;" name="email" value="" ng-model="current_usr.userId" ng-disabled="profileView == 'view'" required>
+                                <input type="email" class="form-control" style="width:329px;" name="email" value="" ng-model="current_usr.userId" ng-disabled="profileView == 'view'" required>
                             </div>
                         </div>
                         <div class="col-lg-3 col-md-3">   

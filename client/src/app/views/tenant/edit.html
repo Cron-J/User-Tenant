@@ -12,7 +12,7 @@
               <div class="col-lg-6 col-md-6">            
                 <div class="input-group">
                   <span class="input-group-addon"><i class="fa fa-user"></i></span>
-                  <input id="login-username" type="text" class="form-control" name="tenantId" ng-model="tenant.tenantId" ng-minlength="2" maxlength="30" ng-pattern="/^[a-zA-Z0-9]*$/" ng-disabled="view == 'view'" required>
+                  <input type="text" class="form-control" name="tenantId" ng-model="tenant.tenantId" ng-minlength="2" maxlength="30" ng-pattern="/^[a-zA-Z0-9]*$/" ng-disabled="view == 'view'" required>
                 </div>
                 <div class="error" ng-show="editForm.tenantId.$dirty && editForm.tenantId.$invalid">Invalid:
                   <span ng-show="editForm.tenantId.$error.required">Tell us your tenant id</span>
@@ -29,7 +29,7 @@
               <div class="col-lg-6 col-md-6">            
                 <div class="input-group">
                   <span class="input-group-addon"><i class="fa fa-pencil"></i></span>
-                  <input id="login-username" type="text" class="form-control" name="name" ng-model="tenant.name" ng-minlength="2" maxlength="30" ng-pattern="/^[a-zA-Z0-9 ]*$/" ng-disabled="view == 'view'" required>
+                  <input type="text" class="form-control" name="name" ng-model="tenant.name" ng-minlength="2" maxlength="30" ng-pattern="/^[a-zA-Z0-9 ]*$/" ng-disabled="view == 'view'" required>
                 </div>
                 <div class="error" ng-show="editForm.name.$dirty && editForm.name.$invalid">Invalid:
                   <span ng-show="editForm.name.$error.required">Tell us your name</span>
@@ -43,16 +43,18 @@
           <div class="row">
             <div class="form-group">
               <label class="col-lg-2 col-md-2 control-label">Status<span class="error" ng-show="editForm.status.$error.required"> *</span></label>
-              <div class="col-lg-6 col-md-6">            
+              <div class="col-lg-4 col-md-4">            
                 <div class="input-group">
                   <span class="input-group-addon"><i class="fa fa-pencil"></i></span>
-                  <input id="login-username" type="text" class="form-control" name="status" ng-model="tenant.status" ng-minlength="2" maxlength="30" ng-pattern="/^[a-zA-Z0-9]*$/" ng-disabled="view == 'view'" required>
+                    <select  type="text" class="form-control" name="status" ng-model="tenant.status" ng-disabled="view == 'view'" required>
+                    <option value="">Select status</option>
+                    <option value="confirmed">Confirmed</option>
+                    <option value="active">Active</option>
+                    <option value="inactive">Inactive</option>
+                  </select>
                 </div>
                 <div class="error" ng-show="editForm.status.$dirty && editForm.status.$invalid">Invalid:
                   <span ng-show="editForm.status.$error.required">Tell us your status</span>
-                  <span ng-show="editForm.status.$error.minlength">Status should be minimum of 2 characters</span>
-                  <span ng-show="editForm.status.$error.pattern">Status won't allow special characters</span>
-                  </span>
                 </div>
               </div>
             </div>
@@ -63,7 +65,7 @@
               <div class="col-lg-6 col-md-6">   
                 <div class="input-group">
                   <span class="input-group-addon"><i class="fa fa-pencil"></i></span>
-                  <input id="login-username" type="text" class="form-control" rows="4" name="description" ng-model="tenant.description" ng-minlength="2" maxlength="30" ng-pattern="/^[a-zA-Z0-9 ]*$/" ng-disabled="view == 'view'" />
+                  <input type="text" class="form-control" rows="4" name="description" ng-model="tenant.description" ng-minlength="2" maxlength="30" ng-pattern="/^[a-zA-Z0-9 ]*$/" ng-disabled="view == 'view'" />
                 </div>
                 <div class="error" ng-show="editForm.description.$dirty && editForm.description.$invalid">Invalid:
                   <span ng-show="editForm.description.$error.minlength">Description should be minimum of 2 characters</span>

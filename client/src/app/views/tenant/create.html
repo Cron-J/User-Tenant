@@ -15,7 +15,7 @@
             <div class="col-lg-6 col-md-6">            
               <div class="input-group">
                 <span class="input-group-addon"><i class="fa fa-user"></i></span>
-                <input id="login-username" type="text" class="form-control" name="tenantId" ng-model="account.tenant.tenantId" ng-minlength="2" maxlength="30" ng-pattern="/^[a-zA-Z0-9]*$/" required>
+                <input type="text" class="form-control" name="tenantId" ng-model="account.tenant.tenantId" ng-minlength="2" maxlength="30" ng-pattern="/^[a-zA-Z0-9]*$/" required>
               </div>
               <div class="error" ng-show="signupForm.tenantId.$dirty && signupForm.tenantId.$invalid">Invalid:
                 <span ng-show="signupForm.tenantId.$error.required">Tell us your tenant id</span>
@@ -32,7 +32,7 @@
             <div class="col-lg-6 col-md-6">            
               <div class="input-group">
                 <span class="input-group-addon"><i class="fa fa-pencil"></i></span>
-                <input id="login-username" type="text" class="form-control" name="name" ng-model="account.tenant.name" ng-minlength="2" maxlength="30" ng-pattern="/^[a-zA-Z0-9 ]*$/" required>
+                <input type="text" class="form-control" name="name" ng-model="account.tenant.name" ng-minlength="2" maxlength="30" ng-pattern="/^[a-zA-Z0-9 ]*$/" required>
               </div>
               <div class="error" ng-show="signupForm.name.$dirty && signupForm.name.$invalid">Invalid:
                 <span ng-show="signupForm.name.$error.required">Tell us your name</span>
@@ -46,15 +46,18 @@
         <div class="row">
           <div class="form-group">
             <label class="col-lg-2 col-md-2 control-label">Status<span class="error" ng-show="signupForm.status.$error.required"> *</span></label>
-            <div class="col-lg-6 col-md-6">            
+            <div class="col-lg-4 col-md-4">            
               <div class="input-group">
                 <span class="input-group-addon"><i class="fa fa-pencil"></i></span>
-                <input id="login-username" type="text" class="form-control" name="status" ng-model="account.tenant.status" ng-minlength="2" maxlength="30" ng-pattern="/^[a-zA-Z0-9]*$/" required>
+                <select   type="text" class="form-control" name="status" ng-model="account.tenant.status" required>
+                  <option value="">Select status</option>
+                  <option value="confirmed">Confirmed</option>
+                  <option value="active">Active</option>
+                  <option value="inactive">Inactive</option>
+                </select>
               </div>
               <div class="error" ng-show="signupForm.status.$dirty && signupForm.status.$invalid">Invalid:
-                <span ng-show="signupForm.status.$error.required">Tell us your status</span>
-                <span ng-show="signupForm.status.$error.minlength">Status should be minimum of 2 characters</span>
-                <span ng-show="signupForm.status.$error.pattern">Status won't allow special characters</span>
+                <span ng-show="signupForm.status.$error.required">Select status</span>
                 </span>
               </div>
             </div>
@@ -66,7 +69,7 @@
             <div class="col-lg-6 col-md-6">   
               <div class="input-group">
                 <span class="input-group-addon"><i class="fa fa-pencil"></i></span>
-                <input id="login-username" type="text" class="form-control" rows="4" name="description" ng-model="account.tenant.description" ng-minlength="2" maxlength="30" ng-pattern="/^[a-zA-Z0-9 ]*$/" />
+                <input type="text" class="form-control" rows="4" name="description" ng-model="account.tenant.description" ng-minlength="2" maxlength="30" ng-pattern="/^[a-zA-Z0-9 ]*$/" />
               </div>
               <div class="error" ng-show="signupForm.description.$dirty && signupForm.description.$invalid">Invalid:
                 <span ng-show="signupForm.description.$error.minlength">Description should be minimum of 2 characters</span>
@@ -242,7 +245,7 @@
                 <div class="col-lg-6 col-md-6">            
                     <div class="input-group">
                         <span class="input-group-addon"><i class="fa fa-pencil"></i></span>
-                        <input id="login-username" type="text" class="form-control" name="firstName" ng-model="account.user.firstName" ng-minlength="2" maxlength="30" ng-pattern="/^[a-zA-Z0-9 ]*$/" required>
+                        <input type="text" class="form-control" name="firstName" ng-model="account.user.firstName" ng-minlength="2" maxlength="30" ng-pattern="/^[a-zA-Z0-9 ]*$/" required>
                     </div>
                     <div class="error" ng-show="signupForm.firstName.$dirty && signupForm.firstName.$invalid">Invalid:
                         <span ng-show="signupForm.firstName.$error.required">Tell us your First name</span>
@@ -259,7 +262,7 @@
                 <div class="col-lg-6 col-md-6">            
                     <div class="input-group">
                         <span class="input-group-addon"><i class="fa fa-pencil"></i></span>
-                        <input id="login-username" type="text" class="form-control" name="lastName" ng-model="account.user.lastName" ng-minlength="2" maxlength="30" ng-pattern="/^[a-zA-Z0-9 ]*$/" required>
+                        <input type="text" class="form-control" name="lastName" ng-model="account.user.lastName" ng-minlength="2" maxlength="30" ng-pattern="/^[a-zA-Z0-9 ]*$/" required>
                     </div>
                     <div class="error" ng-show="signupForm.lastName.$dirty && signupForm.lastName.$invalid">Invalid:
                         <span ng-show="signupForm.lastName.$error.required">Tell us your Last Name</span>
@@ -276,7 +279,7 @@
                 <div class="col-lg-6 col-md-6">            
                     <div class="input-group">
                         <span class="input-group-addon"><i class="glyphicon "> <b>@</b> </i></span>
-                        <input id="login-username" type="email" class="form-control" name="email" value="" ng-model="account.user.userId" required>
+                        <input type="email" class="form-control" name="email" value="" ng-model="account.user.userId" required>
                     </div>
                     <span class="error" ng-show="signupForm.email.$dirty && signupForm.email.$invalid">Invalid:
                 <span ng-show="signupForm.email.$error.required">Email  is required</span>

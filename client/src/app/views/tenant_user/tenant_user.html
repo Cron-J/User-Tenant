@@ -15,7 +15,7 @@
                     <div class="col-lg-6 col-md-6">        
                         <div class="input-group col-lg-11 col-md-11 pull-left">
                             <span class="input-group-addon"><i class="fa fa-user"></i></span>
-                            <input id="login-username" type="text" class="form-control" name="tenantId" ng-model="account.tenant"ng-pattern="/^[a-zA-Z0-9 ]*$/" ng-disabled="view == 'view' || viewByTenant == 'view'" ng-required="view">
+                            <input type="text" class="form-control" name="tenantId" ng-model="account.tenant"ng-pattern="/^[a-zA-Z0-9 ]*$/" ng-disabled="view == 'view' || viewByTenant == 'view'" ng-required="view">
                         </div>
                         <div class="col-lg-1 col-md-1 pull-right">
                             <a class="btn btn-primary btn-sm" ng-click="searchModal('lg')" ng-disabled="view == 'view' || viewByTenant == 'view'"><i class="fa fa-search"></i></a>
@@ -36,7 +36,7 @@
                     <div class="col-lg-6 col-md-6">        
                         <div class="input-group">
                             <span class="input-group-addon"><i class="fa fa-pencil"></i></span>
-                            <input id="login-username" type="text" class="form-control" name="firstName" ng-model="account.firstName" ng-minlength="2" maxlength="30" ng-pattern="/^[a-zA-Z0-9 ]*$/" ng-disabled="view == 'view' || viewByTenant == 'view'" required>
+                            <input type="text" class="form-control" name="firstName" ng-model="account.firstName" ng-minlength="2" maxlength="30" ng-pattern="/^[a-zA-Z0-9 ]*$/" ng-disabled="view == 'view' || viewByTenant == 'view'" required>
                         </div>
                         <div class="error" ng-show="signupForm.firstName.$dirty 
                         && signupForm.firstName.$invalid">Invalid:
@@ -54,7 +54,7 @@
                     <div class="col-lg-6 col-md-6">            
                         <div class="input-group">
                             <span class="input-group-addon"><i class="fa fa-pencil"></i></span>
-                            <input id="login-username" type="text" class="form-control" name="lastName" ng-model="account.lastName" ng-minlength="2" maxlength="30" ng-pattern="/^[a-zA-Z0-9 ]*$/" ng-disabled="view == 'view' || viewByTenant == 'view'" required>
+                            <input type="text" class="form-control" name="lastName" ng-model="account.lastName" ng-minlength="2" maxlength="30" ng-pattern="/^[a-zA-Z0-9 ]*$/" ng-disabled="view == 'view' || viewByTenant == 'view'" required>
                         </div>
                         <div class="error" ng-show="signupForm.lastName.$dirty 
                         && signupForm.lastName.$invalid">Invalid:
@@ -72,7 +72,7 @@
                     <div class="col-lg-6 col-md-6">     
                         <div class="input-group">
                             <span class="input-group-addon"><i class="glyphicon "> <b>@</b> </i></span>
-                            <input id="login-username" type="email" class="form-control" name="email" value="" ng-model="account.userId" ng-disabled="view == 'view' || viewByTenant == 'view'" required>
+                            <input type="email" class="form-control" name="email" value="" ng-model="account.userId" ng-disabled="view == 'view' || viewByTenant == 'view'" required>
                         </div>
                         <span class="error" ng-show="signupForm.email.$dirty && signupForm.email.$invalid">Invalid:
                             <span ng-show="signupForm.email.$error.required">Email  is required</span>
