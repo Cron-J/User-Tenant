@@ -127,6 +127,13 @@ User.statics.updateUser = function(id, user, callback) {
     }, user, callback);
 };
 
+User.statics.updateUserByTenantId = function(id, tenantId, user, callback) {
+    this.update({
+        '_id': id,
+        'tenantId': tenantId
+    }, user, callback);
+};
+
 User.statics.findUser = function(userId, callback) {
     this.findOne({
         userId: userId
