@@ -65,13 +65,6 @@ app.controller('tenantUserCtrl', ['$scope', '$rootScope', '$http', '$location',
             });
         }
 
-
-        //Get page view mode
-        // $scope.getView = function (mode) {
-        //    $scope.view = "create"; 
-        //    console.log();
-        // }
-
         //Open tenant search modal
         $scope.searchModal = function(size) {
             var modalInstance = $modal.open({

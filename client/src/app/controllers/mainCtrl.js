@@ -10,5 +10,4 @@ app.controller('mainCtrl', ['$scope', '$rootScope', '$http', '$location',
 	          $scope.current_usr = response.data;
 	        });
 	      }
-
 }]);

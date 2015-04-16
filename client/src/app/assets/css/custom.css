@@ -28,8 +28,11 @@
 .ut-search-result {
 	margin-top: 15px;
 }
-
 .ut-sub-heading {
 	font-size: 19px; 
+}
+.ut-addbutton {
+	margin-bottom: 70px; 
+	margin-top: -50px;
 }
 

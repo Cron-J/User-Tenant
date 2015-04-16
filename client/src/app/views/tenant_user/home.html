@@ -2,8 +2,9 @@
   <header>
     <p class="ut-lead">Search Users</p>
   </header>  
-  <div class="col-md-4 col-md-offset-8" style="margin-bottom: 70px; margin-top: -50px;">
-    <a ui-sref="createTenantUser" class="btn btn-primary pull-right" >Add New</a>
+  <div class="col-lg-2 col-md-2 col-lg-offset-10 col-md-offset-10 ut-addbutton">
+    <a class="btn btn-default" ng-click="exportUserData()"><i class="fa fa-download"></i> Export</a>
+    <a ui-sref="createTenantUser" class="btn btn-primary pull-right"><i class="fa fa-plus"></i> Add</a>
   </div>      
   <div class="ut-container">
     <form name="searchForm">

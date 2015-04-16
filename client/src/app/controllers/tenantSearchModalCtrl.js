@@ -3,7 +3,40 @@
 app.controller('searchModalInstanceCtrl', ['$scope', '$http', '$modalInstance',
     'AuthServ', 'growl', 
     function ($scope, $http, $modalInstance, AuthServ, growl) {
-            //Pagination
+
+    //Search Tenant
+    $scope.searchTenant = function(searchObj){
+        if(!searchObj) searchObj = {};
+        console.log(searchObj);
+        $http.post('/searchTenant', searchObj,  {
+            headers: AuthServ.getAuthHeader()
+        })
+        .success(function (data, status) {
+            $scope.resultList = data;
+            $scope.showTableData = true;
+            $scope.currentPage = 0;
+            $scope.groupToPages();
+        })
+        .error(function (data, status) {
+            growl.addErrorMessage(data.message);
+        });
+    }
+
+    $scope.getTenantId = function(id) {
+        $scope.submitted = true;
+        $scope.reset_search();
+        $modalInstance.close(id);
+    }
+
+    $scope.cancel = function() {
+        $modalInstance.dismiss('cancel');
+    };
+
+    $scope.reset_search = function () {
+        $scope.searchQuery = {};
+    }
+
+    //Pagination
     $scope.pagedItems = [];
     $scope.currentPage = 0;
     $scope.filteredItems = [];
@@ -57,40 +90,6 @@ app.controller('searchModalInstanceCtrl', ['$scope', '$http', '$modalInstance',
     }
  
     $scope.groupToPages();
-
-
-    //Search Tenant
-    $scope.searchTenant = function(searchObj){
-        if(!searchObj) searchObj = {};
-        console.log(searchObj);
-        $http.post('/searchTenant', searchObj,  {
-            headers: AuthServ.getAuthHeader()
-        })
-        .success(function (data, status) {
-            $scope.resultList = data;
-            $scope.showTableData = true;
-            $scope.currentPage = 0;
-            $scope.groupToPages();
-        })
-        .error(function (data, status) {
-            growl.addErrorMessage(data.message);
-        });
-    }
-
-
-    $scope.getTenantId = function(id) {
-        $scope.submitted = true;
-        $scope.reset_search();
-        $modalInstance.close(id);
-    }
-
-    $scope.cancel = function() {
-        $modalInstance.dismiss('cancel');
-    };
-
-    $scope.reset_search = function () {
-        $scope.searchQuery = {};
-    }
 
 
 }]);

@@ -15,7 +15,7 @@ app.controller('accountCtrl', ['$scope', '$rootScope', '$http', '$location',
                     $scope.current_usr = response.data;
                 });
             }
-            console.log('***data***', $scope.current_usr);
+            $scope.setPassword = false;
         }
 
         //User login
@@ -31,11 +31,6 @@ app.controller('accountCtrl', ['$scope', '$rootScope', '$http', '$location',
                         $location.path('/tenantHome');
                     else if($rootScope.user.scope == 'Tenant-User')
                          $location.path('/home');
-                    // getAccountInfo();
-                    // userInfo.async().then(function(response) {
-                    // $scope.current_usr = response.data;
-                    //   console.log('***data***', $scope.current_user);
-                    // });
                 })
                 .error(function (data, status) {
                     growl.addErrorMessage(data.message);
@@ -83,7 +78,9 @@ app.controller('accountCtrl', ['$scope', '$rootScope', '$http', '$location',
         //Update Personal Account Details
         $scope.updateProfile = function (account_info, valid) {
             if(valid){
-                delete account_info._id, 
+                delete account_info._id, delete account_info.createdAt, 
+                delete account_info.createdBy, delete account_info.updatedAt,
+                delete account_info.updatedBy;
                 $http.put('/user', account_info, {
                     headers: AuthServ.getAuthHeader()
                 })
@@ -95,6 +92,13 @@ app.controller('accountCtrl', ['$scope', '$rootScope', '$http', '$location',
                     growl.addErrorMessage(data.message);
                 });
             }
+        }
+
+        $scope.resetPassword = function (isTrue) {
+            if(isTrue == true)
+                $scope.setPassword = false;
+            else
+                $scope.setPassword = true;
         }
 
 

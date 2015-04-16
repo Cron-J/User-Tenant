@@ -140,8 +140,8 @@ var app = angular.module('app', [
               data: {
                   authorizedRoles: [USER_ROLES.all]
               }
-
           })
+          
             
           
           $httpProvider.interceptors.push('authInterceptor');

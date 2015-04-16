@@ -14,27 +14,8 @@ app.controller('adminCtrl', ['$scope', '$rootScope', '$http', '$location',
             });
         }
 
-       
         $scope.user = $cookieStore.get('user');
         $scope.authError = null;
-
-        //Update account
-        $scope.updateAccount = function (account_info, valid) {
-            if(valid){
-                delete account_info._id;
-                $http.put('/user', account_info, {
-                    headers: AuthServ.getAuthHeader()
-                })
-                .success(function (data, status) {
-                    // AuthServ.setUserToken(data, $scope.loginForm.remember);
-                    growl.addSuccessMessage('Your account has been updated successfully');
-                    // $location.path('app');
-                })
-                .error(function (data, status) {
-                    growl.addErrorMessage(data.message);
-                });
-            }
-        }
         
         //Get tenant-admins list
         var getTenantsList = function () {
@@ -42,9 +23,6 @@ app.controller('adminCtrl', ['$scope', '$rootScope', '$http', '$location',
                 headers: AuthServ.getAuthHeader()
             })
             .success(function (data, status) {
-                // AuthServ.setUserToken(data, $scope.loginForm.remember);
-                // growl.addSuccessMessage('Account has been updated successfully');
-                // $location.path('app');
                 $scope.tenantList = data;
             })
             .error(function (data, status) {
@@ -52,88 +30,48 @@ app.controller('adminCtrl', ['$scope', '$rootScope', '$http', '$location',
             });
         }
 
-        //Pagination
-        $scope.pagedItems = [];
-        $scope.currentPage = 0;
-        $scope.filteredItems = [];
-        $scope.itemsPerPage = 5;
-        $scope.min = 0;
-        $scope.max =5;
-         $scope.range = function (start, end) {
-            var ret = [];
-            if (!end) {
-                end = start;
-                start = 0;
-            }
-            for (var i = start; i < end; i++) {
-                ret.push(i);
-            }
-            return ret;
-        };
-
-             $scope.prevPage = function () {
-        if ($scope.currentPage > 0) {
-            $scope.currentPage--;
+        //Reset search
+        $scope.reset = function(){
+            $scope.srch = {};
         }
-    };
-    
-    $scope.nextPage = function () {
-        if ($scope.currentPage < $scope.pagedItems.length - 1) {
-            $scope.currentPage++;
-        }
-    };
-    
-    $scope.setPage = function () {
-        $scope.currentPage = this.n;
-    };
-  
-    $scope.groupToPages = function () {
-      $scope.pagedItems = [];
-      $scope.filteredItems = $scope.resultList;
-      $scope.filtered();
-    };
 
-    $scope.filtered = function () {
-      if($scope.filteredItems){
-        for (var i = 0; i < $scope.filteredItems.length; i++) {
-            if (i % $scope.itemsPerPage === 0) {
-                $scope.pagedItems[Math.floor(i / $scope.itemsPerPage)] = [ $scope.filteredItems[i] ];
-            } else {
-                $scope.pagedItems[Math.floor(i / $scope.itemsPerPage)].push($scope.filteredItems[i]);
-            }
-        }
-      }   
-    }
- 
-  $scope.groupToPages();
+        //Export Tent-Users Data
+        $scope.exportUserData = function () {
+            $http.get('/exportUser', {
+                headers: AuthServ.getAuthHeader()
+            })
+            .success(function(data, status) {
+                var element = angular.element('<a/>');
+                element.attr({
+                   href: 'data:attachment/csv;charset=utf-8,' + encodeURI(data),
+                   target: '_blank',
+                   download: 'users.csv'
+                })[0].click();
+                 growl.addSuccessMessage('Export is successfull');
+            })
+            .error(function(data, status) {
+                growl.addErrorMessage(data.message);    
+            });
 
-  //Reset search
-  $scope.reset = function(){
-    $scope.srch = {};
-  }
+        }
+
         //Search Tenant
         $scope.searchTenant = function(searchObj){
-            
-                // var rqstData = customTransform();
-                console.log('hdukas', AuthServ.getAuthHeader());
-                if(!searchObj) searchObj = {};
-                console.log(searchObj);
-                $http.post('/searchTenant', searchObj,  {
-                    headers: AuthServ.getAuthHeader()
-                })
-                .success(function (data, status) {
-                    $scope.showResult = true;
-                    console.log('$scope.showResult : ', $scope.showResult);
-                    $scope.resultList = data;
-                    // $scope.data = data;
-                     $scope.currentPage = 0;
-                     $scope.groupToPages();
-                     console.log(data);
-                 
-                })
-                .error(function (data, status) {
-                    growl.addErrorMessage(data.message);
-                });
+            if(!searchObj) searchObj = {};
+            console.log(searchObj);
+            $http.post('/searchTenant', searchObj,  {
+                headers: AuthServ.getAuthHeader()
+            })
+            .success(function (data, status) {
+                $scope.showResult = true;
+                console.log('$scope.showResult : ', $scope.showResult);
+                $scope.resultList = data;
+                 $scope.currentPage = 0;
+                 $scope.groupToPages();     
+            })
+            .error(function (data, status) {
+                growl.addErrorMessage(data.message);
+            });
         }
 
         //Get Tenant Details
@@ -205,100 +143,63 @@ app.controller('adminCtrl', ['$scope', '$rootScope', '$http', '$location',
         $scope.formats = ['MM/dd/yyyy', 'yyyy/MM/dd', 'dd.MM.yyyy', 'shortDate'];
         $scope.format = $scope.formats[0];
 
+                //Pagination
+        $scope.pagedItems = [];
+        $scope.currentPage = 0;
+        $scope.filteredItems = [];
+        $scope.itemsPerPage = 5;
+        $scope.min = 0;
+        $scope.max =5;
+         $scope.range = function (start, end) {
+            var ret = [];
+            if (!end) {
+                end = start;
+                start = 0;
+            }
+            for (var i = start; i < end; i++) {
+                ret.push(i);
+            }
+            return ret;
+        };
+
+        $scope.prevPage = function () {
+            if ($scope.currentPage > 0) {
+                $scope.currentPage--;
+            }
+        };
+        
+        $scope.nextPage = function () {
+            if ($scope.currentPage < $scope.pagedItems.length - 1) {
+                $scope.currentPage++;
+            }
+        };
+        
+        $scope.setPage = function () {
+            $scope.currentPage = this.n;
+        };
+      
+        $scope.groupToPages = function () {
+          $scope.pagedItems = [];
+          $scope.filteredItems = $scope.resultList;
+          $scope.filtered();
+        };
+
+        $scope.filtered = function () {
+          if($scope.filteredItems){
+            for (var i = 0; i < $scope.filteredItems.length; i++) {
+                if (i % $scope.itemsPerPage === 0) {
+                    $scope.pagedItems[Math.floor(i / $scope.itemsPerPage)] = [ $scope.filteredItems[i] ];
+                } else {
+                    $scope.pagedItems[Math.floor(i / $scope.itemsPerPage)].push($scope.filteredItems[i]);
+                }
+            }
+          }   
+        }
+     
+        $scope.groupToPages();
+
         _scope.init();
 }]);
 
 
-//Search Tenant Modal
-// var searchModalInstanceCtrl = function($scope, $modalInstance, $http, AuthServ, growl) {
-//     //Pagination
-//     $scope.pagedItems = [];
-//     $scope.currentPage = 0;
-//     $scope.filteredItems = [];
-//     $scope.itemsPerPage = 5;
-//     $scope.min = 0;
-//     $scope.max =5;
-//      $scope.range = function (start, end) {
-//         var ret = [];
-//         if (!end) {
-//             end = start;
-//             start = 0;
-//         }
-//         for (var i = start; i < end; i++) {
-//             ret.push(i);
-//         }
-//         return ret;
-//     };
-
-//     $scope.prevPage = function () {
-//         if ($scope.currentPage > 0) {
-//             $scope.currentPage--;
-//         }
-//     };
-    
-//     $scope.nextPage = function () {
-//         if ($scope.currentPage < $scope.pagedItems.length - 1) {
-//             $scope.currentPage++;
-//         }
-//     };
-    
-//     $scope.setPage = function () {
-//         $scope.currentPage = this.n;
-//     };
-  
-//     $scope.groupToPages = function () {
-//       $scope.pagedItems = [];
-//       $scope.filteredItems = $scope.resultList;
-//       $scope.filtered();
-//     };
-
-//     $scope.filtered = function () {
-//       if($scope.filteredItems){
-//         for (var i = 0; i < $scope.filteredItems.length; i++) {
-//             if (i % $scope.itemsPerPage === 0) {
-//                 $scope.pagedItems[Math.floor(i / $scope.itemsPerPage)] = [ $scope.filteredItems[i] ];
-//             } else {
-//                 $scope.pagedItems[Math.floor(i / $scope.itemsPerPage)].push($scope.filteredItems[i]);
-//             }
-//         }
-//       }   
-//     }
- 
-//     $scope.groupToPages();
-
-
-//     //Search Tenant
-//     $scope.searchTenant = function(searchObj){
-//         if(!searchObj) searchObj = {};
-//         console.log(searchObj);
-//         $http.post('/searchTenant', searchObj,  {
-//             headers: AuthServ.getAuthHeader()
-//         })
-//         .success(function (data, status) {
-//             $scope.resultList = data;
-//             $scope.showTableData = true;
-//             $scope.currentPage = 0;
-//             $scope.groupToPages();
-//         })
-//         .error(function (data, status) {
-//             growl.addErrorMessage(data.message);
-//         });
-//     }
-
-
-//     $scope.getTenantId = function(id) {
-//         $scope.submitted = true;
-//         $scope.reset_search();
-//         $modalInstance.close(id);
-//     }
-
-//     $scope.cancel = function() {
-//         $modalInstance.dismiss('cancel');
-//     };
-
-//     $scope.reset_search = function () {
-//         $scope.searchQuery = {};
-//     }
-
-// };
 

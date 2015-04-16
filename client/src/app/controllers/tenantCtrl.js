@@ -46,7 +46,6 @@ app.controller('tenantCtrl', ['$scope', '$rootScope', '$http', '$location',
                     headers: AuthServ.getAuthHeader()
                 })
                 .success(function (data, status) {
-                    // AuthServ.setUserToken(data, $scope.loginForm.remember);
                     growl.addSuccessMessage('Tenant has been created successfully');
                     $location.path('tenants');
                 })
@@ -99,61 +98,6 @@ app.controller('tenantCtrl', ['$scope', '$rootScope', '$http', '$location',
             });
         }
 
-
-         //Pagination
-        $scope.pagedItems = [];
-       $scope.currentPage = 0;
-         $scope.filteredItems = [];
-       $scope.filteredItems1 = [];
-         $scope.itemsPerPage = 20;
-         $scope.range = function (start, end) {
-            var ret = [];
-            if (!end) {
-                end = start;
-                start = 0;
-            }
-            for (var i = start; i < end; i++) {
-                ret.push(i);
-            }
-            return ret;
-        };
-
-             $scope.prevPage = function () {
-        if ($scope.currentPage > 0) {
-            $scope.currentPage--;
-        }
-    };
-    
-    $scope.nextPage = function () {
-        if ($scope.currentPage < $scope.pagedItems.length - 1) {
-            $scope.currentPage++;
-        }
-    };
-    
-    $scope.setPage = function () {
-        $scope.currentPage = this.n;
-    };
-  
-    $scope.groupToPages = function () {
-      $scope.pagedItems = [];
-      $scope.filteredItems = $scope.resultList;
-      $scope.filtered();
-    };
-
-    $scope.filtered = function () {
-      if($scope.filteredItems){
-        for (var i = 0; i < $scope.filteredItems.length; i++) {
-            if (i % $scope.itemsPerPage === 0) {
-                $scope.pagedItems[Math.floor(i / $scope.itemsPerPage)] = [ $scope.filteredItems[i] ];
-            } else {
-                $scope.pagedItems[Math.floor(i / $scope.itemsPerPage)].push($scope.filteredItems[i]);
-            }
-        }
-      }   
-    }
- 
-  $scope.groupToPages();
-
         //Search
         $scope.search = function(searchObj){
             
@@ -177,6 +121,59 @@ app.controller('tenantCtrl', ['$scope', '$rootScope', '$http', '$location',
                 });
         }
 
+        //Pagination
+        $scope.pagedItems = [];
+        $scope.currentPage = 0;
+        $scope.filteredItems = [];
+        $scope.filteredItems1 = [];
+        $scope.itemsPerPage = 20;
+        $scope.range = function (start, end) {
+            var ret = [];
+            if (!end) {
+                end = start;
+                start = 0;
+            }
+            for (var i = start; i < end; i++) {
+                ret.push(i);
+            }
+            return ret;
+        };
+
+        $scope.prevPage = function () {
+            if ($scope.currentPage > 0) {
+                $scope.currentPage--;
+            }
+        };
+
+        $scope.nextPage = function () {
+            if ($scope.currentPage < $scope.pagedItems.length - 1) {
+                $scope.currentPage++;
+            }
+        };
+        
+        $scope.setPage = function () {
+            $scope.currentPage = this.n;
+        };
+      
+        $scope.groupToPages = function () {
+          $scope.pagedItems = [];
+          $scope.filteredItems = $scope.resultList;
+          $scope.filtered();
+        };
+
+        $scope.filtered = function () {
+          if($scope.filteredItems){
+            for (var i = 0; i < $scope.filteredItems.length; i++) {
+                if (i % $scope.itemsPerPage === 0) {
+                    $scope.pagedItems[Math.floor(i / $scope.itemsPerPage)] = [ $scope.filteredItems[i] ];
+                } else {
+                    $scope.pagedItems[Math.floor(i / $scope.itemsPerPage)].push($scope.filteredItems[i]);
+                }
+            }
+          }   
+        }
+     
+        $scope.groupToPages();
 
         //Date picker
         $scope.open1 = function($event) {
