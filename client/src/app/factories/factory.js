@@ -66,7 +66,7 @@ angular.module('app.factory', [])
 
 };
 })
-.factory('userInfo', function ($http, AuthServ) {
+.factory('userInfo', function ($http, AuthServ, growl, $rootScope) {
    var promise;
    var myService = {
     async: function() {
@@ -79,6 +79,7 @@ angular.module('app.factory', [])
           return data;   
         })
         .error(function (data, status) {
+            if(data.message == 'Invalid token')  delete $rootScope.user;
             growl.addErrorMessage(data.message);
         });
 
@@ -88,7 +89,7 @@ angular.module('app.factory', [])
   };
   return myService;
 })
-.factory('countryList', function ($http, AuthServ) {
+.factory('countryList', function ($http, AuthServ, growl) {
    var promise;
    var list = {
     async: function() {
