@@ -24,6 +24,7 @@ var app = angular.module('app', [
           .state('login', {
             url: "/login",
               templateUrl: "app/views/common/login.html",
+              controller: 'accountCtrl',
               data: {
                   authorizedRoles: [USER_ROLES.all]
               }
@@ -39,6 +40,7 @@ var app = angular.module('app', [
           .state('forgotPassword', {
             url: "/forgotPassword",
               templateUrl: "app/views/common/forgot_password.html",
+              controller: 'accountCtrl',
               data: {
                   authorizedRoles: [USER_ROLES.all]
               }
@@ -152,7 +154,9 @@ var app = angular.module('app', [
             }, 1000);
           }
           else{
+            $timeout(function () {
               $location.path('/error');
+            }, 1000);
           }
         }) 
       }
@@ -160,9 +164,13 @@ var app = angular.module('app', [
         AuthServ.isLoggedInAsync(function(loggedIn) {
           if (!loggedIn) {      
             if($location.path() == '/signup')
-                $location.path('/signup');
-             else        
-              $location.path('/login');
+              $location.path('/signup');
+            else if($location.path() == '/forgotPassword')
+              $location.path() == '/forgotPassword'
+            else        
+              $timeout(function () {
+                $location.path('/login');
+              }, 10);
           }
           // else if(loggedIn){
           //       $location.path('/error');

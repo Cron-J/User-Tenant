@@ -1,8 +1,7 @@
 'use strict';
 
-app.controller('mainCtrl', ['$scope', '$rootScope', '$http', '$location', 
-     'growl', '$filter', 'userInfo','$cookieStore',
-    function ($scope, $rootScope, $http, $location, growl, $filter, userInfo,$cookieStore) {
+app.controller('mainCtrl', ['$scope', '$rootScope', '$http', 'userInfo',
+    function ($scope, $rootScope, $http, userInfo) {
         var _scope = {};
         $scope.current_usr = {};
         if($rootScope.user) {

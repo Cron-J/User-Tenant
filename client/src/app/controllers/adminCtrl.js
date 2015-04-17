@@ -64,10 +64,9 @@ app.controller('adminCtrl', ['$scope', '$rootScope', '$http', '$location',
             })
             .success(function (data, status) {
                 $scope.showResult = true;
-                console.log('$scope.showResult : ', $scope.showResult);
                 $scope.resultList = data;
-                 $scope.currentPage = 0;
-                 $scope.groupToPages();     
+                $scope.currentPage = 0;
+                $scope.groupToPages();     
             })
             .error(function (data, status) {
                 growl.addErrorMessage(data.message);
@@ -91,7 +90,6 @@ app.controller('adminCtrl', ['$scope', '$rootScope', '$http', '$location',
                 $scope.resultList = data;
                 $scope.currentPage = 0;
                 $scope.groupToPages();
-             
             })
             .error(function (data, status) {
                 growl.addErrorMessage(data.message);
@@ -143,7 +141,7 @@ app.controller('adminCtrl', ['$scope', '$rootScope', '$http', '$location',
         $scope.formats = ['MM/dd/yyyy', 'yyyy/MM/dd', 'dd.MM.yyyy', 'shortDate'];
         $scope.format = $scope.formats[0];
 
-                //Pagination
+        //Pagination
         $scope.pagedItems = [];
         $scope.currentPage = 0;
         $scope.filteredItems = [];

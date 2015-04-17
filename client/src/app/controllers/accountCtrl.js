@@ -36,7 +36,6 @@ app.controller('accountCtrl', ['$scope', '$rootScope', '$http', '$location',
                 .error(function (data, status) {
                     growl.addErrorMessage(data.message);
                 });
-
         }
 
         //User logout

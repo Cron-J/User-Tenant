@@ -27,10 +27,10 @@ app.controller('tenantCtrl', ['$scope', '$rootScope', '$http', '$location',
                 headers: AuthServ.getAuthHeader()
             })
             .success(function (data, status) {
-                $scope.tenant = data;
+                $scope.view = 'view';
                 $scope.current_usr.firstName = data.name;
                 $scope.current_usr.lastName = '';
-                $scope.view = 'view';
+                $scope.tenant = data;
             })
             .error(function (data, status) {
                 growl.addErrorMessage(data.message);
@@ -66,7 +66,7 @@ app.controller('tenantCtrl', ['$scope', '$rootScope', '$http', '$location',
                 })
                 .success(function (data, status) {
                     // AuthServ.setUserToken(data, $scope.loginForm.remember);
-                    growl.addSuccessMessage('Account has been updated successfully');
+                    growl.addSuccessMessage('Tenant account has been updated successfully');
                     $location.path('/tenants');
                 })
                 .error(function (data, status) {
@@ -86,12 +86,9 @@ app.controller('tenantCtrl', ['$scope', '$rootScope', '$http', '$location',
                 headers: AuthServ.getAuthHeader()
             })
             .success(function (data, status) {
-                console.log('$scope.showResult : ', $scope.showResult);
                 $scope.resultList = data;
-                // $scope.data = data;
-                 $scope.currentPage = 0;
-                 $scope.groupToPages();
-                 console.log(data);
+                $scope.currentPage = 0;
+                $scope.groupToPages();
             })
             .error(function (data, status) {
                 growl.addErrorMessage(data.message);
@@ -100,25 +97,19 @@ app.controller('tenantCtrl', ['$scope', '$rootScope', '$http', '$location',
 
         //Search
         $scope.search = function(searchObj){
-            
-                // var rqstData = customTransform();
-                if(!searchObj) searchObj = {};
-                console.log(searchObj);
-                $http.post('/searchUser', searchObj,  {
-                    headers: AuthServ.getAuthHeader()
-                })
-                .success(function (data, status) {
-                    $scope.showResult = true;
-                    $scope.resultList = data;
-                    // $scope.data = data;
-                     $scope.currentPage = 0;
-                     $scope.groupToPages();
-                     console.log(data);
-                 
-                })
-                .error(function (data, status) {
-                    growl.addErrorMessage(data.message);
-                });
+            if(!searchObj) searchObj = {};
+            $http.post('/searchUser', searchObj,  {
+                headers: AuthServ.getAuthHeader()
+            })
+            .success(function (data, status) {
+                $scope.showResult = true;
+                $scope.resultList = data;
+                $scope.currentPage = 0;
+                $scope.groupToPages();           
+            })
+            .error(function (data, status) {
+                growl.addErrorMessage(data.message);
+            });
         }
 
         //Pagination

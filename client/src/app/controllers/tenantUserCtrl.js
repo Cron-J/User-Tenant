@@ -31,7 +31,7 @@ app.controller('tenantUserCtrl', ['$scope', '$rootScope', '$http', '$location',
         $scope.authError = null;
 
 
-        //Get Tenant-User account details
+        //Get Tenant-User account details by Admin
         var getUserAccountDetails = function () {
             $http.get('/user/'+$stateParams.tenantUserId, {
                 headers: AuthServ.getAuthHeader()
@@ -40,17 +40,15 @@ app.controller('tenantUserCtrl', ['$scope', '$rootScope', '$http', '$location',
                 $scope.account = data;
                 $scope.account.tenant = data.tenantId.name;
                 $scope.account.tenantId = data.tenantId._id;
-                // $rootScope.userDump = angular.copy($rootScope.user);
                 $scope.current_usr.firstName = data.firstName;
                 $scope.current_usr.lastName = data.lastName;
-                console.log('tenant get', $rootScope.userDump);
             })
             .error(function (data, status) {
                 growl.addErrorMessage(data.message);
             });
         }
 
-        //Get Tenant-User by Tenant-Admin
+        //Get Tenant-User account details by Tenant-Admin
         var getTenantUserbyTenant = function () {
             $http.get('/userByTenant/'+ $stateParams.tUserId, {
                 headers: AuthServ.getAuthHeader()
@@ -103,7 +101,7 @@ app.controller('tenantUserCtrl', ['$scope', '$rootScope', '$http', '$location',
             }
         }
 
-        //Update Tenant-User account
+        //Update Tenant-User account details by Admin
         $scope.updateUserAccount = function (account_info, valid) {
             if(valid){
                 delete account_info._id, delete account_info.createdAt, 
@@ -113,7 +111,7 @@ app.controller('tenantUserCtrl', ['$scope', '$rootScope', '$http', '$location',
                     headers: AuthServ.getAuthHeader()
                 })
                 .success(function (data, status) {
-                    growl.addSuccessMessage('Account has been updated successfully');
+                    growl.addSuccessMessage('User account has been updated successfully');
                     $location.path('/users');
                 })
                 .error(function (data, status) {
@@ -122,7 +120,7 @@ app.controller('tenantUserCtrl', ['$scope', '$rootScope', '$http', '$location',
             }
         }
 
-        //Update Tenant-User account by Tenant
+        //Update Tenant-User account details by Tenant
         $scope.updatetenantUserAccountByTenant = function (account_info, valid) {
             if(valid){
                 delete account_info._id, delete account_info.createdAt, 
@@ -140,6 +138,7 @@ app.controller('tenantUserCtrl', ['$scope', '$rootScope', '$http', '$location',
                 });
             }
         }
+        
         _scope.init();
 }]);
 
