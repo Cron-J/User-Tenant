@@ -58,7 +58,7 @@ app.controller('tenantUserCtrl', ['$scope', '$rootScope', '$http', '$location',
                 $scope.current_usr.lastName = data.lastName;
             })
             .error(function (data, status) {
-                if(data.message == 'invalid token')  $scope.unAuthorized();
+                if(data.message == 'Invalid token')  delete $rootScope.user;
                 growl.addErrorMessage(data.message);
             });
         }
@@ -82,7 +82,7 @@ app.controller('tenantUserCtrl', ['$scope', '$rootScope', '$http', '$location',
                 $scope.current_usr.lastName = data.lastName;
             })
             .error(function (data, status) {
-                if(data.message == 'invalid token')  $scope.unAuthorized();
+                if(data.message == 'Invalid token')  delete $rootScope.user;
                 growl.addErrorMessage(data.message);
             });
         }
@@ -121,7 +121,7 @@ app.controller('tenantUserCtrl', ['$scope', '$rootScope', '$http', '$location',
 
                 })
                 .error(function (data, status) {
-                    if(data.message == 'invalid token')  $scope.unAuthorized();
+                    if(data.message == 'Invalid token')  delete $rootScope.user;
                     growl.addErrorMessage(data.message);
                 });
             }
@@ -142,7 +142,7 @@ app.controller('tenantUserCtrl', ['$scope', '$rootScope', '$http', '$location',
                     $location.path('/users');
                 })
                 .error(function (data, status) {
-                    if(data.message == 'invalid token')  $scope.unAuthorized();
+                    if(data.message == 'Invalid token')  delete $rootScope.user;
                     growl.addErrorMessage(data.message);
                 });
             }
@@ -163,7 +163,7 @@ app.controller('tenantUserCtrl', ['$scope', '$rootScope', '$http', '$location',
                     $location.path('/tenantHome');
                 })
                 .error(function (data, status) {
-                    if(data.message == 'invalid token')  $scope.unAuthorized();
+                    if(data.message == 'Invalid token')  delete $rootScope.user;
                     growl.addErrorMessage(data.message);
                 });
             }

@@ -23,9 +23,5 @@ app.controller('mainCtrl', ['$scope', '$rootScope', '$http', 'userInfo', 'countr
 		      }
 	      }
 
-	      $scope.unAuthorized - function () {
-	      	delete $rootScope.user;
-	      }
-
 	      _scope.init();
 }]);

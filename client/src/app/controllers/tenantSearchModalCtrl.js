@@ -18,7 +18,7 @@ app.controller('searchModalInstanceCtrl', ['$scope', '$http', '$modalInstance',
             $scope.groupToPages();
         })
         .error(function (data, status) {
-            if(data.message == 'invalid token')  $scope.unAuthorized();
+            if(data.message == 'Invalid token')  delete $rootScope.user;
             growl.addErrorMessage(data.message);
         });
     }
