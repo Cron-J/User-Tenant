@@ -1,9 +1,9 @@
 'use strict';
 
 app.controller('tenantCtrl', ['$scope', '$rootScope', '$http', '$location', 
-    'AuthServ', 'growl', '$filter', '$stateParams', 'userInfo', 
+    'AuthServ', 'growl', '$filter', '$stateParams', 'userInfo', 'countryList',
     function ($scope, $rootScope, $http, $location, AuthServ, growl, $filter, 
-        $stateParams, userInfo) {
+        $stateParams, userInfo, countryList) {
         var _scope = {};
         _scope.init = function() {
             $scope.isUser = true;
@@ -14,8 +14,14 @@ app.controller('tenantCtrl', ['$scope', '$rootScope', '$http', '$location',
                 });
                 getTenantUsers();
             }
-            if($stateParams.tenantId)
+            if($stateParams.tenantId) 
                $scope.getTenant();
+           //country list
+            countryList.async().then(function(response) {
+                $scope.countryList = response.data;
+            });
+            $scope.countryList1 = angular.copy($scope.countryList);
+            $scope.clearCountrySelection();
         }
        
         // $scope.user = {};
@@ -30,6 +36,14 @@ app.controller('tenantCtrl', ['$scope', '$rootScope', '$http', '$location',
                 $scope.view = 'view';
                 $scope.current_usr.firstName = data.name;
                 $scope.current_usr.lastName = '';
+                for (var i = 0; i < $scope.countryList.length; i++) {
+                    if($scope.countryList[i].code == data.address.country ) {
+                        data.address.country = [];
+                        data.address.country[0] = {};
+                        data.address.country[0] = $scope.countryList[i];
+                        data.address.country[0].ticked = true;
+                    }
+                };
                 $scope.tenant = data;
             })
             .error(function (data, status) {
@@ -42,6 +56,8 @@ app.controller('tenantCtrl', ['$scope', '$rootScope', '$http', '$location',
             if(valid){
                 account_info.tenant.validFrom = $filter('date')(account_info.tenant.validFrom, "MM/dd/yyyy");
                 account_info.tenant.validTo = $filter('date')(account_info.tenant.validTo, "MM/dd/yyyy");
+                account_info.tenant.address.country = account_info.tenant.address.country[0].code;
+                account_info.user.address.country = account_info.user.address.country[0].code;
                 $http.post('/tenant', account_info, {
                     headers: AuthServ.getAuthHeader()
                 })
@@ -58,6 +74,7 @@ app.controller('tenantCtrl', ['$scope', '$rootScope', '$http', '$location',
         //Update tenant account
         $scope.updateTenantAccount = function (account_info, valid) {
             if(valid){
+                account_info.address.country = account_info.address.country[0].code;
                 delete account_info._id, delete account_info.tenantId, 
                 delete account_info.createdAt, delete account_info.createdBy, delete account_info.updatedAt,
                 delete account_info.updatedBy;

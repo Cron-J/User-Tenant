@@ -2,9 +2,9 @@
 
 app.controller('adminCtrl', ['$scope', '$rootScope', '$http', '$location', 
     'AuthServ', 'growl', '$filter','$cookieStore', '$stateParams', '$modal', 
-    '$log', 'userInfo',
+    '$log', 'userInfo', 'countryList',
     function ($scope, $rootScope, $http, $location, AuthServ, growl, $filter, 
-        $cookieStore, $stateParams, $modal, $log, userInfo) {
+        $cookieStore, $stateParams, $modal, $log, userInfo, countryList) {
         var _scope = {};
         _scope.init = function() {
             $scope.view = 'create';
@@ -12,6 +12,11 @@ app.controller('adminCtrl', ['$scope', '$rootScope', '$http', '$location',
                 $scope.current_usr.firstName = response.data.firstName;
                 $scope.current_usr.lastName = response.data.lastName;
             });
+            //country list
+            countryList.async().then(function(response) {
+                $scope.countryList = response.data;
+            });
+
         }
 
         $scope.user = $cookieStore.get('user');

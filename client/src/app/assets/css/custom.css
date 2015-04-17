@@ -3,7 +3,7 @@
 */
 .ut-container{
 	margin-top: 20px;
-	margin-bottom: 60px;
+	margin-bottom: 150px;
 }
 .ut-title {
 	font-size: 20px;
@@ -29,10 +29,22 @@
 	margin-top: 15px;
 }
 .ut-sub-heading {
-	font-size: 19px; 
+	 font-size: 1.5em;
+	 margin-bottom: 25px;
 }
 .ut-addbutton {
 	margin-bottom: 70px; 
 	margin-top: -50px;
+}
+.ut-control-label {
+	color: black;
+}
+.ut-userId-control {
+	width: 214px;
+}
+/*modified css*/
+.form-horizontal .control-label {
+  text-align: left;
+  color: #888;
 }
 

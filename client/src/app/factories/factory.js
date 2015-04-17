@@ -67,32 +67,16 @@ angular.module('app.factory', [])
 };
 })
 .factory('userInfo', function ($http, AuthServ) {
-  // return {
-  //    getAccountInfo : function () {
-  //       $http.get('/user', {
-  //           headers: AuthServ.getAuthHeader()
-  //       })
-  //       .then(function (data, status) {
-  //         return data;
-             
-  //       })
-  //       // .error(function (data, status) {
-  //       //     growl.addErrorMessage(data.message);
-  //       // });
-  //   }
-  // }
    var promise;
    var myService = {
-    async: function(dump) {
+    async: function() {
 
         // $http returns a promise, which has a then function, which also returns a promise
         promise = $http.get('/user', {
             headers: AuthServ.getAuthHeader()
         })
         .success(function (data, status) {
-          console.log(data);
-          return data;
-             
+          return data;   
         })
         .error(function (data, status) {
             growl.addErrorMessage(data.message);
@@ -104,4 +88,24 @@ angular.module('app.factory', [])
   };
   return myService;
 })
+.factory('countryList', function ($http, AuthServ) {
+   var promise;
+   var list = {
+    async: function() {
+
+        // $http returns a promise, which has a then function, which also returns a promise
+        promise = $http.get('/countryList')
+        .success(function (data, status) {
+            return data;
+        })
+        .error(function (data, status) {
+            growl.addErrorMessage(data.message);
+        });
+      // Return the promise to the controller
+      return promise;
+    }
+  };
+  return list;
+
+});
 
