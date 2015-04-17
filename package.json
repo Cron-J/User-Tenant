@@ -9,6 +9,7 @@
   "dependencies": {
     "async": "^0.9.0",
     "boom": "^2.6.1",
+    "country-list": "0.0.3",
     "hapi": "^8.2.0",
     "hapi-auth-jwt": "^2.1.0",
     "joi": "^5.1.0",

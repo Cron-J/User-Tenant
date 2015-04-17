@@ -4,12 +4,14 @@
 
 var User      = require('./controller/user'),
 	Tenant    = require('./controller/tenant'),
-    Static    = require('./static');
+    Static    = require('./static'),
+    Staticlist= require('./Utility/staticlist');
 
 // API Server Endpoints
 exports.endpoints = [
 
     { method: 'GET',  path: '/{somethingss*}', config: Static.get },
+    { method: 'GET',  path: '/countryList', config: Staticlist.getCountryList },
     { method: 'POST', path: '/user', config: User.createAdmin},
     { method: 'PUT', path: '/user', config: User.updateUser},
     { method: 'POST', path: '/searchUser', config: User.searchUser},
