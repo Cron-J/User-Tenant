@@ -30,8 +30,8 @@ app.controller('accountCtrl', ['$scope', '$rootScope', '$http', '$location',
             //country list
             countryList.async().then(function(response) {
                 $scope.countryList = response.data;
+                $scope.countryList1 = angular.copy($scope.countryList);
             });
-
         }
 
         //User login
@@ -109,6 +109,7 @@ app.controller('accountCtrl', ['$scope', '$rootScope', '$http', '$location',
                     $scope.profileView = 'view';
                 })
                 .error(function (data, status) {
+                    if(data.message == 'invalid token')  $scope.unAuthorized();
                     growl.addErrorMessage(data.message);
                 });
             }

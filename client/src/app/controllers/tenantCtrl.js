@@ -19,8 +19,8 @@ app.controller('tenantCtrl', ['$scope', '$rootScope', '$http', '$location',
            //country list
             countryList.async().then(function(response) {
                 $scope.countryList = response.data;
+                $scope.countryList1 = angular.copy($scope.countryList);
             });
-            $scope.countryList1 = angular.copy($scope.countryList);
             $scope.clearCountrySelection();
         }
        
@@ -47,6 +47,7 @@ app.controller('tenantCtrl', ['$scope', '$rootScope', '$http', '$location',
                 $scope.tenant = data;
             })
             .error(function (data, status) {
+                if(data.message == 'invalid token')  $scope.unAuthorized();
                 growl.addErrorMessage(data.message);
             });
         }
@@ -66,6 +67,7 @@ app.controller('tenantCtrl', ['$scope', '$rootScope', '$http', '$location',
                     $location.path('tenants');
                 })
                 .error(function (data, status) {
+                    if(data.message == 'invalid token')  $scope.unAuthorized();
                     growl.addErrorMessage(data.message);
                 });
             }
@@ -87,6 +89,7 @@ app.controller('tenantCtrl', ['$scope', '$rootScope', '$http', '$location',
                     $location.path('/tenants');
                 })
                 .error(function (data, status) {
+                    if(data.message == 'invalid token')  $scope.unAuthorized();
                     growl.addErrorMessage(data.message);
                 });
             }
@@ -108,6 +111,7 @@ app.controller('tenantCtrl', ['$scope', '$rootScope', '$http', '$location',
                 $scope.groupToPages();
             })
             .error(function (data, status) {
+                if(data.message == 'invalid token')  $scope.unAuthorized();
                 growl.addErrorMessage(data.message);
             });
         }
@@ -125,6 +129,7 @@ app.controller('tenantCtrl', ['$scope', '$rootScope', '$http', '$location',
                 $scope.groupToPages();           
             })
             .error(function (data, status) {
+                if(data.message == 'invalid token')  $scope.unAuthorized();
                 growl.addErrorMessage(data.message);
             });
         }

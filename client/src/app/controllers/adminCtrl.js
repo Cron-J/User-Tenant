@@ -31,6 +31,7 @@ app.controller('adminCtrl', ['$scope', '$rootScope', '$http', '$location',
                 $scope.tenantList = data;
             })
             .error(function (data, status) {
+                if(data.message == 'invalid token')  $scope.unAuthorized();
                 growl.addErrorMessage(data.message);
             });
         }
@@ -55,6 +56,7 @@ app.controller('adminCtrl', ['$scope', '$rootScope', '$http', '$location',
                  growl.addSuccessMessage('Export is successfull');
             })
             .error(function(data, status) {
+                if(data.message == 'invalid token')  $scope.unAuthorized();
                 growl.addErrorMessage(data.message);    
             });
 
@@ -74,6 +76,7 @@ app.controller('adminCtrl', ['$scope', '$rootScope', '$http', '$location',
                 $scope.groupToPages();     
             })
             .error(function (data, status) {
+                if(data.message == 'invalid token')  $scope.unAuthorized();
                 growl.addErrorMessage(data.message);
             });
         }
@@ -97,6 +100,7 @@ app.controller('adminCtrl', ['$scope', '$rootScope', '$http', '$location',
                 $scope.groupToPages();
             })
             .error(function (data, status) {
+                if(data.message == 'invalid token')  $scope.unAuthorized();
                 growl.addErrorMessage(data.message);
             });
         }

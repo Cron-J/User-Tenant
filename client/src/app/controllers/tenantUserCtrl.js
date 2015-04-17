@@ -51,7 +51,6 @@ app.controller('tenantUserCtrl', ['$scope', '$rootScope', '$http', '$location',
                         data.address.country[0].ticked = true;
                     }
                 };
-                console.log(data.address);
                 $scope.account = data;
                 $scope.account.tenant = data.tenantId.name;
                 $scope.account.tenantId = data.tenantId._id;
@@ -59,6 +58,7 @@ app.controller('tenantUserCtrl', ['$scope', '$rootScope', '$http', '$location',
                 $scope.current_usr.lastName = data.lastName;
             })
             .error(function (data, status) {
+                if(data.message == 'invalid token')  $scope.unAuthorized();
                 growl.addErrorMessage(data.message);
             });
         }
@@ -82,6 +82,7 @@ app.controller('tenantUserCtrl', ['$scope', '$rootScope', '$http', '$location',
                 $scope.current_usr.lastName = data.lastName;
             })
             .error(function (data, status) {
+                if(data.message == 'invalid token')  $scope.unAuthorized();
                 growl.addErrorMessage(data.message);
             });
         }
@@ -120,6 +121,7 @@ app.controller('tenantUserCtrl', ['$scope', '$rootScope', '$http', '$location',
 
                 })
                 .error(function (data, status) {
+                    if(data.message == 'invalid token')  $scope.unAuthorized();
                     growl.addErrorMessage(data.message);
                 });
             }
@@ -140,6 +142,7 @@ app.controller('tenantUserCtrl', ['$scope', '$rootScope', '$http', '$location',
                     $location.path('/users');
                 })
                 .error(function (data, status) {
+                    if(data.message == 'invalid token')  $scope.unAuthorized();
                     growl.addErrorMessage(data.message);
                 });
             }
@@ -160,6 +163,7 @@ app.controller('tenantUserCtrl', ['$scope', '$rootScope', '$http', '$location',
                     $location.path('/tenantHome');
                 })
                 .error(function (data, status) {
+                    if(data.message == 'invalid token')  $scope.unAuthorized();
                     growl.addErrorMessage(data.message);
                 });
             }
