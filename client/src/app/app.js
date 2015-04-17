@@ -20,7 +20,7 @@ var app = angular.module('app', [
     function ($stateProvider,   $urlRouterProvider,   growlProvider, $httpProvider, USER_ROLES) {       
         growlProvider.globalTimeToLive(3000);
         growlProvider.globalEnableHtml(true);
-        $urlRouterProvider.otherwise("/login");   
+        $urlRouterProvider.otherwise("/error");   
         $stateProvider
           .state('login', {
             url: "/login",
@@ -170,9 +170,14 @@ var app = angular.module('app', [
             else if($location.path() == '/forgotPassword') {
                 $location.path() == '/forgotPassword'
             }
-            else {
+            else if($location.path() == '/error'){
+              $timeout(function () {
                 $location.path('/login');
-            }   
+              }, 30);
+            } 
+            else {
+              $location.path('/login');
+            }  
           }
           // else if(loggedIn){
           //       $location.path('/error');
