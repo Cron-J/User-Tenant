@@ -1,11 +1,7 @@
-var Mongoose = require('mongoose'),
-	async = require('async'),
+var async = require('async'),
 	config = require('../config/config');
 
-exports.removeCollections = function(cb){
-	Mongoose.connect(config.database.url);  
-	var db = Mongoose.connection;
-	db.on('open', function(){
+exports.removeCollections = function(Mongoose, cb){
 	  Mongoose.connection.db.collectionNames(function(error, collections) {
 	    if (error) {
 	      throw new Error(error);
@@ -37,19 +33,12 @@ exports.removeCollections = function(cb){
             ],
             // optional callback
 	        function(err){
-	        	if (err){
-	        		cb(err);	
-	        	} 
-	        	else {
-	        		Mongoose.connection.close(function(err){
-		        		cb(err);
-		        	});	 
-	        	}           
+	        	cb(err);  
 	        });  	
 
 	    }
 	  });
-	});
+	//});
 };
 
 exports.validAdminRegistraitionData = function(){
