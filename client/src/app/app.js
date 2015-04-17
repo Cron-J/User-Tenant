@@ -14,7 +14,6 @@ var app = angular.module('app', [
     'cons'
 ])
 
-
 .config(
   ['$stateProvider', '$urlRouterProvider', 'growlProvider', '$httpProvider', 'USER_ROLES',
     function ($stateProvider,   $urlRouterProvider,   growlProvider, $httpProvider, USER_ROLES) {       
@@ -43,31 +42,28 @@ var app = angular.module('app', [
               data: {
                   authorizedRoles: [USER_ROLES.all]
               }
-
           }) 
-          .state('home', {
-            url: "/home",
-              templateUrl: "app/views/common/home.html",
-              controller: 'tenantUserCtrl',
-              data: {
-                  authorizedRoles: [USER_ROLES.tenantuser]
-              }
-
-          })
           .state('error', {
             url: "/error",
               templateUrl: "app/views/common/error.html",
               data: {
                   authorizedRoles: [USER_ROLES.all]
               }
-
+          })
+          .state('editProfile', {
+            url: "/editProfile",
+              templateUrl: "app/views/common/profile.html",
+              controller: "accountCtrl",
+              data: {
+                  authorizedRoles: [USER_ROLES.admin, USER_ROLES.tenantuser]
+              }
           })
           .state('createTenant', {
             url: "/tenantCreation",
               templateUrl: "app/views/tenant/create.html",
               controller: 'tenantCtrl',
               data: {
-                  authorizedRoles: [USER_ROLES.admin, , USER_ROLES.tenantadmin]
+                  authorizedRoles: [USER_ROLES.admin, USER_ROLES.tenantadmin]
               }
           }) 
           .state('createTenantUser', {
@@ -77,7 +73,6 @@ var app = angular.module('app', [
               data: {
                   authorizedRoles: [USER_ROLES.admin, USER_ROLES.tenantadmin]
               }
-
           }) 
           .state('tenants', {
             url: "/tenants",
@@ -97,24 +92,6 @@ var app = angular.module('app', [
               }
 
           })
-          .state('tenantHome', {
-            url: "/tenantHome",
-              templateUrl: "app/views/tenant/tenant_users_list.html",
-              controller: "tenantCtrl",
-              data: {
-                  authorizedRoles: [USER_ROLES.admin, USER_ROLES.tenantadmin]
-              }
-
-          })
-          .state('tenantUser', {
-            url: "/tenantUser/:tUserId",
-              templateUrl: "app/views/tenant_user/tenant_user.html",
-              controller: "tenantUserCtrl",
-              data: {
-                  authorizedRoles: [USER_ROLES.tenantadmin]
-              }
-
-          })
           .state('users', {
             url: "/users",
               templateUrl: "app/views/tenant_user/home.html",
@@ -129,64 +106,76 @@ var app = angular.module('app', [
               templateUrl: "app/views/tenant_user/tenant_user.html",
               controller: "tenantUserCtrl",
               data: {
-                  authorizedRoles: [USER_ROLES.admin, USER_ROLES.tenantadmin]
+                  authorizedRoles: [USER_ROLES.admin]
               }
 
           })
-          .state('editProfile', {
-            url: "/editProfile",
-              templateUrl: "app/views/common/profile.html",
-              controller: "accountCtrl",
+          .state('tenantHome', {
+            url: "/tenantHome",
+              templateUrl: "app/views/tenant/tenant_users_list.html",
+              controller: "tenantCtrl",
               data: {
-                  authorizedRoles: [USER_ROLES.all]
+                  authorizedRoles: [USER_ROLES.tenantadmin]
               }
           })
-          
-            
-          
+          .state('tenantUser', {
+            url: "/tenantUser/:tUserId",
+              templateUrl: "app/views/tenant_user/tenant_user.html",
+              controller: "tenantUserCtrl",
+              data: {
+                  authorizedRoles: [USER_ROLES.tenantadmin]
+              }
+          })
+          .state('home', {
+            url: "/home",
+              templateUrl: "app/views/common/home.html",
+              controller: 'tenantUserCtrl',
+              data: {
+                  authorizedRoles: [USER_ROLES.tenantuser]
+              }
+          })
+
           $httpProvider.interceptors.push('authInterceptor');
     }
   ]
 )
-.run(function($rootScope, $location, AuthServ,$cookieStore) {
-
-    $rootScope.$on('$stateChangeStart', function(event, next) {
-       var authorizedRoles = next.data ? next.data.authorizedRoles : null;
-       var isAuthorized = AuthServ.isAuthorized(authorizedRoles);
-       if(!isAuthorized){
-          event.preventDefault();
-          AuthServ.isLoggedInAsync(function(loggedIn) {
-            if(!loggedIn){
-                  $location.path('/login');
-            }
-            else{
-                $location.path('/error');
-            }
-          }) 
-        }
-        else if(isAuthorized){
-          AuthServ.isLoggedInAsync(function(loggedIn) {
-            if (!loggedIn) {      
-              if($location.path() == '/signup')
-                  $location.path('/signup');
-               else        
+.run(function($rootScope, $location, AuthServ,$cookieStore, $timeout ) {
+  $rootScope.$on('$stateChangeStart', function(event, next) {
+     var authorizedRoles = next.data ? next.data.authorizedRoles : null;
+     var isAuthorized = AuthServ.isAuthorized(authorizedRoles);
+     if(!isAuthorized){
+        event.preventDefault();
+        AuthServ.isLoggedInAsync(function(loggedIn) {
+          if(!loggedIn){
+            $timeout(function () {
                 $location.path('/login');
-            }
-            // else if(loggedIn){
-            //       $location.path('/error');
-            // }
-          });
-        }
-      });
-
-    })
+            }, 1000);
+          }
+          else{
+              $location.path('/error');
+          }
+        }) 
+      }
+      else if(isAuthorized){
+        AuthServ.isLoggedInAsync(function(loggedIn) {
+          if (!loggedIn) {      
+            if($location.path() == '/signup')
+                $location.path('/signup');
+             else        
+              $location.path('/login');
+          }
+          // else if(loggedIn){
+          //       $location.path('/error');
+          // }
+        });
+      }
+    });
+  })
 
 .factory('authInterceptor', function ($rootScope, $q, $cookieStore, $location) {
   return {
     request: function (config) {
-
       config.headers = config.headers || {};
-      
       return config;
     },
     responseError: function(response) {
