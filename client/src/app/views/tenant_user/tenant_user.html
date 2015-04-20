@@ -158,7 +158,8 @@
                             <span class="input-group-addon"><span class="fa fa-fw fa-map-marker"></span></span>
                             <input type="text" class="form-control" name="region1" ng-model="account.address.region" ng-minlength="1" maxlength="20" ng-pattern="/^[a-zA-Z0-9 ]*$/" ng-disabled="view == 'view' || viewByTenant == 'view'">
                         </div>
-                        <span class="error" ng-show="signupForm.region1.$dirty && signupForm.region1.$invalid">Invalid:
+                        <span class="error" ng-show="signupForm.region1.$dirty 
+                        && signupForm.region1.$invalid">Invalid:
                             <span ng-show="signupForm.region1.$error.minlength">Region should be minimum of 1 character</span>
                             <span ng-show="signupForm.region1.$error.pattern">Region won't allow special characters</span>
                         </span>
@@ -168,7 +169,7 @@
             <div class="row">
                 <div class="form-group">
                     <label class="col-lg-2 col-md-2 control-label">Country<span class="error" ng-show="signupForm.country1.$error.required"> *</span></label>
-                    <div class="col-lg-6 col-md-6">
+                    <div class="col-lg-7 col-md-7">
                         <div class="input-group">
                             <span class="input-group-addon"><span class="fa fa-fw fa-map-marker"></span></span>
                             <input type="text" class="form-control" ng-model="account.address.country[0].name" ng-show="view == 'view' || viewByTenant == 'view'" ng-disabled="view == 'view' || viewByTenant == 'view'" required>
@@ -189,6 +190,8 @@
                         </div>
                         <span class="error" ng-show="signupForm.country1.$dirty && signupForm.country1.$invalid">Invalid:
                             <span ng-show="signupForm.country1.$error.required">Tell us your country Name</span>
+            }
+            }
 <!--                             <span ng-show="signupForm.country1.$error.minlength">Country name should be minimum of 1 character</span>
                             <span ng-show="signupForm.country1.$error.pattern">Country won't allow special characters</span> -->
                         </span>

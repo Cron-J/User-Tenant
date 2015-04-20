@@ -329,11 +329,12 @@ exports.updateUser = {
             if(request.payload.password) request.payload.password = Crypto.encrypt(request.payload.password);
 
             request.payload.updatedBy = 'Self';
-            
-            console.log(request.payload);
+
             User.updateUser(decoded.id, request.payload, function(err, user) {
                 if(err){
-                    return reply(Boom.badImplementation("unable to update"));
+                    if ( constants.kDuplicateKeyError === err.code || constants.kDuplicateKeyErrorForMongoDBv2_1_1 === err.code ) {
+                        reply(Boom.forbidden("user email already existed"));
+                    } else return reply( Boom.badImplementation(err) ); // HTTP 403
                 }
                 else{
                     return reply("user updated successfully");

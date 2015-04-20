@@ -108,6 +108,7 @@ app.controller('tenantUserCtrl', ['$scope', '$rootScope', '$http', '$location',
         //Tenant-User account creation
         $scope.createTenantUserAccount = function (account_info, valid) {
             if(valid){
+                var dataDump = angular.copy(account_info);
                 account_info.address.country = account_info.address.country[0].code;
                 $http.post('/tenantUser', account_info, {
                     headers: AuthServ.getAuthHeader()
@@ -124,6 +125,7 @@ app.controller('tenantUserCtrl', ['$scope', '$rootScope', '$http', '$location',
                 .error(function (data, status) {
                     if(data.message == 'Invalid token')  delete $rootScope.user;
                     growl.addErrorMessage(data.message);
+                    account_info.address.country = dataDump.address.country;
                 });
             }
         }
@@ -131,6 +133,7 @@ app.controller('tenantUserCtrl', ['$scope', '$rootScope', '$http', '$location',
         //Update Tenant-User account details by Admin
         $scope.updateUserAccount = function (account_info, valid) {
             if(valid){
+                var dataDump = angular.copy(account_info);
                 account_info.address.country = account_info.address.country[0].code;
                 delete account_info._id, delete account_info.createdAt, 
                 delete account_info.createdBy, delete account_info.updatedAt,
@@ -145,6 +148,7 @@ app.controller('tenantUserCtrl', ['$scope', '$rootScope', '$http', '$location',
                 .error(function (data, status) {
                     if(data.message == 'Invalid token')  delete $rootScope.user;
                     growl.addErrorMessage(data.message);
+                    account_info.address.country = dataDump.address.country;
                 });
             }
         }
@@ -152,6 +156,7 @@ app.controller('tenantUserCtrl', ['$scope', '$rootScope', '$http', '$location',
         //Update Tenant-User account details by Tenant
         $scope.updatetenantUserAccountByTenant = function (account_info, valid) {
             if(valid){
+                var dataDump = angular.copy(account_info);
                 account_info.address.country = account_info.address.country[0].code;
                 delete account_info._id, delete account_info.createdAt, 
                 delete account_info.createdBy, delete account_info.updatedAt,
@@ -166,6 +171,7 @@ app.controller('tenantUserCtrl', ['$scope', '$rootScope', '$http', '$location',
                 .error(function (data, status) {
                     if(data.message == 'Invalid token')  delete $rootScope.user;
                     growl.addErrorMessage(data.message);
+                    account_info.address.country = dataDump.address.country;
                 });
             }
         }

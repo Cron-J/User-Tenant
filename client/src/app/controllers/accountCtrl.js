@@ -71,6 +71,7 @@ app.controller('accountCtrl', ['$scope', '$rootScope', '$http', '$location',
         //Tenant Self Registration
         $scope.tenantSelfRegistration = function (account_info, valid) {
             if(valid){
+                var dataDump = angular.copy(account_info);
                 account_info.tenant.validFrom = $filter('date')(account_info.tenant.validFrom, "MM/dd/yyyy");
                 account_info.tenant.validTo = $filter('date')(account_info.tenant.validTo, "MM/dd/yyyy");
                 account_info.tenant.country = account_info.tenant.country[0].code;
@@ -82,6 +83,8 @@ app.controller('accountCtrl', ['$scope', '$rootScope', '$http', '$location',
                 })
                 .error(function (data, status) {
                     growl.addErrorMessage(data.message);
+                    account_info.tenant.country = dataDump.tenant.country;
+                    account_info.user.country = dataDump.user.country;
                 });
             }
         }
@@ -104,6 +107,7 @@ app.controller('accountCtrl', ['$scope', '$rootScope', '$http', '$location',
         //Update Personal Account Details
         $scope.updateProfile = function (account_info, valid) {
             if(valid){
+                var dataDump = angular.copy(account_info);
                 var countryDump = angular.copy(account_info.address.country);
                 account_info.address.country = account_info.address.country[0].code;
                 delete account_info._id, delete account_info.createdAt, 
@@ -120,6 +124,7 @@ app.controller('accountCtrl', ['$scope', '$rootScope', '$http', '$location',
                 .error(function (data, status) {
                     if(data.message == 'Invalid token')  delete $rootScope.user;
                     growl.addErrorMessage(data.message);
+                    account_info.address.country = dataDump.address.country;
                 });
             }
         }

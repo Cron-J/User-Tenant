@@ -5,18 +5,14 @@ app.controller('mainCtrl', ['$scope', '$location', '$rootScope', '$http', 'userI
         var _scope = {};
         _scope.init = function () {
         	$scope.current_usr = {};
-        	if($location.path() != '/login' && $location.path() !='/forgotPassword' &&
-        		$location.path() != '/signup') {
-		        	if($rootScope.user) {
-				        userInfo.async().then(function(response) {
-				          $scope.current_usr = response.data;
-				        });
-				        countryList.async().then(function(response) {
-					        $scope.countryList = response.data;
-				        });
-				      }
-        	}
-	        
+	        	if($rootScope.user) {
+			        userInfo.async().then(function(response) {
+			          $scope.current_usr = response.data;
+			        });
+			        countryList.async().then(function(response) {
+				        $scope.countryList = response.data;
+			        });
+			      }
         }
 
 	      $scope.clearCountrySelection = function () {

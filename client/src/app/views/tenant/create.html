@@ -46,11 +46,11 @@
         <div class="row">
           <div class="form-group">
             <label class="col-lg-2 col-md-2 control-label">Status<span class="error" ng-show="signupForm.status.$error.required"> *</span></label>
-            <div class="col-lg-4 col-md-4">            
+            <div class="col-lg-3 col-md-3">            
               <div class="input-group">
                 <span class="input-group-addon"><i class="fa fa-fw fa-pencil"></i></span>
                 <select   type="text" class="form-control" name="status" ng-model="account.tenant.status" required>
-                  <option value="">Select status</option>
+                  <option value="">Select</option>
                   <option value="confirmed">Confirmed</option>
                   <option value="active">Active</option>
                   <option value="inactive">Inactive</option>
@@ -82,7 +82,7 @@
         <div class="row">
           <div class="form-group">
             <label class="col-lg-2 col-md-2 control-label">Valid from <span class="error" ng-show="signupForm.date1.$error.required">*</span></label>
-            <div class="col-lg-7 col-md-7">
+            <div class="col-lg-4 col-md-4">
               <div class="input-group">
                 <div class="row">
                   <div class="col-md-9">
@@ -101,7 +101,7 @@
         <div class="row">
           <div class="form-group">
             <label class="col-lg-2 col-md-2 control-label">Valid to <span class="error" ng-show="signupForm.date2.$error.required">*</span></label>
-            <div class="col-lg-7 col-md-7">
+            <div class="col-lg-4 col-md-4">
               <div class="input-group">
                 <div class="row">
                   <div class="col-md-9">
@@ -127,7 +127,7 @@
         <div class="row">
           <div class="form-group">
               <label class="col-lg-2 col-md-2 control-label">Unit</label>
-              <div class="col-lg-7 col-md-7">
+              <div class="col-lg-6 col-md-6">
                   <div class="input-group">
                       <span class="input-group-addon"><span class="fa fa-fw fa-th"></span></span>
                       <input type="text" class="form-control" name="unit" ng-model="account.tenant.address.unit" ng-minlength="1" maxlength="20" ng-pattern="/^[a-zA-Z0-9 ]*$/">
@@ -206,7 +206,7 @@
         <div class="row">
           <div class="form-group">
               <label class="col-lg-2 col-md-2 control-label">Country<span class="error" ng-hide="account.tenant.address.country[0].name"> *</span></label>
-              <div class="col-lg-8 col-md-8">
+              <div class="col-lg-7 col-md-7">
                   <div class="input-group">
                       <span class="input-group-addon"><span class="fa fa-fw fa-map-marker"></span></span>
                       <!-- <input type="text" class="form-control" name="country" ng-model="account.tenant.address.country" ng-minlength="1" maxlength="50" ng-pattern="/^[a-zA-Z0-9 ]*$/" required> -->
@@ -414,7 +414,7 @@
         <div class="row">
           <div class="form-group">
               <label class="col-lg-2 col-md-2 control-label">Country<span class="error" ng-hide="account.user.address.country[0].name"> *</span></label>
-              <div class="col-lg-8 col-md-8">
+              <div class="col-lg-7 col-md-7">
                   <div class="input-group">
                       <span class="input-group-addon"><span class="fa fa-fw fa-map-marker"></span></span>
                       <!-- <input type="text" class="form-control" name="country1" ng-model="account.user.address.country" ng-minlength="1" maxlength="50" ng-pattern="/^[a-zA-Z0-9 ]*$/" required> -->

@@ -56,6 +56,7 @@ app.controller('tenantCtrl', ['$scope', '$rootScope', '$http', '$location',
         //Tenant account creation
         $scope.createTenantAccount = function (account_info, valid) {
             if(valid){
+                var dataDump = angular.copy(account_info);
                 account_info.tenant.validFrom = $filter('date')(account_info.tenant.validFrom, "MM/dd/yyyy");
                 account_info.tenant.validTo = $filter('date')(account_info.tenant.validTo, "MM/dd/yyyy");
                 account_info.tenant.address.country = account_info.tenant.address.country[0].code;
@@ -70,6 +71,8 @@ app.controller('tenantCtrl', ['$scope', '$rootScope', '$http', '$location',
                 .error(function (data, status) {
                     if(data.message == 'Invalid token')  delete $rootScope.user;
                     growl.addErrorMessage(data.message);
+                    account_info.tenant.address.country = dataDump.tenant.address.country;
+                    account_info.user.address.country = dataDump.user.address.country;
                 });
             }
         }
@@ -77,6 +80,7 @@ app.controller('tenantCtrl', ['$scope', '$rootScope', '$http', '$location',
         //Update tenant account
         $scope.updateTenantAccount = function (account_info, valid) {
             if(valid){
+                var dataDump = angular.copy(account_info);
                 account_info.address.country = account_info.address.country[0].code;
                 delete account_info._id, delete account_info.tenantId, 
                 delete account_info.createdAt, delete account_info.createdBy, delete account_info.updatedAt,
@@ -92,6 +96,7 @@ app.controller('tenantCtrl', ['$scope', '$rootScope', '$http', '$location',
                 .error(function (data, status) {
                     if(data.message == 'Invalid token')  delete $rootScope.user;
                     growl.addErrorMessage(data.message);
+                    account_info.address.country = dataDump.address.country;
                 });
             }
         }
