@@ -13,8 +13,7 @@ app.controller('accountCtrl', ['$scope', '$rootScope', '$http', '$location',
             //clear country selection
             $scope.clearCountrySelection();
             //country list
-            if($location.path() != '/login' && $location.path() !='/forgotPassword' &&
-                $location.path() != '/signup') {
+            if($location.path() != '/login' && $location.path() !='/forgotPassword') {
                 countryList.async().then(function(response) {
                     $scope.countryList = response.data;
                     $scope.countryList1 = angular.copy($scope.countryList);
@@ -74,8 +73,8 @@ app.controller('accountCtrl', ['$scope', '$rootScope', '$http', '$location',
                 var dataDump = angular.copy(account_info);
                 account_info.tenant.validFrom = $filter('date')(account_info.tenant.validFrom, "MM/dd/yyyy");
                 account_info.tenant.validTo = $filter('date')(account_info.tenant.validTo, "MM/dd/yyyy");
-                account_info.tenant.country = account_info.tenant.country[0].code;
-                account_info.user.country = account_info.user.country[0].code;
+                account_info.tenant.address.country = account_info.tenant.address.country[0].code;
+                account_info.user.address.country = account_info.user.address.country[0].code;
                 $http.post('/tenantSelfRegistration', account_info)
                 .success(function (data, status) {
                     growl.addSuccessMessage('Tenant has been successfully registered');
@@ -83,8 +82,8 @@ app.controller('accountCtrl', ['$scope', '$rootScope', '$http', '$location',
                 })
                 .error(function (data, status) {
                     growl.addErrorMessage(data.message);
-                    account_info.tenant.country = dataDump.tenant.country;
-                    account_info.user.country = dataDump.user.country;
+                    account_info.tenant.address.country = dataDump.tenant.address.country;
+                    account_info.user.address.country = dataDump.user.address.country;
                 });
             }
         }
