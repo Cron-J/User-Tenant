@@ -13,15 +13,17 @@ app.controller('accountCtrl', ['$scope', '$rootScope', '$http', '$location',
             //clear country selection
             $scope.clearCountrySelection();
             //country list
-            countryList.async().then(function(response) {
-                $scope.countryList = response.data;
-                $scope.countryList1 = angular.copy($scope.countryList);
-                if($location.path() == '/editProfile') {
-                    $scope.profileView = 'view';
-                    getAccountDetails();
-                }
-            });
-
+            if($location.path() != '/login' && $location.path() !='/forgotPassword' &&
+                $location.path() != '/signup') {
+                countryList.async().then(function(response) {
+                    $scope.countryList = response.data;
+                    $scope.countryList1 = angular.copy($scope.countryList);
+                    if($location.path() == '/editProfile') {
+                        $scope.profileView = 'view';
+                        getAccountDetails();
+                    }
+                });
+            }
             $scope.setPassword = false;
             $scope.isUser = true;
         }
