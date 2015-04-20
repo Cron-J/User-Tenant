@@ -69,8 +69,8 @@
                     <label class="col-lg-2 col-md-2 control-label">Password<span class="error" ng-show="profileForm.password.$error.required"> *</span></label>
                     <div class="col-lg-6 col-md-6">            
                         <div class="input-group">
-                            <span class="input-group-addon"><i class="fa fa-fw fa-lock"></i></span>
-                            <input id="password" type="password" class="form-control" name="password" value="" ng-model="current_usr.password" ng-required="profileView == 'edit' && setPassword == true">
+                            <span class="input-group-addon"><i class="fa fa-fw fa-key"></i></span>
+                            <input id="password" type="password" class="form-control" name="password" value="" style="width: 210px" ng-model="current_usr.password" ng-required="profileView == 'edit' && setPassword == true">
                         </div>
                         <div class="error" ng-show="profileForm.password.$dirty 
                         && profileForm.password.$invalid">Invalid:
