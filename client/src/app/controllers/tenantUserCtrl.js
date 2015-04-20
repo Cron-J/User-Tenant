@@ -2,19 +2,17 @@
 
 app.controller('tenantUserCtrl', ['$scope', '$rootScope', '$http', '$location', 
     'AuthServ', 'growl', '$filter', '$stateParams', '$modal', '$log', 'userInfo',
+    'countryList',
     function ($scope, $rootScope, $http, $location, AuthServ, growl, $filter, 
-        $stateParams, $modal, $log, userInfo) {
+        $stateParams, $modal, $log, userInfo, countryList) {
         var _scope = {};
         _scope.init = function() {
-            console.log($rootScope.user);
+            //clear country selection
+            $scope.clearCountrySelection();
             if($rootScope.user.scope == 'Admin')
                 $scope.view = 'create';
             if($rootScope.user.scope == 'Tenant-Admin')
                 $scope.viewByTenant = 'create';
-            if($stateParams.tenantUserId) {
-                $scope.view = 'view';
-                getUserAccountDetails();
-            }
             if($stateParams.tUserId) {
                 $scope.viewByTenant = 'view';
                 getTenantUserbyTenant();
@@ -25,6 +23,15 @@ app.controller('tenantUserCtrl', ['$scope', '$rootScope', '$http', '$location',
                     $scope.current_usr.lastName = response.data.lastName;
                 });
             }
+            //country list
+            countryList.async().then(function(response) {
+                $scope.countryList = response.data;
+                if($stateParams.tenantUserId) {
+                    $scope.view = 'view';
+                    getUserAccountDetails();
+                }
+            });
+            
         }
         
         // $scope.user = {};
@@ -37,13 +44,22 @@ app.controller('tenantUserCtrl', ['$scope', '$rootScope', '$http', '$location',
                 headers: AuthServ.getAuthHeader()
             })
             .success(function (data, status) {
+                for (var i = 0; i < $scope.countryList.length; i++) {
+                    if($scope.countryList[i].code == data.address.country ) {
+                        data.address.country = [];
+                        data.address.country[0] = {};
+                        data.address.country[0] = $scope.countryList[i];
+                        data.address.country[0].ticked = true;
+                    }
+                };
+                $scope.current_usr.firstName = data.firstName;
+                $scope.current_usr.lastName = data.lastName;
                 $scope.account = data;
                 $scope.account.tenant = data.tenantId.name;
                 $scope.account.tenantId = data.tenantId._id;
-                $scope.current_usr.firstName = data.firstName;
-                $scope.current_usr.lastName = data.lastName;
             })
             .error(function (data, status) {
+                if(data.message == 'Invalid token')  delete $rootScope.user;
                 growl.addErrorMessage(data.message);
             });
         }
@@ -54,11 +70,20 @@ app.controller('tenantUserCtrl', ['$scope', '$rootScope', '$http', '$location',
                 headers: AuthServ.getAuthHeader()
             })
             .success(function (data, status) {
-                $scope.account = data;
+                for (var i = 0; i < $scope.countryList.length; i++) {
+                    if($scope.countryList[i].code == data.address.country ) {
+                        data.address.country = [];
+                        data.address.country[0] = {};
+                        data.address.country[0] = $scope.countryList[i];
+                        data.address.country[0].ticked = true;
+                    }
+                };
                 $scope.current_usr.firstName = data.firstName;
                 $scope.current_usr.lastName = data.lastName;
+                $scope.account = data;
             })
             .error(function (data, status) {
+                if(data.message == 'Invalid token')  delete $rootScope.user;
                 growl.addErrorMessage(data.message);
             });
         }
@@ -83,7 +108,9 @@ app.controller('tenantUserCtrl', ['$scope', '$rootScope', '$http', '$location',
         //Tenant-User account creation
         $scope.createTenantUserAccount = function (account_info, valid) {
             if(valid){
-                 $http.post('/tenantUser', account_info, {
+                var dataDump = angular.copy(account_info);
+                account_info.address.country = account_info.address.country[0].code;
+                $http.post('/tenantUser', account_info, {
                     headers: AuthServ.getAuthHeader()
                 })
                 .success(function (data, status) {
@@ -96,7 +123,9 @@ app.controller('tenantUserCtrl', ['$scope', '$rootScope', '$http', '$location',
 
                 })
                 .error(function (data, status) {
+                    if(data.message == 'Invalid token')  delete $rootScope.user;
                     growl.addErrorMessage(data.message);
+                    account_info.address.country = dataDump.address.country;
                 });
             }
         }
@@ -104,6 +133,8 @@ app.controller('tenantUserCtrl', ['$scope', '$rootScope', '$http', '$location',
         //Update Tenant-User account details by Admin
         $scope.updateUserAccount = function (account_info, valid) {
             if(valid){
+                var dataDump = angular.copy(account_info);
+                account_info.address.country = account_info.address.country[0].code;
                 delete account_info._id, delete account_info.createdAt, 
                 delete account_info.createdBy, delete account_info.updatedAt,
                 delete account_info.updatedBy;
@@ -115,7 +146,9 @@ app.controller('tenantUserCtrl', ['$scope', '$rootScope', '$http', '$location',
                     $location.path('/users');
                 })
                 .error(function (data, status) {
+                    if(data.message == 'Invalid token')  delete $rootScope.user;
                     growl.addErrorMessage(data.message);
+                    account_info.address.country = dataDump.address.country;
                 });
             }
         }
@@ -123,6 +156,8 @@ app.controller('tenantUserCtrl', ['$scope', '$rootScope', '$http', '$location',
         //Update Tenant-User account details by Tenant
         $scope.updatetenantUserAccountByTenant = function (account_info, valid) {
             if(valid){
+                var dataDump = angular.copy(account_info);
+                account_info.address.country = account_info.address.country[0].code;
                 delete account_info._id, delete account_info.createdAt, 
                 delete account_info.createdBy, delete account_info.updatedAt,
                 delete account_info.updatedBy;
@@ -130,11 +165,13 @@ app.controller('tenantUserCtrl', ['$scope', '$rootScope', '$http', '$location',
                     headers: AuthServ.getAuthHeader()
                 })
                 .success(function (data, status) {
-                    growl.addSuccessMessage('Account has been updated successfully');
+                    growl.addSuccessMessage('Tenant-User account has been updated successfully');
                     $location.path('/tenantHome');
                 })
                 .error(function (data, status) {
+                    if(data.message == 'Invalid token')  delete $rootScope.user;
                     growl.addErrorMessage(data.message);
+                    account_info.address.country = dataDump.address.country;
                 });
             }
         }

@@ -1,18 +1,26 @@
 'use strict';
 
 app.controller('accountCtrl', ['$scope', '$rootScope', '$http', '$location', 
-    'AuthServ', 'growl', '$filter', 'userInfo','$cookieStore',
-    function ($scope, $rootScope, $http, $location, AuthServ, growl, $filter, userInfo,$cookieStore) {
+    'AuthServ', 'growl', '$filter', 'userInfo','countryList',
+    function ($scope, $rootScope, $http, $location, AuthServ, growl, $filter, 
+        userInfo, countryList) {
         var _scope = {};
         _scope.init = function() {
             $scope.loginForm = {
                 remember: true
             };
             $scope.authError = null;
-            if($location.path() == '/editProfile') {
-                $scope.profileView = 'view';
-                userInfo.async().then(function(response) {
-                    $scope.current_usr = response.data;
+            //clear country selection
+            $scope.clearCountrySelection();
+            //country list
+            if($location.path() != '/login' && $location.path() !='/forgotPassword') {
+                countryList.async().then(function(response) {
+                    $scope.countryList = response.data;
+                    $scope.countryList1 = angular.copy($scope.countryList);
+                    if($location.path() == '/editProfile') {
+                        $scope.profileView = 'view';
+                        getAccountDetails();
+                    }
                 });
             }
             $scope.setPassword = false;
@@ -62,8 +70,11 @@ app.controller('accountCtrl', ['$scope', '$rootScope', '$http', '$location',
         //Tenant Self Registration
         $scope.tenantSelfRegistration = function (account_info, valid) {
             if(valid){
+                var dataDump = angular.copy(account_info);
                 account_info.tenant.validFrom = $filter('date')(account_info.tenant.validFrom, "MM/dd/yyyy");
                 account_info.tenant.validTo = $filter('date')(account_info.tenant.validTo, "MM/dd/yyyy");
+                account_info.tenant.address.country = account_info.tenant.address.country[0].code;
+                account_info.user.address.country = account_info.user.address.country[0].code;
                 $http.post('/tenantSelfRegistration', account_info)
                 .success(function (data, status) {
                     growl.addSuccessMessage('Tenant has been successfully registered');
@@ -71,13 +82,33 @@ app.controller('accountCtrl', ['$scope', '$rootScope', '$http', '$location',
                 })
                 .error(function (data, status) {
                     growl.addErrorMessage(data.message);
+                    account_info.tenant.address.country = dataDump.tenant.address.country;
+                    account_info.user.address.country = dataDump.user.address.country;
                 });
             }
+        }
+
+        //Get Personal Account Details
+        var getAccountDetails = function () {
+            userInfo.async().then(function(response) {
+                for (var i = 0; i < $scope.countryList.length; i++) {
+                    if($scope.countryList[i].code == response.data.address.country ) {
+                        response.data.address.country = [];
+                        response.data.address.country[0] = {};
+                        response.data.address.country[0] = $scope.countryList[i];
+                        response.data.address.country[0].ticked = true;
+                    }
+                };
+                $scope.current_usr = response.data;
+            });
         }
 
         //Update Personal Account Details
         $scope.updateProfile = function (account_info, valid) {
             if(valid){
+                var dataDump = angular.copy(account_info);
+                var countryDump = angular.copy(account_info.address.country);
+                account_info.address.country = account_info.address.country[0].code;
                 delete account_info._id, delete account_info.createdAt, 
                 delete account_info.createdBy, delete account_info.updatedAt,
                 delete account_info.updatedBy;
@@ -86,10 +117,13 @@ app.controller('accountCtrl', ['$scope', '$rootScope', '$http', '$location',
                 })
                 .success(function (data, status) {
                     growl.addSuccessMessage('Account has been updated successfully');
+                    $scope.current_usr.address.country = countryDump;
                     $scope.profileView = 'view';
                 })
                 .error(function (data, status) {
+                    if(data.message == 'Invalid token')  delete $rootScope.user;
                     growl.addErrorMessage(data.message);
+                    account_info.address.country = dataDump.address.country;
                 });
             }
         }

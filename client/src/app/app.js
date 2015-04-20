@@ -10,6 +10,7 @@ var app = angular.module('app', [
     'ngRoute',
     'ui.bootstrap',
     'angularUtils.directives.dirPagination',
+    'multi-select',
     'app.factory',
     'cons'
 ])
@@ -163,14 +164,20 @@ var app = angular.module('app', [
       else if(isAuthorized){
         AuthServ.isLoggedInAsync(function(loggedIn) {
           if (!loggedIn) {      
-            if($location.path() == '/signup')
-              $location.path('/signup');
-            else if($location.path() == '/forgotPassword')
-              $location.path() == '/forgotPassword'
-            else        
+            if($location.path() == '/signup') {
+                $location.path('/signup');
+            }
+            else if($location.path() == '/forgotPassword') {
+                $location.path() == '/forgotPassword'
+            }
+            else if($location.path() == '/error'){
               $timeout(function () {
                 $location.path('/login');
-              }, 10);
+              }, 30);
+            } 
+            else {
+              $location.path('/login');
+            }  
           }
           // else if(loggedIn){
           //       $location.path('/error');
