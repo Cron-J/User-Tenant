@@ -52,11 +52,11 @@ app.controller('tenantUserCtrl', ['$scope', '$rootScope', '$http', '$location',
                         data.address.country[0].ticked = true;
                     }
                 };
+                $scope.current_usr.firstName = data.firstName;
+                $scope.current_usr.lastName = data.lastName;
                 $scope.account = data;
                 $scope.account.tenant = data.tenantId.name;
                 $scope.account.tenantId = data.tenantId._id;
-                $scope.current_usr.firstName = data.firstName;
-                $scope.current_usr.lastName = data.lastName;
             })
             .error(function (data, status) {
                 if(data.message == 'Invalid token')  delete $rootScope.user;
@@ -78,9 +78,9 @@ app.controller('tenantUserCtrl', ['$scope', '$rootScope', '$http', '$location',
                         data.address.country[0].ticked = true;
                     }
                 };
-                $scope.account = data;
                 $scope.current_usr.firstName = data.firstName;
                 $scope.current_usr.lastName = data.lastName;
+                $scope.account = data;
             })
             .error(function (data, status) {
                 if(data.message == 'Invalid token')  delete $rootScope.user;
