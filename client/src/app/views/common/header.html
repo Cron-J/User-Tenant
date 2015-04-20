@@ -22,8 +22,8 @@
               {{current_usr.firstName}} {{current_usr.lastName}} <b class="caret"></b>
           </a>
           <ul class="dropdown-menu" ng-controller="accountCtrl">
-            <li><a ui-sref="editProfile" ng-if="user.scope == 'Admin' || user.scope == 'Tenant-User'" class="ut-pointer">Account</a></li>
-            <li><a ng-click="logOut()" class="ut-pointer">Log Off</a></li>
+            <li><a ui-sref="editProfile" ng-if="user.scope == 'Admin' || user.scope == 'Tenant-User'" class="ut-pointer"><i class="fa fa-fw fa-user"></i> Account</a></li>
+            <li><a ng-click="logOut()" class="ut-pointer"><i class="fa fa-fw fa-sign-out"></i> Log Off</a></li>
             <!-- <li class="divider"></li>
             <li class="dropdown-header">Language</li>
             <li class="active"><a href="#">English</a></li> -->
@@ -33,7 +33,7 @@
         <li class="dropdown" ng-show="user.scope == 'Admin'">
           <a class="icon-nav-item dropdown-toggle" data-toggle="dropdown"><span class="fa fa-cog fa-1x"></span>  <b class="caret"></b></a>
           <ul class="dropdown-menu">
-            <li class="dropdown-header">Roles</li>
+            <li class="dropdown-header"><i class="fa fa-fw fa-users"></i> Roles</li>
             <li><a class="ut-pointer" ui-sref="users">User</a></li>
             <li><a class="ut-pointer" ui-sref="tenants">Tenant</a></li>
           </ul>
