@@ -28,11 +28,6 @@ exports.createAdmin = {
                 request.payload.updatedBy = "Self";
                 User.saveUser( request.payload, function(err, user) {
                     if (!err) {
-                        var tokenData = {
-                            userId: user.userId,
-                            scope: [user.scope],
-                            id: user._id
-                        };
                         reply( "Admin successfully created" );
                     } else {
                         if ( constants.kDuplicateKeyError === err.code || constants.kDuplicateKeyErrorForMongoDBv2_1_1 === err.code ) {

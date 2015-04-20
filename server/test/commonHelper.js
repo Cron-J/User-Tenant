@@ -46,7 +46,7 @@ exports.validAdminRegistraitionData = function(){
     	"userId": "gaurav@cronj.com",
 	    "password": "cronj123",
 	    "firstName": "gaurav",
-	    "lastName": "gupta",
+	    "lastName": "admin",
 	    "address": {
 	        "city": "Hyderabad",
 	        "country": "India",
@@ -55,4 +55,35 @@ exports.validAdminRegistraitionData = function(){
     };
 
     return validAdminRegistraitionData;
-}
+};
+
+exports.validTenantRegistraitionData = function(){
+    var validTenantRegistraitionData = {
+	    "user": {
+	        "userId": "gaurav_bng@hotmail.com",
+	        "password": "cronj1234",
+	        "firstName": "gaurav",
+	        "lastName": "tenant",
+	        "address": {
+	            "city": "Hyderabad",
+	            "country": "India",
+	            "addressCode": "713324"
+	        }
+	    },
+	    "tenant": {
+	        "tenantId": "tn2",
+	        "name": "TenantName",
+	        "status": "confirmed",
+	        "validFrom": "02/02/2015",
+	        "validTo": "02/02/2015",
+	        "address": {
+	            "city": "Hyderabad",
+	            "country": "India",
+	            "addressCode": "713324"
+	        }
+    	}
+	}
+
+	return validTenantRegistraitionData;
+
+};
