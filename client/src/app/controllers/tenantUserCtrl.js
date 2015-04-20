@@ -7,15 +7,11 @@ app.controller('tenantUserCtrl', ['$scope', '$rootScope', '$http', '$location',
         $stateParams, $modal, $log, userInfo, countryList) {
         var _scope = {};
         _scope.init = function() {
-            console.log($rootScope.user);
+            $scope.clearCountrySelection();
             if($rootScope.user.scope == 'Admin')
                 $scope.view = 'create';
             if($rootScope.user.scope == 'Tenant-Admin')
                 $scope.viewByTenant = 'create';
-            if($stateParams.tenantUserId) {
-                $scope.view = 'view';
-                getUserAccountDetails();
-            }
             if($stateParams.tUserId) {
                 $scope.viewByTenant = 'view';
                 getTenantUserbyTenant();
@@ -29,8 +25,12 @@ app.controller('tenantUserCtrl', ['$scope', '$rootScope', '$http', '$location',
             //country list
             countryList.async().then(function(response) {
                 $scope.countryList = response.data;
+                if($stateParams.tenantUserId) {
+                    $scope.view = 'view';
+                    getUserAccountDetails();
+                }
             });
-            $scope.clearCountrySelection();
+            
         }
         
         // $scope.user = {};

@@ -169,7 +169,7 @@
                     <div class="col-lg-6 col-md-6">
                         <div class="input-group">
                             <span class="input-group-addon"><span class="fa fa-map-marker"></span></span>
-                            <input type="text" class="form-control" name="country1" ng-model="current_usr.address.country[0].name" ng-show="profileView == 'view'" ng-disabled="profileView == 'view'" required>
+                            <input type="text" class="form-control" name="country1" ng-model="current_usr.address.country[0].name" ng-hide="profileView == 'edit'" ng-disabled="profileView == 'view'" required>
                             <div class="select-group" ng-show="profileView == 'edit'"
                             multi-select 
                             name="country"

@@ -10,28 +10,19 @@ app.controller('accountCtrl', ['$scope', '$rootScope', '$http', '$location',
                 remember: true
             };
             $scope.authError = null;
-            if($location.path() == '/editProfile') {
-                $scope.profileView = 'view';
-                userInfo.async().then(function(response) {
-                    for (var i = 0; i < $scope.countryList.length; i++) {
-                        if($scope.countryList[i].code == response.data.address.country ) {
-                            response.data.address.country = [];
-                            response.data.address.country[0] = {};
-                            response.data.address.country[0] = $scope.countryList[i];
-                            response.data.address.country[0].ticked = true;
-                        }
-                    };
-                    $scope.current_usr = response.data;
-                });
-            }
-            $scope.setPassword = false;
-            $scope.isUser = true;
             $scope.clearCountrySelection();
             //country list
             countryList.async().then(function(response) {
                 $scope.countryList = response.data;
                 $scope.countryList1 = angular.copy($scope.countryList);
+                if($location.path() == '/editProfile') {
+                    $scope.profileView = 'view';
+                    getAccountDetails();
+                }
             });
+
+            $scope.setPassword = false;
+            $scope.isUser = true;
         }
 
         //User login
@@ -90,6 +81,21 @@ app.controller('accountCtrl', ['$scope', '$rootScope', '$http', '$location',
                     growl.addErrorMessage(data.message);
                 });
             }
+        }
+
+        //Get Personal Account Details
+        var getAccountDetails = function () {
+            userInfo.async().then(function(response) {
+                for (var i = 0; i < $scope.countryList.length; i++) {
+                    if($scope.countryList[i].code == response.data.address.country ) {
+                        response.data.address.country = [];
+                        response.data.address.country[0] = {};
+                        response.data.address.country[0] = $scope.countryList[i];
+                        response.data.address.country[0].ticked = true;
+                    }
+                };
+                $scope.current_usr = response.data;
+            });
         }
 
         //Update Personal Account Details

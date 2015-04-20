@@ -14,14 +14,14 @@ app.controller('tenantCtrl', ['$scope', '$rootScope', '$http', '$location',
                 });
                 getTenantUsers();
             }
-            if($stateParams.tenantId) 
-               $scope.getTenant();
+            $scope.clearCountrySelection();
            //country list
             countryList.async().then(function(response) {
                 $scope.countryList = response.data;
                 $scope.countryList1 = angular.copy($scope.countryList);
+                if($stateParams.tenantId) 
+                    $scope.getTenant();
             });
-            $scope.clearCountrySelection();
         }
        
         // $scope.user = {};
