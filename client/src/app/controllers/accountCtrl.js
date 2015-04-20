@@ -10,6 +10,7 @@ app.controller('accountCtrl', ['$scope', '$rootScope', '$http', '$location',
                 remember: true
             };
             $scope.authError = null;
+            //clear country selection
             $scope.clearCountrySelection();
             //country list
             countryList.async().then(function(response) {

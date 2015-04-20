@@ -8,6 +8,7 @@ app.controller('adminCtrl', ['$scope', '$rootScope', '$http', '$location',
         var _scope = {};
         _scope.init = function() {
             $scope.view = 'create';
+            //clear country selection
             $scope.clearCountrySelection();
             userInfo.async().then(function(response) {
                 $scope.current_usr.firstName = response.data.firstName;

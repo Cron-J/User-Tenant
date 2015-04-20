@@ -7,6 +7,7 @@ app.controller('tenantUserCtrl', ['$scope', '$rootScope', '$http', '$location',
         $stateParams, $modal, $log, userInfo, countryList) {
         var _scope = {};
         _scope.init = function() {
+            //clear country selection
             $scope.clearCountrySelection();
             if($rootScope.user.scope == 'Admin')
                 $scope.view = 'create';
@@ -159,7 +160,7 @@ app.controller('tenantUserCtrl', ['$scope', '$rootScope', '$http', '$location',
                     headers: AuthServ.getAuthHeader()
                 })
                 .success(function (data, status) {
-                    growl.addSuccessMessage('Account has been updated successfully');
+                    growl.addSuccessMessage('Tenant-User account has been updated successfully');
                     $location.path('/tenantHome');
                 })
                 .error(function (data, status) {

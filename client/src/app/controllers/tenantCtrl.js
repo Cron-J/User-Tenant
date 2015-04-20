@@ -14,6 +14,7 @@ app.controller('tenantCtrl', ['$scope', '$rootScope', '$http', '$location',
                 });
                 getTenantUsers();
             }
+            //clear country selection
             $scope.clearCountrySelection();
            //country list
             countryList.async().then(function(response) {
