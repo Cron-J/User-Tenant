@@ -23,5 +23,10 @@ app.controller('mainCtrl', ['$scope', '$location', '$rootScope', '$http', 'userI
 		      }
 	      }
 
+	      $scope.sessionExpire = function () {
+	      	delete $rootScope.user;
+          growl.addErrorMessage('Session has expired');
+	      }
+
 	      _scope.init();
 }]);

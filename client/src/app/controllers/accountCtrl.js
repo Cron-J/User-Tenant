@@ -121,10 +121,8 @@ app.controller('accountCtrl', ['$scope', '$rootScope', '$http', '$location',
                     $scope.profileView = 'view';
                 })
                 .error(function (data, status) {
-                    if(data.message == 'Invalid token') {
-                        delete $rootScope.user;
-                        growl.addErrorMessage('Session has expired');
-                    } 
+                    if(data.message == 'Invalid token') 
+                        $scope.sessionExpire();
                     else
                         growl.addErrorMessage(data.message);
                     account_info.address.country = dataDump.address.country;
