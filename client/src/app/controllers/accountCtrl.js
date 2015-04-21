@@ -121,8 +121,12 @@ app.controller('accountCtrl', ['$scope', '$rootScope', '$http', '$location',
                     $scope.profileView = 'view';
                 })
                 .error(function (data, status) {
-                    if(data.message == 'Invalid token')  delete $rootScope.user;
-                    growl.addErrorMessage(data.message);
+                    if(data.message == 'Invalid token') {
+                        delete $rootScope.user;
+                        growl.addErrorMessage('Session has expired');
+                    } 
+                    else
+                        growl.addErrorMessage(data.message);
                     account_info.address.country = dataDump.address.country;
                 });
             }

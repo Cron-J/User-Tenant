@@ -13,12 +13,12 @@
                 <div class="form-group">
                     <label class="col-lg-2 col-md-2 control-label">Tenant Id<span class="error" ng-show="signupForm.tenantId.$error.required"> *</span></label>
                     <div class="col-lg-6 col-md-6">        
-                        <div class="input-group col-lg-11 col-md-11 pull-left">
+                        <div class="input-group" ng-class="{'col-lg-11 col-md-11 pull-left': view == 'create'}">
                             <span class="input-group-addon"><i class="fa fa-fw fa-user"></i></span>
-                            <input type="text" class="form-control" name="tenantId" ng-model="account.tenant"ng-pattern="/^[a-zA-Z0-9 ]*$/" ng-disabled="view == 'view' || viewByTenant == 'view'" ng-required="view">
+                            <input type="text" class="form-control" name="tenantId" ng-model="account.tenant"ng-pattern="/^[a-zA-Z0-9 ]*$/" ng-disabled="true" ng-required="view">
                         </div>
                         <div class="col-lg-1 col-md-1 pull-right">
-                            <a class="btn btn-primary btn-sm" ng-click="searchModal('lg')" ng-disabled="view == 'view' || viewByTenant == 'view'"><i class="fa fa-fw fa-search"></i></a>
+                            <a class="btn btn-primary btn-sm" ng-click="searchModal('lg')" ng-show="view == 'create' || viewByTenant == 'create'"><i class="fa fa-search"></i></a>
                             <div ng-include="'app/views/tenant/search_tenants.html'"></div>
                         </div>
                         <div class="error" ng-show="signupForm.tenantId.$dirty 
@@ -168,7 +168,7 @@
             </div>
             <div class="row">
                 <div class="form-group">
-                    <label class="col-lg-2 col-md-2 control-label">Country<span class="error" ng-show="signupForm.country1.$error.required"> *</span></label>
+                    <label class="col-lg-2 col-md-2 control-label">Country<span class="error" ng-hide="account.address.country[0].name"> *</span></label>
                     <div class="col-lg-7 col-md-7">
                         <div class="input-group">
                             <span class="input-group-addon"><span class="fa fa-fw fa-map-marker"></span></span>

@@ -59,8 +59,12 @@ app.controller('tenantUserCtrl', ['$scope', '$rootScope', '$http', '$location',
                 $scope.account.tenantId = data.tenantId._id;
             })
             .error(function (data, status) {
-                if(data.message == 'Invalid token')  delete $rootScope.user;
-                growl.addErrorMessage(data.message);
+                if(data.message == 'Invalid token') {
+                    delete $rootScope.user;
+                    growl.addErrorMessage('Session has expired');
+                } 
+                else
+                    growl.addErrorMessage(data.message);
             });
         }
 
@@ -83,8 +87,12 @@ app.controller('tenantUserCtrl', ['$scope', '$rootScope', '$http', '$location',
                 $scope.account = data;
             })
             .error(function (data, status) {
-                if(data.message == 'Invalid token')  delete $rootScope.user;
-                growl.addErrorMessage(data.message);
+                if(data.message == 'Invalid token') {
+                    delete $rootScope.user;
+                    growl.addErrorMessage('Session has expired');
+                } 
+                else
+                  growl.addErrorMessage(data.message);
             });
         }
 
@@ -123,8 +131,12 @@ app.controller('tenantUserCtrl', ['$scope', '$rootScope', '$http', '$location',
 
                 })
                 .error(function (data, status) {
-                    if(data.message == 'Invalid token')  delete $rootScope.user;
-                    growl.addErrorMessage(data.message);
+                    if(data.message == 'Invalid token') {
+                        delete $rootScope.user;
+                        growl.addErrorMessage('Session has expired');
+                    } 
+                    else
+                      growl.addErrorMessage(data.message);
                     account_info.address.country = dataDump.address.country;
                 });
             }
@@ -146,8 +158,12 @@ app.controller('tenantUserCtrl', ['$scope', '$rootScope', '$http', '$location',
                     $location.path('/users');
                 })
                 .error(function (data, status) {
-                    if(data.message == 'Invalid token')  delete $rootScope.user;
-                    growl.addErrorMessage(data.message);
+                    if(data.message == 'Invalid token') {
+                        delete $rootScope.user;
+                        growl.addErrorMessage('Session has expired');
+                    } 
+                    else
+                        growl.addErrorMessage(data.message);
                     account_info.address.country = dataDump.address.country;
                 });
             }
@@ -169,8 +185,12 @@ app.controller('tenantUserCtrl', ['$scope', '$rootScope', '$http', '$location',
                     $location.path('/tenantHome');
                 })
                 .error(function (data, status) {
-                    if(data.message == 'Invalid token')  delete $rootScope.user;
-                    growl.addErrorMessage(data.message);
+                    if(data.message == 'Invalid token') {
+                        delete $rootScope.user;
+                        growl.addErrorMessage('Session has expired');
+                    } 
+                    else
+                        growl.addErrorMessage(data.message);
                     account_info.address.country = dataDump.address.country;
                 });
             }

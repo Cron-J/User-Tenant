@@ -79,8 +79,12 @@ angular.module('app.factory', [])
           return data;   
         })
         .error(function (data, status) {
-            if(data.message == 'Invalid token')  delete $rootScope.user;
-            growl.addErrorMessage(data.message);
+            if(data.message == 'Invalid token') {
+                delete $rootScope.user;
+                growl.addErrorMessage('Session has expired');
+            } 
+            else
+              growl.addErrorMessage(data.message);
         });
 
       // Return the promise to the controller
