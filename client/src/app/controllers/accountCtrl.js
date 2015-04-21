@@ -18,7 +18,7 @@ app.controller('accountCtrl', ['$scope', '$rootScope', '$http', '$location',
                     $scope.countryList = response.data;
                     $scope.countryList1 = angular.copy($scope.countryList);
                     if($location.path() == '/editProfile') {
-                        $scope.profileView = 'view';
+                        $scope.profileView = 'edit';
                         getAccountDetails();
                     }
                 });

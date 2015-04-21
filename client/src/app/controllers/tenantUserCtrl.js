@@ -23,11 +23,11 @@ app.controller('tenantUserCtrl', ['$scope', '$rootScope', '$http', '$location',
             countryList.async().then(function(response) {
                 $scope.countryList = response.data;
                 if($stateParams.tenantUserId) {
-                    $scope.view = 'view';
+                    $scope.view = 'edit';
                     getUserAccountDetails();
                 }
                 if($stateParams.tUserId) {
-                    $scope.viewByTenant = 'view';
+                    $scope.viewByTenant = 'edit';
                     getTenantUserbyTenant();
                 }
             });
@@ -149,7 +149,7 @@ app.controller('tenantUserCtrl', ['$scope', '$rootScope', '$http', '$location',
                 })
                 .success(function (data, status) {
                     growl.addSuccessMessage('User account has been updated successfully');
-                    $location.path('/users');
+                    $scope.view = 'view';
                 })
                 .error(function (data, status) {
                     if(data.message == 'Invalid token') 
@@ -174,7 +174,7 @@ app.controller('tenantUserCtrl', ['$scope', '$rootScope', '$http', '$location',
                 })
                 .success(function (data, status) {
                     growl.addSuccessMessage('Tenant-User account has been updated successfully');
-                    $location.path('/tenantHome');
+                    $scope.viewByTenant = 'view';
                 })
                 .error(function (data, status) {
                     if(data.message == 'Invalid token') 

@@ -34,7 +34,7 @@ app.controller('tenantCtrl', ['$scope', '$rootScope', '$http', '$location',
                 headers: AuthServ.getAuthHeader()
             })
             .success(function (data, status) {
-                $scope.view = 'view';
+                $scope.view = 'edit';
                 $scope.current_usr.firstName = data.name;
                 $scope.current_usr.lastName = '';
                 for (var i = 0; i < $scope.countryList.length; i++) {
@@ -95,7 +95,7 @@ app.controller('tenantCtrl', ['$scope', '$rootScope', '$http', '$location',
                 .success(function (data, status) {
                     // AuthServ.setUserToken(data, $scope.loginForm.remember);
                     growl.addSuccessMessage('Tenant account has been updated successfully');
-                    $location.path('/tenants');
+                    $scope.view = 'view';
                 })
                 .error(function (data, status) {
                     if(data.message == 'Invalid token') 
@@ -104,6 +104,7 @@ app.controller('tenantCtrl', ['$scope', '$rootScope', '$http', '$location',
                         growl.addErrorMessage(data.message);
                     account_info.address.country = dataDump.address.country;
                 });
+                account_info.tenantId = dataDump.tenantId;
             }
         }
 
