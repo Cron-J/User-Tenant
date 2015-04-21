@@ -11,7 +11,7 @@
             <div class="col-lg-6 col-md-6">            
               <div class="input-group">
                 <span class="input-group-addon"><i class="fa fa-fw fa-user"></i></span>
-                <input type="text" class="form-control" name="tenantId" ng-model="tenant.tenantId" ng-minlength="2" maxlength="30" ng-pattern="/^[a-zA-Z0-9]*$/" ng-disabled="view == 'view'" required>
+                <input type="text" class="form-control" name="tenantId" ng-model="tenant.tenantId" ng-minlength="2" maxlength="30" ng-pattern="/^[a-zA-Z0-9]*$/" ng-disabled='true' required>
               </div>
               <div class="error" ng-show="editForm.tenantId.$dirty && editForm.tenantId.$invalid">Invalid:
                 <span ng-show="editForm.tenantId.$error.required">Tell us your tenant id</span>
