@@ -360,7 +360,9 @@ exports.updateUserByAdmin = {
 
             User.updateUser(request.params.id, request.payload, function(err, user) {
                 if(err){
-                    return reply(Boom.badImplementation("unable to update"));
+                    if ( constants.kDuplicateKeyError === err.code || constants.kDuplicateKeyErrorForMongoDBv2_1_1 === err.code ) {
+                        reply(Boom.forbidden("user email already registered"));
+                    } else reply( Boom.forbidden(err) ); // HTTP 403
                 }
                 else{
                     if( user === 0 ) {
@@ -395,7 +397,10 @@ exports.updateTenantUserByTenantAdmin = {
 
             User.updateUserByTenantId(request.params.id, decoded.tenantId, request.payload, function(err, user) {
                 if(err){
-                    return reply(Boom.badImplementation("unable to update"));
+                    if ( constants.kDuplicateKeyError === err.code || constants.kDuplicateKeyErrorForMongoDBv2_1_1 === err.code ) {
+                        reply(Boom.forbidden("user email already registered"));
+                    } else reply( Boom.forbidden(err) ); // HTTP 403
+                 
                 }
                 else{
                     if( user === 0 ) {

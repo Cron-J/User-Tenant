@@ -59,7 +59,7 @@ app.controller('accountCtrl', ['$scope', '$rootScope', '$http', '$location',
             $http.post('/forgotPassword', {userId:email_add})
                 .success(function (data, status) {
                     console.log(data);
-                    growl.addSuccessMessage('Email has been sent');
+                    growl.addSuccessMessage('Email has been sent successfully');
                     $location.path('/login');
                 })
                 .error(function (data, status) {
