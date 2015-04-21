@@ -251,9 +251,11 @@
         <div class="row">
           <div class="col-lg-4 col-md-4 col-lg-offset-7 col-md-offset-7">
             <div class="pull-right">
-                <button class="btn btn-primary" ng-show="view == 'view'" ng-click="view = 'edit';">Edit</button>
                 <button class="btn btn-primary" ng-show="view == 'edit'" ng-click="updateTenantAccount(tenant, editForm.$valid)">Update</button>
-               <button class="btn btn-default" ui-sref="tenants">Cancel</button>
+                <button class="btn btn-default" ng-show="view == 'edit'" ng-click="confirmationModal()">Cancel</button>
+                <div ng-include="'app/views/common/confirmationDailogBox.html'"></div>
+                <button class="btn btn-primary" ng-show="view == 'view'" ng-click="view = 'edit';">Edit</button>
+                <button class="btn btn-default" ng-show="view == 'view'" ui-sref="tenants">Cancel</button>
             </div>
           </div>
         </div>

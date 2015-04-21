@@ -1,7 +1,8 @@
 'use strict';
 
-app.controller('mainCtrl', ['$scope', '$location', '$rootScope', '$http', 'userInfo', 'countryList',
-    function ($scope, $location, $rootScope, $http, userInfo, countryList) {
+app.controller('mainCtrl', ['$scope', '$location', '$rootScope', '$http', '$modal',
+		'$log','userInfo', 'countryList',
+    function ($scope, $location, $rootScope, $http, $modal, $log, userInfo, countryList) {
         var _scope = {};
         _scope.init = function () {
         	$scope.current_usr = {};
@@ -27,6 +28,24 @@ app.controller('mainCtrl', ['$scope', '$location', '$rootScope', '$http', 'userI
 	      	delete $rootScope.user;
           growl.addErrorMessage('Session has expired');
 	      }
+
+	      $scope.confirmationModal = function(isUser) {
+            var modalInstance = $modal.open({
+                templateUrl: 'confirmationModalContent.html',
+                controller: 'confirmationModalInstanceCtrl',
+                resolve: {
+					        detail: function () {
+					          return isUser;
+					        }
+					      }
+            });
+
+            modalInstance.result.then(function(tenant) {
+
+            }, function() {
+                $log.info('Modal dismissed at: ' + new Date());
+            });
+        }
 
 	      _scope.init();
 }]);

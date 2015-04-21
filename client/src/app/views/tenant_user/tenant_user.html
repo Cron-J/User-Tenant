@@ -220,14 +220,18 @@
                     <div class="pull-right">
                         <!-- Admin view -->
                         <button class="btn btn-primary" ng-show="view == 'create'" ng-disabled="!signupForm.$valid" ng-click="createTenantUserAccount(account, signupForm.$valid)">Submit</button>
-                        <button class="btn btn-primary" ng-show="view == 'view'"  ng-click="view = 'edit';">Edit</button>
                         <button class="btn btn-primary" ng-show="view == 'edit'" ng-disabled="!signupForm.$valid" ng-click="updateUserAccount(account, signupForm.$valid)">Update</button>
-                        <button class="btn btn-default" ng-show="view" ui-sref="users">Cancel</button>
+                        <button class="btn btn-default" ng-show="view == 'edit' || view == 'create'" ng-click="confirmationModal(true)">Cancel</button>
+                        <div ng-include="'app/views/common/confirmationDailogBox.html'"></div>
+                        <button class="btn btn-primary" ng-show="view == 'view'"  ng-click="view = 'edit';">Edit</button>
+                        <button class="btn btn-default" ng-show="view == 'view'" ui-sref="users">Cancel</button>
                         <!-- Tenant-Admin view -->
                         <button class="btn btn-primary" ng-show="viewByTenant == 'create'" ng-disabled="!signupForm.$valid" ng-click="createTenantUserAccount(account, signupForm.$valid)">Submit</button>
-                        <button class="btn btn-primary" ng-show="viewByTenant == 'view'"  ng-click="viewByTenant = 'edit';">Edit</button>
                         <button class="btn btn-primary" ng-show="viewByTenant == 'edit'" ng-disabled="!signupForm.$valid" ng-click="updatetenantUserAccountByTenant(account, signupForm.$valid)">Update</button>
-                        <button class="btn btn-default" ng-show="viewByTenant" ui-sref="tenantHome">Cancel</button>
+                        <button class="btn btn-default" ng-show="viewByTenant == 'edit' || viewByTenant == 'create'" ng-click="confirmationModal()">Cancel</button>
+                        <div ng-include="'app/views/common/confirmationDailogBox.html'"></div>
+                        <button class="btn btn-primary" ng-show="viewByTenant == 'view'"  ng-click="viewByTenant = 'edit';">Edit</button>
+                        <button class="btn btn-default" ng-show="viewByTenant == 'view'" ui-sref="tenantHome">Cancel</button>
                     </div>
                 </div>
             </div>

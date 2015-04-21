@@ -213,11 +213,12 @@
             <div class="row">
                 <div class="col-lg-4 col-md-4 col-lg-offset-7 col-md-offset-7">
                     <div class="pull-right">
-                        <button class="btn btn-primary" ng-show="profileView == 'view'"  ng-click="profileView = 'edit';">Edit</button>
                         <button class="btn btn-primary" ng-show="profileView == 'edit'" ng-disabled="!profileForm.$valid" ng-click="updateProfile(current_usr, profileForm.$valid)">Update</button>
-                        <button class="btn btn-default" ng-show="user.scope == 'Admin'" ui-sref="tenants">Cancel</button>
-                        <button class="btn btn-default" ng-show="user.scope == 'Tenant-Admin'" ui-sref="tenanthome">Cancel</button>
-                        <button class="btn btn-default" ng-show="user.scope == 'Tenant-User'" ui-sref="home">Cancel</button>
+                        <button class="btn btn-default" ng-show="profileView == 'edit'" ng-click="confirmationModal()">Cancel</button>
+                        <div ng-include="'app/views/common/confirmationDailogBox.html'"></div>
+                        <button class="btn btn-primary" ng-show="profileView == 'view'"  ng-click="profileView = 'edit';">Edit</button>
+                        <button class="btn btn-default" ng-show="profileView == 'view' && user.scope == 'Admin'" ui-sref="tenants">Cancel</button>
+                        <button class="btn btn-default" ng-show="profileView == 'view' && user.scope == 'Tenant-User'" ui-sref="home">Cancel</button>
                     </div>
                 </div>
             </div>
