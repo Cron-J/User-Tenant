@@ -12,8 +12,8 @@ module.exports = {
         tokenExpiry: 1 * 30 * 1000 * 60 //1 hour
     },
     email: {
-        username: "anusha@cronj.com",
-        password: "cronjpwd",
+        username: "cronjtest@gmail.com",
+        password: "cron@123",
         accountName: "JCatlog"
     }
 };
