@@ -82,8 +82,23 @@ exports.validTenantRegistraitionData = function(){
 	            "addressCode": "713324"
 	        }
     	}
-	}
+	};
 
 	return validTenantRegistraitionData;
+};
 
+exports.validTenantUserData = function(){
+    var validTenantUserData = {
+	    "userId": "gaurav.ati.bng@gmail.com",
+	    "password": "cronj123",
+	    "firstName": "gaurav",
+	    "lastName": "gupta",
+	    "address": {
+	        "city": "Hyderabad",
+	        "country": "India",
+	        "addressCode": "713324"
+	    }
+}
+
+	return validTenantUserData;
 };

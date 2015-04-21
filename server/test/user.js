@@ -95,6 +95,45 @@ describe("user controller test", function() {
 
   });
 
+  // describe("POST /tenantUser : Tenant user registration", function() {
+
+  //   it("successfully created tenant used loged in as tenant admin", function(done) {
+  //     var validTenantRegistraitionData = JSON.parse(JSON.stringify(testCommon.validTenantRegistraitionData()));
+  //     request(url).post("/tenantSelfRegistration").send(validTenantRegistraitionData).expect(200).end(function(error, result) {
+  //       if (error) {
+  //         throw error;
+  //       }
+       
+  //       var validLoginData = {
+  //         "userId": validTenantRegistraitionData.user.userId,
+  //         "password": validTenantRegistraitionData.user.password
+  //       };
+  //       request(url).post("/login").send(validLoginData).expect(200).end(function(error, result) {
+  //         if (error) {
+  //           throw error;
+  //         }
+  //         // console.log(result.request.response.body.token);
+  //         // console.log(testCommon.validTenantUserData());
+  //         // done();
+  //         var validTenantUserData = JSON.parse(JSON.stringify(testCommon.validTenantUserData()));
+  //         request(url)
+  //         .post("/tenantUser")
+  //         .set('Authorization', result.request.response.body.token)
+  //         // .set('Content-Type',  'application/json')
+  //         .send(validTenantUserData)
+  //         .expect(200).end(function(error, result) {
+  //           if (error) {
+  //             console.log(error);
+  //             throw error;
+  //           }
+  //           done();
+  //         });
+  //       });
+  //     }); 
+  //   });
+
+  // });
+
   describe("POST: /login : User Login", function() {
 
     it("successfull login as admin", function(done) {
@@ -323,6 +362,34 @@ describe("user controller test", function() {
           request(url).get("/user")
           .set('Authorization', authorizationHeader)
           .expect(200).end(function(error, result) {
+            if (error) {
+              throw error;
+            }
+            done();
+          });
+        });
+      });     
+    });
+
+    it("unable to get user detail due to invalid token logged in as tenant admin", function(done) {
+      var validTenantRegistraitionData = JSON.parse(JSON.stringify(testCommon.validTenantRegistraitionData()));
+      request(url).post("/tenantSelfRegistration").send(validTenantRegistraitionData).expect(200).end(function(error, result) {
+        if (error) {
+          throw error;
+        }
+       
+        var validLoginData = {
+          "userId": validTenantRegistraitionData.user.userId,
+          "password": validTenantRegistraitionData.user.password
+        };
+        request(url).post("/login").send(validLoginData).expect(200).end(function(error, result) {
+          if (error) {
+            throw error;
+          }     
+          var authorizationHeader = 'Bearer ' + result.request.response.body.token + "gy67";
+          request(url).get("/user")
+          .set('Authorization', authorizationHeader)
+          .expect(401).end(function(error, result) {
             if (error) {
               throw error;
             }
