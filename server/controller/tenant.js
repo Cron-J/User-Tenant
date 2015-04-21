@@ -91,7 +91,7 @@ exports.searchTenant = {
         if (request.payload.tenantId) query['tenantId'] = new RegExp(request.payload.tenantId, "i");
         if (request.payload.name) query['name'] = new RegExp(request.payload.name, "i");
         if (request.payload.description) query['description'] = new RegExp(request.payload.description, "i");
-        if (request.payload.status) query['status'] = new RegExp(request.payload.status, "i");
+        if (request.payload.status) query['status'] = request.payload.status;
         
         Tenant.searchTenant(query, function( err, tenant ) {
             if (!err) {

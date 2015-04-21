@@ -13,10 +13,6 @@ app.controller('tenantUserCtrl', ['$scope', '$rootScope', '$http', '$location',
                 $scope.view = 'create';
             if($rootScope.user.scope == 'Tenant-Admin')
                 $scope.viewByTenant = 'create';
-            if($stateParams.tUserId) {
-                $scope.viewByTenant = 'view';
-                getTenantUserbyTenant();
-            }
             if($location.path() == '/home') {
                 userInfo.async().then(function(response) {
                     $scope.current_usr.firstName = response.data.firstName;
@@ -29,6 +25,10 @@ app.controller('tenantUserCtrl', ['$scope', '$rootScope', '$http', '$location',
                 if($stateParams.tenantUserId) {
                     $scope.view = 'view';
                     getUserAccountDetails();
+                }
+                if($stateParams.tUserId) {
+                    $scope.viewByTenant = 'view';
+                    getTenantUserbyTenant();
                 }
             });
             
@@ -59,10 +59,8 @@ app.controller('tenantUserCtrl', ['$scope', '$rootScope', '$http', '$location',
                 $scope.account.tenantId = data.tenantId._id;
             })
             .error(function (data, status) {
-                if(data.message == 'Invalid token') {
-                    delete $rootScope.user;
-                    growl.addErrorMessage('Session has expired');
-                } 
+                if(data.message == 'Invalid token') 
+                    $scope.sessionExpire();
                 else
                     growl.addErrorMessage(data.message);
             });
@@ -87,10 +85,8 @@ app.controller('tenantUserCtrl', ['$scope', '$rootScope', '$http', '$location',
                 $scope.account = data;
             })
             .error(function (data, status) {
-                if(data.message == 'Invalid token') {
-                    delete $rootScope.user;
-                    growl.addErrorMessage('Session has expired');
-                } 
+                if(data.message == 'Invalid token') 
+                    $scope.sessionExpire();
                 else
                   growl.addErrorMessage(data.message);
             });
@@ -131,10 +127,8 @@ app.controller('tenantUserCtrl', ['$scope', '$rootScope', '$http', '$location',
 
                 })
                 .error(function (data, status) {
-                    if(data.message == 'Invalid token') {
-                        delete $rootScope.user;
-                        growl.addErrorMessage('Session has expired');
-                    } 
+                    if(data.message == 'Invalid token') 
+                        $scope.sessionExpire();
                     else
                       growl.addErrorMessage(data.message);
                     account_info.address.country = dataDump.address.country;
@@ -158,10 +152,8 @@ app.controller('tenantUserCtrl', ['$scope', '$rootScope', '$http', '$location',
                     $location.path('/users');
                 })
                 .error(function (data, status) {
-                    if(data.message == 'Invalid token') {
-                        delete $rootScope.user;
-                        growl.addErrorMessage('Session has expired');
-                    } 
+                    if(data.message == 'Invalid token') 
+                        $scope.sessionExpire();
                     else
                         growl.addErrorMessage(data.message);
                     account_info.address.country = dataDump.address.country;
@@ -185,10 +177,8 @@ app.controller('tenantUserCtrl', ['$scope', '$rootScope', '$http', '$location',
                     $location.path('/tenantHome');
                 })
                 .error(function (data, status) {
-                    if(data.message == 'Invalid token') {
-                        delete $rootScope.user;
-                        growl.addErrorMessage('Session has expired');
-                    } 
+                    if(data.message == 'Invalid token') 
+                        $scope.sessionExpire();
                     else
                         growl.addErrorMessage(data.message);
                     account_info.address.country = dataDump.address.country;
