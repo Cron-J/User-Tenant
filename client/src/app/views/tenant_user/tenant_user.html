@@ -207,7 +207,8 @@
                             <span class="input-group-addon"><span class="fa fa-fw fa-link"></span></span>
                             <input type="text" class="form-control" name="zipcode1" ng-model="account.address.addressCode" ng-minlength="3" maxlength="10" ng-pattern=" /^[a-zA-Z0-9]*$/" ng-disabled="view == 'view' || viewByTenant == 'view'" required>
                         </div>
-                        <span class="error" ng-show="signupForm.zipcode1.$dirty && signupForm.zipcode1.$invalid">Invalid:
+                        <span class="error" ng-show="signupForm.zipcode1.$dirty 
+                        && signupForm.zipcode1.$invalid">Invalid:
                             <span ng-show="signupForm.zipcode1.$error.required">Zip code is required</span>
                         <span ng-show="signupForm.zipcode1.$error.minlength">Zip code should be minimum of 3 digit</span>
                         <span ng-show="signupForm.zipcode1.$error.pattern">Zip code won't allow special characters</span>
@@ -215,6 +216,7 @@
                     </div>
                 </div>
             </div>
+            <div ng-include="'app/views/common/audit_info.html'" ng-hide="view == 'create' || viewByTenant == 'create'"></div>
             <div class="row">
                 <div class="col-lg-4 col-md-4 col-lg-offset-8 col-md-offset-8">
                     <div class="pull-right">

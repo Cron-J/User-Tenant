@@ -1,0 +1,29 @@
+<div class="row">
+          <div class="form-group">
+            <div class="col-lg-6 col-md-6">
+              <div class="panel panel-default">
+                <div class="panel-heading">
+                  <h3 class="panel-title"><b>Audit Info</b></h3>
+                </div>
+                <div class="panel-body">
+                  <div class="row">
+                    <div class="col-sm-3">
+                      <div>Created </div>
+                    </div>
+                    <div class="col-sm-9">
+                      <div>{{account.createdBy}}/{{account.createdAt |  date:'dd.MM.yy h:mma'}}</div>
+                    </div>
+                  </div>
+                  <div class="row">
+                    <div class="col-sm-3">
+                      <div>Updated</div>
+                    </div>
+                    <div class="col-sm-9">
+                      <div>{{account.updatedBy}}/{{account.updatedAt |  date:'dd.MM.yy h:mma'}}</div>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>

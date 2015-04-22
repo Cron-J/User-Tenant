@@ -1,4 +1,3 @@
-'use strict';
 
 app.controller('tenantUserCtrl', ['$scope', '$rootScope', '$http', '$location', 
     'AuthServ', 'growl', '$filter', '$stateParams', '$modal', '$log', 'userInfo',
@@ -149,6 +148,7 @@ app.controller('tenantUserCtrl', ['$scope', '$rootScope', '$http', '$location',
                 })
                 .success(function (data, status) {
                     growl.addSuccessMessage('User account has been updated successfully');
+                    getUserAccountDetails();
                     $scope.view = 'view';
                 })
                 .error(function (data, status) {
@@ -158,6 +158,7 @@ app.controller('tenantUserCtrl', ['$scope', '$rootScope', '$http', '$location',
                         growl.addErrorMessage(data.message);
                     account_info.address.country = dataDump.address.country;
                 });
+                
             }
         }
 
@@ -174,6 +175,7 @@ app.controller('tenantUserCtrl', ['$scope', '$rootScope', '$http', '$location',
                 })
                 .success(function (data, status) {
                     growl.addSuccessMessage('Tenant-User account has been updated successfully');
+                    getTenantUserbyTenant();
                     $scope.viewByTenant = 'view';
                 })
                 .error(function (data, status) {
@@ -183,6 +185,7 @@ app.controller('tenantUserCtrl', ['$scope', '$rootScope', '$http', '$location',
                         growl.addErrorMessage(data.message);
                     account_info.address.country = dataDump.address.country;
                 });
+                
             }
         }
         

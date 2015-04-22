@@ -20,8 +20,10 @@ app.controller('tenantCtrl', ['$scope', '$rootScope', '$http', '$location',
             countryList.async().then(function(response) {
                 $scope.countryList = response.data;
                 $scope.countryList1 = angular.copy($scope.countryList);
-                if($stateParams.tenantId) 
+                if($stateParams.tenantId) {
+                    $scope.view = 'edit';
                     $scope.getTenant();
+                }
             });
         }
        
@@ -34,7 +36,6 @@ app.controller('tenantCtrl', ['$scope', '$rootScope', '$http', '$location',
                 headers: AuthServ.getAuthHeader()
             })
             .success(function (data, status) {
-                $scope.view = 'edit';
                 $scope.current_usr.firstName = data.name;
                 $scope.current_usr.lastName = '';
                 for (var i = 0; i < $scope.countryList.length; i++) {
@@ -45,7 +46,7 @@ app.controller('tenantCtrl', ['$scope', '$rootScope', '$http', '$location',
                         data.address.country[0].ticked = true;
                     }
                 };
-                $scope.tenant = data;
+                $scope.account = data;
             })
             .error(function (data, status) {
                 if(data.message == 'Invalid token') 
@@ -86,6 +87,7 @@ app.controller('tenantCtrl', ['$scope', '$rootScope', '$http', '$location',
             if(valid){
                 var dataDump = angular.copy(account_info);
                 account_info.address.country = account_info.address.country[0].code;
+                console.log(account_info.address.country);
                 delete account_info._id, delete account_info.tenantId, 
                 delete account_info.createdAt, delete account_info.createdBy, delete account_info.updatedAt,
                 delete account_info.updatedBy;
@@ -95,6 +97,7 @@ app.controller('tenantCtrl', ['$scope', '$rootScope', '$http', '$location',
                 .success(function (data, status) {
                     // AuthServ.setUserToken(data, $scope.loginForm.remember);
                     growl.addSuccessMessage('Tenant account has been updated successfully');
+                    $scope.getTenant();
                     $scope.view = 'view';
                 })
                 .error(function (data, status) {
@@ -102,9 +105,9 @@ app.controller('tenantCtrl', ['$scope', '$rootScope', '$http', '$location',
                         $scope.sessionExpire();
                     else
                         growl.addErrorMessage(data.message);
-                    account_info.address.country = dataDump.address.country;
-                });
-                account_info.tenantId = dataDump.tenantId;
+                    $scope.account.address.country = dataDump.address.country;
+                });        
+               $scope.account.tenantId = dataDump.tenantId;
             }
         }
 
