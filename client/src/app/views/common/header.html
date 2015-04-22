@@ -17,12 +17,12 @@
     </div>
 
     <ul class="nav navbar-nav navbar-right" ng-show="user">
-        <li class="dropdown">
+        <li class="dropdown" ng-controller="accountCtrl">
           <a class="dropdown-toggle" data-toggle="dropdown">
               <span>{{current_usr.firstName}} {{current_usr.lastName}} </span><b class="caret"></b>
           </a>
           <ul class="dropdown-menu">
-            <li><a ng-controller="accountCtrl" ui-sref="editProfile" ng-if="user.scope == 'Admin' || user.scope == 'Tenant-User'" class="ut-pointer"><i class="fa fa-fw fa-user"></i> Profile</a></li>
+            <li><a ui-sref="editProfile" class="ut-pointer"><i class="fa fa-fw fa-user"></i> Profile</a></li>
             <li><a ng-click="logOut()" class="ut-pointer"><i class="fa fa-fw fa-sign-out"></i> Log Off</a></li>
             <!-- <li class="divider"></li>
             <li class="dropdown-header">Language</li>

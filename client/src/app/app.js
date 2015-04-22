@@ -58,7 +58,7 @@ var app = angular.module('app', [
               templateUrl: "app/views/common/profile.html",
               controller: "accountCtrl",
               data: {
-                  authorizedRoles: [USER_ROLES.admin, USER_ROLES.tenantuser]
+                  authorizedRoles: [USER_ROLES.all]
               }
           })
           .state('createTenant', {

@@ -42,6 +42,15 @@
 .ut-userId-control {
 	width: 214px;
 }
+.panel-row-space {
+  margin-bottom: 10px;
+}
+.ut-acc-row { 
+	margin-top: 30px;
+}
+.ut-acc-form-group {
+	margin-left: -15px;
+}
 /*modified css*/
 .form-horizontal .control-label {
   text-align: left;

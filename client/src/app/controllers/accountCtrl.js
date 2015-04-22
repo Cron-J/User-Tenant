@@ -46,13 +46,13 @@ app.controller('accountCtrl', ['$scope', '$rootScope', '$http', '$location',
                 });
         }
 
-        // //User logout
-        // $scope.logOut = function() {
-        //     AuthServ.clearCookie();
-        //     AuthServ.removeUser();
-        //     delete $rootScope.user;
-        //     $location.path('/login');
-        // }
+        //User logout
+        $scope.logOut = function() {
+            AuthServ.clearCookie();
+            AuthServ.removeUser();
+            delete $rootScope.user;
+            $location.path('/login');
+        }
 
         //forgot password
         $scope.forgotPassword = function (email_add) {
@@ -99,8 +99,9 @@ app.controller('accountCtrl', ['$scope', '$rootScope', '$http', '$location',
                         response.data.address.country[0].ticked = true;
                     }
                 };
-                $scope.current_usr = response.data;
                 $scope.account = response.data;
+                $scope.current_usr.firstName = response.data.firstName;
+                $scope.current_usr.lastName = response.data.lastName;
             });
         }
 
