@@ -138,6 +138,8 @@ User.statics.updateUser = function(id, user, callback) {
 };
 
 User.statics.updateUserByTenantId = function(id, tenantId, user, callback) {
+    if( user.createdAt ) { delete user.createdAt; }
+    user.updatedAt = new Date();
     this.update({
         '_id': id,
         'tenantId': tenantId
