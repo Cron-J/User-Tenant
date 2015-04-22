@@ -2,7 +2,6 @@
 
 var mongoose = require('mongoose'),
     Schema = mongoose.Schema,
-    timestamps = require('mongoose-timestamp'),
     constants = require('../Utility/constants').constants,
     validator = require('mongoose-validators'),
     Address = require('./address').Address;
@@ -76,7 +75,7 @@ var Tenant = new Schema({
     address: Address,
 
     /**
-     * User name who has created the User.
+     * User name who has created the tenant.
      */
     createdBy: {
         type: String,
@@ -85,27 +84,40 @@ var Tenant = new Schema({
     },
 
     /**
-     * User name who has changed the User last time.
+     * User name who has updated tenant recently.
      */
     updatedBy: {
         type: String,
         required: true,
         enum: ['Self Registraition', 'Admin']
     },
+
+    /**
+     * Tenant creation timestamp.
+     */
+    createdAt: {
+        type: Date
+    },
+
+    /**
+     * Tenant updation timestamp.
+     */
+    updatedAt: {
+        type: Date
+    },
+
 });
 
-/**
- * Date when the Tenant was created.
- * Date when the Tenant was changed last time.
- */
-Tenant.plugin(timestamps);
-
 Tenant.statics.saveTenant = function(requestData, callback) {
+    requestData.createdAt = new Date();
+    requestData.updatedAt = new Date();
     var tenant = new this(requestData);
     tenant.save(callback);
 };
 
 Tenant.statics.updateTenant = function(id, tenant, callback) {
+    if( tenant.createdAt ) { delete tenant.createdAt; }
+    tenant.updatedAt = new Date();
     this.update({
         '_id': id
     }, tenant, callback);

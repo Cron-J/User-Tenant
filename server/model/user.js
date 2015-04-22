@@ -2,7 +2,6 @@
 
 var mongoose = require('mongoose'),
     Schema = mongoose.Schema,
-    timestamps = require('mongoose-timestamp'),
     constants = require('../Utility/constants').constants,
     validator = require('mongoose-validators'),
     Address = require('./address').Address;
@@ -98,6 +97,20 @@ var User = new Schema({
     },
 
     /**
+     * User creation timestamp.
+     */
+    createdAt: {
+        type: Date
+    },
+
+    /**
+     * User updation timestamp.
+     */
+    updatedAt: {
+        type: Date
+    },
+
+    /**
      * Identifier of tenant.
      */
     tenantId: { 
@@ -109,19 +122,16 @@ var User = new Schema({
 });
 
 
-/**
- * Date when the Product was created.
- * Date when the Product was changed last time.
- */
-User.plugin(timestamps);
-
-
 User.statics.saveUser = function(requestData, callback) {
+    requestData.createdAt = new Date();
+    requestData.updatedAt = new Date();
     var user = new this(requestData);
     user.save(callback);
 };
 
 User.statics.updateUser = function(id, user, callback) {
+    if( user.createdAt ) { delete user.createdAt; }
+    user.updatedAt = new Date();
     this.update({
         '_id': id
     }, user, callback);
