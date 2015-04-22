@@ -100,6 +100,7 @@ app.controller('accountCtrl', ['$scope', '$rootScope', '$http', '$location',
                     }
                 };
                 $scope.current_usr = response.data;
+                $scope.account = response.data;
             });
         }
 
@@ -117,7 +118,7 @@ app.controller('accountCtrl', ['$scope', '$rootScope', '$http', '$location',
                 })
                 .success(function (data, status) {
                     growl.addSuccessMessage('Account has been updated successfully');
-                    $scope.current_usr.address.country = countryDump;
+                    getAccountDetails();
                     $scope.profileView = 'view';
                 })
                 .error(function (data, status) {
