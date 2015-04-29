@@ -10,7 +10,7 @@ Run the following command in root directory of an app in command prompt.
 
 ###### *Install node packages*
 
-node install
+npm install
 
 ###### *Install bower components*
 
