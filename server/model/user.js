@@ -2,6 +2,7 @@
 
 var mongoose = require('mongoose'),
     Schema = mongoose.Schema,
+    ObjectId = Schema.ObjectId,
     constants = require('../Utility/constants').constants,
     validator = require('mongoose-validators'),
     Address = require('./address').Address;
@@ -14,88 +15,56 @@ var mongoose = require('mongoose'),
 var User = new Schema({
 
     /** 
-      userId. It can only contain valid email id, should be unique, is required and indexed.
+      user Name, for login; must be a string, unique, required, should have minimum length 3 and maximum 20.
     */
-    userId: {
+    username: {
         type: String,
         unique: true,
         required: true,
-        validate: [validator.matches(constants.eMailRegex)]
+        min: 3,
+        max: 20
     },
-
     /** 
-      password. It can only contain string, is required field.
-    */
-    password: {
-        type: String,
-        required: true
-    },
-
-    /** 
-      Scope. It can only contain string, is required field, and should have value from enum array.
-    */
-    scope: {
-        type: String,
-        enum: ['Admin', 'Tenant-Admin', 'Tenant-User'],
-        required: true
-    },
-
-    /** 
-      firstName. It can only contain string.
+      user first Name; must be a string, unique, required, should have minimum length 3 and maximum 20.
     */
     firstName: {
         type: String,
+        trim: true,
         required: true,
-        validate: [validator.isLength(2,30), validator.matches(constants.nameRegex)]
+        min: 3,
+        max: 20
     },
-
     /** 
-      lastName. It can only contain string.
+      user last Name; must be a string, unique, required, should have minimum length 3 and maximum 20.
     */
     lastName: {
         type: String,
+        trim: true,
         required: true,
-        validate: [validator.isLength(2,30), validator.matches(constants.nameRegex)]
+        min: 3,
+        max: 20
     },
-
     /** 
-      Address. It stores address information.
+      user email; must be a valid email, lowercase, required, should have minimum length 5 and maximum 50.
     */
-
-    address: Address,
-
-    /**
-     * User name who has created the User.
-     */
-    createdBy: {
+    email: {
         type: String,
+        lowercase: true,
+        trim: true,
         required: true,
-        enum: ['Self', 'Admin', 'Tenant-Admin']
+        min: 5,
+        max: 50
     },
-
-    /**
-     * User name who has changed the User last time.
-     */
-    updatedBy: {
+    /** 
+      user password; must be string, required, should have minimum length 5 and maximum 50.
+    */
+    password: {
         type: String,
+        select: false,
+        min: 5,
         required: true,
-        enum: ['Self', 'Admin', 'Tenant-Admin']
+        max: 50
     },
-
-    /**
-     * User last login timestamp.
-     */
-    lastLogin: {
-        type: Date
-    },
-
-    /**
-     * User first login timestamp.
-     */
-    firstLogin: {
-        type: Date
-    },
-
     /**
      * User creation timestamp.
      */
@@ -109,15 +78,48 @@ var User = new Schema({
     updatedAt: {
         type: Date
     },
-
     /**
-     * Identifier of tenant.
+     * User id of creator.
      */
-    tenantId: { 
-        type: Schema.Types.ObjectId,
-        ref: 'tenant', 
+    createdBy: {
+        type: ObjectId,
+        required: true
+    },
+    /**
+     * User id of updated person.
+     */
+    updatedBy: {
+        type: ObjectId
+    },
+    /**
+     * User last login timestamp.
+     */
+    lastLogin: {
+        type: Date
+    },
+    /**
+     * User first login timestamp.
+     */
+    firstLogin: {
+        type: Date
+    },
+    tenantId: {
+        type: ObjectId,
+        ref: 'Tenant'
+    },
+    isActive: {
+        type: Boolean,
+        default: false
     },
 
+    /** 
+      Scope. It can only contain string, is required field, and should have value from enum array.
+    */
+    scope: {
+        type: String,
+        enum: ['Admin', 'Tenant-Admin', 'User'],
+        required: true
+    }
 
 });
 
@@ -130,7 +132,9 @@ User.statics.saveUser = function(requestData, callback) {
 };
 
 User.statics.updateUser = function(id, user, callback) {
-    if( user.createdAt ) { delete user.createdAt; }
+    if (user.createdAt) {
+        delete user.createdAt;
+    }
     user.updatedAt = new Date();
     this.update({
         '_id': id
@@ -138,7 +142,9 @@ User.statics.updateUser = function(id, user, callback) {
 };
 
 User.statics.updateUserByTenantId = function(id, tenantId, user, callback) {
-    if( user.createdAt ) { delete user.createdAt; }
+    if (user.createdAt) {
+        delete user.createdAt;
+    }
     user.updatedAt = new Date();
     this.update({
         '_id': id,

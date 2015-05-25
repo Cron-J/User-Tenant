@@ -2,6 +2,7 @@
 
 var mongoose = require('mongoose'),
     Schema = mongoose.Schema,
+    ObjectId = Schema.ObjectId,
     constants = require('../Utility/constants').constants,
     validator = require('mongoose-validators'),
     Address = require('./address').Address;
@@ -14,32 +15,12 @@ var mongoose = require('mongoose'),
 var Tenant = new Schema({
 
     /**
-     * tenant id is indexed 
-     */
-    tenantId: {
-        type: String,
-        required: true,
-        unique: true,
-        validate: [validator.isLength(2,30), validator.matches(constants.idRegex)]
-    },
-
-    /**
      * name must be string and required field
      */
     name: {
         type: String,
         required: true,
-        trim: true,
-        validate: [validator.isLength(2,30), validator.matches(constants.nameRegex)]
-    },
-
-    /**
-     * status must be string and required field
-     */
-    status: {
-        type: String,
-        required: true,
-        trim: true,
+        unique: true,
         validate: [validator.isLength(2,30), validator.matches(constants.nameRegex)]
     },
 
@@ -53,43 +34,17 @@ var Tenant = new Schema({
     },
 
     /**
-     * valid from must be string and required field
-     */
-    validFrom: {
-        type: Date,
-        required: true
-
-    },
-
-    /**
-     * valid to must be string and required field
-     */
-    validTo: {
-        type: Date,
-        required: true
-    },
-
-    /** 
-      Address. It stores address information.
-    */
-    address: Address,
-
-    /**
      * User name who has created the tenant.
      */
     createdBy: {
-        type: String,
-        required: true,
-        enum: ['Self Registraition', 'Admin']
+        type: ObjectId
     },
 
     /**
      * User name who has updated tenant recently.
      */
     updatedBy: {
-        type: String,
-        required: true,
-        enum: ['Self Registraition', 'Admin']
+        type: ObjectId
     },
 
     /**
@@ -121,12 +76,6 @@ Tenant.statics.updateTenant = function(id, tenant, callback) {
     this.update({
         '_id': id
     }, tenant, callback);
-};
-
-Tenant.statics.findTenantByDisplayId = function(tenantId, callback) {
-    this.findOne({
-        tenantId: tenantId
-    }, callback);
 };
 
 Tenant.statics.findTenantById = function(id, callback) {
