@@ -59,11 +59,6 @@ app.controller('tenantCtrl', ['$scope', '$rootScope', '$http', '$location',
         //Tenant account creation
         $scope.createTenantAccount = function (account_info, valid) {
             if(valid){
-                var dataDump = angular.copy(account_info);
-                account_info.tenant.validFrom = $filter('date')(account_info.tenant.validFrom, "MM/dd/yyyy");
-                account_info.tenant.validTo = $filter('date')(account_info.tenant.validTo, "MM/dd/yyyy");
-                account_info.tenant.address.country = account_info.tenant.address.country[0].code;
-                account_info.user.address.country = account_info.user.address.country[0].code;
                 $http.post('/tenant', account_info, {
                     headers: AuthServ.getAuthHeader()
                 })
@@ -76,8 +71,6 @@ app.controller('tenantCtrl', ['$scope', '$rootScope', '$http', '$location',
                         $scope.sessionExpire();
                     else
                         growl.addErrorMessage(data.message);
-                    account_info.tenant.address.country = dataDump.tenant.address.country;
-                    account_info.user.address.country = dataDump.user.address.country;
                 });
             }
         }

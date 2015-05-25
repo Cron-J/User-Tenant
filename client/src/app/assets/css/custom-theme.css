@@ -1,0 +1,91 @@
+/* Added classes according previous app*/
+.navbar-brand-1 {
+  display: inline-block;
+  float: none;
+  height: auto;
+  padding: 0 20px;
+  font-size: 20px;
+  font-weight: 700;
+  line-height: 50px;
+  text-align: center;
+}
+.img-circle {
+  border-radius: 50%;
+}
+
+.m-t {
+  margin-top: 15px;
+}
+.block {
+  display: block;
+}
+
+.m-b-lg {
+  margin-bottom: 30px;
+}
+.navbar-brand-1 img {
+  max-height: 20px;
+  margin-top: -4px;
+  vertical-align: middle;
+}
+.wrapper {
+  padding: 15px;
+}
+.text-center {
+  text-align: center;
+}
+.w-xxl {
+  width: 360px;
+}
+
+.list-group-sm .list-group-item {
+  padding: 6px 10px;
+}
+
+.no-border, .no-borders {
+  border-color: transparent;
+  border-width: 0;
+}
+.form-control, .form-control:focus {
+  -webkit-box-shadow: none;
+  box-shadow: none;
+}
+.form-control {
+  border-color: #cfdadd;
+  border-radius: 2px;
+  font-size: 16px;
+}
+.line-dashed {
+  background-color: transparent;
+  border-style: dashed !important;
+  border-width: 0;
+}
+.line {
+  width: 100%;
+  height: 2px;
+  margin: 10px 0;
+  overflow: hidden;
+  font-size: 0;
+}
+.btn-block {
+  padding-right: 12px;
+  padding-left: 12px;
+}
+.btn {
+  font-size: 16px;
+}
+.form-control, .form-control:focus {
+  -webkit-box-shadow: none;
+  box-shadow: none;
+}
+.form-control {
+  border-color: #cfdadd;
+  border-radius: 2px;
+  font-size: 16px;
+}
+.form-validation .form-control.ng-dirty.ng-invalid {
+  border-color: #f05050;
+}
+.form-validation .form-control.ng-dirty.ng-valid, .form-validation .form-control.ng-dirty.ng-valid:focus {
+  border-color: #27c24c;
+}

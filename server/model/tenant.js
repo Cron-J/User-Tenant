@@ -2,7 +2,7 @@
 
 var mongoose = require('mongoose'),
     Schema = mongoose.Schema,
-    ObjectId = Schema.ObjectId,
+    ObjectId = Schema.Types.ObjectId,
     constants = require('../Utility/constants').constants,
     validator = require('mongoose-validators');
 

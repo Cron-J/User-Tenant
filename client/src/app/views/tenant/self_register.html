@@ -1,0 +1,259 @@
+<!-- <div class="container  w-xxl w-auto-xs">
+  <header>
+    <p class="ut-lead" ng-show="user.scope">Create Tenant</p>
+    <p class="ut-lead" ng-hide="user.scope">Tenant Registration</p>
+  </header>
+  <div class="">
+    <form id="signupForm" class="form-horizontal ut-form ng-pristine ng-valid" role="form" name="signupForm" novalidate>
+        <div class="row">
+          <div class="form-group">
+            <label class="col-lg-3 col-md-3 control-label">User Name<span class="error" ng-show="signupForm.name.$error.required"> *</span></label>
+            <div class="col-lg-5 col-md-5">            
+              <div class="input-group">
+                <span class="input-group-addon"><i class="fa fa-fw fa-user"></i></span>
+                <input type="text" class="form-control" name="username" ng-model="account.user.username" ng-minlength="3" maxlength="20" ng-pattern="/^[a-zA-Z0-9 ]*$/" required>
+              </div>
+              <div class="error" ng-show="signupForm.username.$dirty && signupForm.username.$invalid">Invalid:
+                <span ng-show="signupForm.username.$error.required">Tell us your user name</span>
+                <span ng-show="signupForm.username.$error.minlength">user name should be minimum of 3 characters</span>
+                <span ng-show="signupForm.username.$error.pattern">user name won't allow special characters</span>
+                </span>
+              </div>
+            </div>
+          </div>
+        </div>
+        <div class="row">
+            <div class="form-group">
+                <label class="col-lg-3 col-md-3 control-label">First name <span class="error" ng-show="signupForm.firstName.$error.required"> *</span></label>
+                <div class="col-lg-5 col-md-5">            
+                    <div class="input-group">
+                        <span class="input-group-addon"><i class="fa fa-fw fa-pencil"></i></span>
+                        <input type="text" class="form-control" name="firstName" ng-model="account.user.firstName" ng-minlength="3" maxlength="20" ng-pattern="/^[a-zA-Z0-9 ]*$/" required>
+                    </div>
+                    <div class="error" ng-show="signupForm.firstName.$dirty && signupForm.firstName.$invalid">Invalid:
+                        <span ng-show="signupForm.firstName.$error.required">tell us your first name</span>
+                        <span ng-show="signupForm.firstName.$error.minlength">first name should be minimum of 3 characters</span>
+                        <span ng-show="signupForm.firstName.$error.pattern">first name won't allow special characters</span>
+                        </span>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="row">
+            <div class="form-group">
+                <label class="col-lg-3 col-md-3 control-label">Last name<span class="error" ng-show="signupForm.lastName.$error.required"> *</span></label>
+                <div class="col-lg-5 col-md-5">            
+                    <div class="input-group">
+                        <span class="input-group-addon"><i class="fa fa-fw fa-pencil"></i></span>
+                        <input type="text" class="form-control" name="lastName" ng-model="account.user.lastName" ng-minlength="3" maxlength="20" ng-pattern="/^[a-zA-Z0-9 ]*$/" required>
+                    </div>
+                    <div class="error" ng-show="signupForm.lastName.$dirty && signupForm.lastName.$invalid">Invalid:
+                        <span ng-show="signupForm.lastName.$error.required">tell us your last name</span>
+                        <span ng-show="signupForm.lastName.$error.minlength">last name should be minimum of 3 characters</span>
+                        <span ng-show="signupForm.lastName.$error.pattern">last name won't allow special characters</span>
+                        </span>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="row">
+            <div class="form-group">
+                <label class="col-lg-3 col-md-3 control-label">Email<span class="error" ng-show="signupForm.email.$error.required"> *</span></label>
+                <div class="col-lg-5 col-md-5">            
+                    <div class="input-group">
+                        <span class="input-group-addon"><i class="fa fa-fw fa-at"></i></span>
+                        <input type="email" class="form-control" name="email" value="" ng-minlength="5" ng-model="account.user.email" required>
+                    </div>
+                    <span class="error" ng-show="signupForm.email.$dirty && signupForm.email.$invalid">Invalid:
+                        <span ng-show="signupForm.email.$error.required">email  is required</span>
+                        <span ng-show="signupForm.email.$error.email ">tell us your Valid Email</span>
+                        <span ng-show="signupForm.email.$error.minlength">email should be minimum of 5 characters</span>
+                    </span>
+                </div>
+            </div>
+        </div>
+        <div class="row">
+            <div class="form-group">
+                <label class="col-lg-3 col-md-3 control-label">Password<span class="error" ng-show="signupForm.password.$error.required"> *</span></label>
+                <div class="col-lg-5 col-md-5">            
+                    <div class="input-group">
+                        <span class="input-group-addon"><i class="fa fa-fw fa-key"></i></span>
+                        <input id="password" type="password" class="form-control" name="password" value="" ng-model="account.user.password" required>
+                    </div>
+                    <div class="error" ng-show="signupForm.password.$dirty && signupForm.password.$invalid">Invalid:
+                        <span ng-show="signupForm.password.$error.required">set your password</span>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="row">
+            <div class="form-group">
+                <label class="col-lg-3 col-md-3 control-label">Confirm Password<span class="error" ng-show="signupForm.cnfPassword.$error.required"> *</span></label>
+                <div class="col-lg-5 col-md-5">            
+                    <div class="input-group">
+                        <span class="input-group-addon"><i class="fa fa-fw fa-key"></i></span>
+                        <input id="cnfpassword" type="Password" class="form-control" name="cnfPassword" value="" ng-model="account.user.cnfPassword" match="account.user.password" required>
+                    </div>
+                    <div class="error" ng-show="signupForm.cnfPassword.$dirty && signupForm.cnfPassword.$invalid">Invalid:
+                        <span ng-show="signupForm.cnfPassword.$error.required">confirm your password</span>
+                        <span ng-show="signupForm.cnfPassword.$error.match">password is not matched</span>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+         <div class="row">
+          <div class="form-group">
+            <label class="col-lg-3 col-md-3 control-label">Tenant Name<span class="error" ng-show="signupForm.name.$error.required"> *</span></label>
+            <div class="col-lg-6 col-md-6">            
+              <div class="input-group">
+                <span class="input-group-addon"><i class="fa fa-fw fa-pencil"></i></span>
+                <input type="text" class="form-control" name="name" ng-model="account.tenant.name" ng-minlength="2" maxlength="30" ng-pattern="/^[a-zA-Z0-9 ]*$/" required>
+              </div>
+              <div class="error" ng-show="signupForm.name.$dirty && signupForm.name.$invalid">Invalid:
+                <span ng-show="signupForm.name.$error.required">tell us your tenant name</span>
+                <span ng-show="signupForm.name.$error.minlength">tenant name should be minimum of 2 characters</span>
+                <span ng-show="signupForm.name.$error.pattern">tenant name won't allow special characters</span>
+                </span>
+              </div>
+            </div>
+          </div>
+        </div>
+       
+        <div class="row">
+          <div class="form-group">
+            <label class="col-lg-3 col-md-3 control-label">Tenant Description <span class="error" ng-show="signupForm.description.$error.required"> *</span></label>
+            <div class="col-lg-6 col-md-6">   
+              <div class="input-group">
+                <span class="input-group-addon"><i class="fa fa-fw fa-pencil"></i></span>
+                <input type="text" class="form-control" rows="4" name="description" ng-model="account.tenant.description" ng-minlength="2" maxlength="30" ng-pattern="/^[a-zA-Z0-9 ]*$/" required/>
+              </div>
+              <div class="error" ng-show="signupForm.description.$dirty && signupForm.description.$invalid">Invalid:
+                <span ng-show="signupForm.description.$error.minlength">description should be minimum of 2 characters</span>
+                <span ng-show="signupForm.description.$error.pattern">description won't allow special characters</span>
+                </span>
+              </div>
+            </div>
+          </div>
+        </div>
+      
+        <div class="row">
+          <div class="col-lg-4 col-md-4 col-lg-offset-7 col-md-offset-7">
+            <div class="pull-right">
+              <button class="btn btn-primary" ng-show="user.scope" ng-click="createTenantAccount(account, signupForm.$valid)">Submit</button>
+              <button class="btn btn-primary" ng-click="tenantSelfRegistration(account, signupForm.$valid)" ng-hide="user.scope">Sign up</button>
+              <button class="btn btn-default" ng-click="confirmationModal()">Cancel</button>
+              <div ng-include="'app/views/common/confirmationDailogBox.html'"></div>
+            </div> 
+          </div>
+        </div>
+    </form>
+  </div>  
+</div>
+ -->
+
+ <div class="wrapper-md">
+    <div class="row">
+        <div class="col-sm-6 col-sm-offset-3">
+            <a class="navbar-brand-1 block m-t" href="javascript:void(0)">
+                <img src="app/assets/img/jc-logo-rgb.svg" class="img-circle">
+            </a>
+
+            <form name="signUpForm" class="form-horizontal form-validation">
+                <div class="panel panel-default">
+                    <div class="panel-heading text-center font-bold">
+                        Tenant Registration
+                    </div>
+                    <div class="panel-body">
+                        
+                        <div class="form-group">
+                            <label class="col-sm-3 control-label">Username</label>
+
+                            <div class="col-sm-9">
+                                <input placeholder="jhon" class="form-control" ng-model="account.user.username"
+                                       ng-pattern="/^[a-zA-Z0-9]{3,20}$/" required>
+                            </div>
+                        </div>
+                        <div class="form-group">
+                            <label class="col-sm-3 control-label">First Name</label>
+
+                            <div class="col-sm-9">
+                                <input placeholder="Jhon" type="text" class="form-control"
+                                       ng-model="account.user.firstName"
+                                       ng-pattern="/^[a-zA-Z]{3,20}$/" required>
+                            </div>
+                        </div>
+                        <div class="form-group">
+                            <label class="col-sm-3 control-label">Last Name</label>
+
+                            <div class="col-sm-9">
+                                <input placeholder="Michael" type="text" class="form-control" ng-model="account.user.lastName"
+                                       ng-pattern="/^[a-zA-Z]{3,20}$/" required>
+                            </div>
+                        </div>
+                        <div class="form-group">
+                            <label class="col-sm-3 control-label">Email</label>
+
+                            <div class="col-sm-9">
+                                <input type="email" placeholder="jhon@example.com" class="form-control" ng-model="account.user.email" ng-pattern="/^[a-zA-Z]{5,50}$/"
+                                required>
+                            </div>
+                        </div>
+                        <div class="form-group">
+                            <label class="col-sm-3 control-label">Password</label>
+
+                            <div class="col-sm-9">
+                                <input type="password" class="form-control"
+                                       ng-model="account.user.password" ng-pattern="/^[a-zA-Z]{5,50}$/" required
+                                       data-ng-class="{'ng-invalid':signUpForm.confirmPassword.$error.match}">
+                            </div>
+                        </div>
+                        <div class="form-group">
+                            <label class="col-sm-3 control-label">Confirm Password</label>
+
+                            <div class="col-sm-9">
+                                <input type="password" class="form-control"
+                                       ng-model="account.user.passwordConfirm" required data-match="account.user.password"
+                                       name="confirmPassword">
+                            </div>
+                        </div>
+                        <div class="form-group">
+                            <label class="col-sm-3 control-label">Tenant Name</label>
+
+                            <div class="col-sm-9">
+                                <input type="text" class="form-control"
+                                       ng-model="account.tenant.name" ng-pattern="/^[a-zA-Z]{2,30}$/" required name="tenantName">
+                            </div>
+                        </div>
+                        <div class="form-group">
+                            <label class="col-sm-3 control-label">Tenant Description</label>
+
+                            <div class="col-sm-9">
+                                <textarea class="form-control" ng-model="account.tenant.description" ng-pattern="/^[a-zA-Z]{2,30}$/" required
+                                          name="tenantDesc"></textarea>
+                            </div>
+                        </div>
+                        <div class="form-group">
+                            <div class="col-sm-6 col-sm-offset-3 checkbox m-b-md m-t-none">
+                                <label class="i-checks">
+                                    <input type="checkbox" ng-model="agree" required><i></i> Agree the terms and
+                                    policy</a>
+                                </label>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="panel-footer text-right bg-light lter">
+                        <button type="submit" class="btn btn-primary btn-block" ng-click="tenantSelfRegistration(account)"
+                                ng-disabled='signUpForm.$invalid'>Sign up
+                        </button>
+                        <div class="line line-dashed"></div>
+                        <p class="text-center">
+                            <small>Already have an account?</small>
+                        </p>
+                        <a ui-sref="login" class="btn btn-default btn-block">Sign in</a>
+                    </div>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>

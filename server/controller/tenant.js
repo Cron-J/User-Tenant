@@ -12,7 +12,7 @@ var Boom = require('boom'),
 exports.createTenantSelfRegistration = {
     handler: function(request, reply) {
         Tenant.saveTenant( request.payload.tenant, function( err, tenant ) {
-            if (!err) {
+             if (!err) {
                 request.payload.user.tenantId = tenant._id;
                 request.payload.user.password = Crypto.encrypt(request.payload.user.password);
                 request.payload.user.scope = "Tenant-Admin";
@@ -34,7 +34,7 @@ exports.createTenantSelfRegistration = {
                 });
             } else {
                 if ( constants.kDuplicateKeyError === err.code || constants.kDuplicateKeyErrorForMongoDBv2_1_1 === err.code ) {
-                    reply(Boom.forbidden( "tennant name already exist" ));
+                    reply(Boom.forbidden( "tenant name already exist" ));
                 } else reply( Boom.forbidden( err ) ); // HTTP 403
             }
         });

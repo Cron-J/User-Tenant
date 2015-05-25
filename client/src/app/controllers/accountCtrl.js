@@ -68,13 +68,9 @@ app.controller('accountCtrl', ['$scope', '$rootScope', '$http', '$location',
         }
 
         //Tenant Self Registration
-        $scope.tenantSelfRegistration = function (account_info, valid) {
-            if(valid){
-                var dataDump = angular.copy(account_info);
-                account_info.tenant.validFrom = $filter('date')(account_info.tenant.validFrom, "MM/dd/yyyy");
-                account_info.tenant.validTo = $filter('date')(account_info.tenant.validTo, "MM/dd/yyyy");
-                account_info.tenant.address.country = account_info.tenant.address.country[0].code;
-                account_info.user.address.country = account_info.user.address.country[0].code;
+        $scope.tenantSelfRegistration = function (account_info) {
+
+                delete account_info.passwordConfirm;
                 $http.post('/tenantSelfRegistration', account_info)
                 .success(function (data, status) {
                     growl.addSuccessMessage('Tenant has been successfully registered');
@@ -82,10 +78,22 @@ app.controller('accountCtrl', ['$scope', '$rootScope', '$http', '$location',
                 })
                 .error(function (data, status) {
                     growl.addErrorMessage(data.message);
-                    account_info.tenant.address.country = dataDump.tenant.address.country;
-                    account_info.user.address.country = dataDump.user.address.country;
                 });
-            }
+     
+        }
+
+        //Tenant-User Self Registration
+        $scope.tenantUserSelfRegistration = function (account_info) {
+                delete account_info.passwordConfirm;
+                $http.post('/user', account_info)
+                .success(function (data, status) {
+                    growl.addSuccessMessage('Tenant has been successfully registered');
+                    $location.path('login');
+                })
+                .error(function (data, status) {
+                    growl.addErrorMessage(data.message);
+                });
+     
         }
 
         //Get Personal Account Details
