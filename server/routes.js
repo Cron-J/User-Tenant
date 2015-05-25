@@ -12,7 +12,7 @@ exports.endpoints = [
 
     { method: 'GET',  path: '/{somethingss*}', config: Static.get },
     { method: 'GET',  path: '/countryList', config: Staticlist.getCountryList },
-    { method: 'POST', path: '/user', config: User.createAdmin},
+    { method: 'POST', path: '/admin', config: User.createAdmin},
     { method: 'POST', path: '/activateUser', config: User.activateUserByTenant},
     { method: 'PUT', path: '/user/{id}', config: User.updateUser},
     { method: 'POST', path: '/searchUser', config: User.searchUser},
@@ -26,6 +26,6 @@ exports.endpoints = [
     { method: 'POST', path: '/searchTenant', config: Tenant.searchTenant},
     { method: 'GET', path: '/tenant/{id}', config: Tenant.getTenant},
     { method: 'PUT', path: '/tenant/{id}', config: Tenant.updateTenantByAdmin},
-    { method: 'POST', path: '/tenantUser', config: User.createUser},
+    { method: 'POST', path: '/user', config: User.createUser},
     { method: 'GET', path: '/tenantUser/{id}', config: User.getAllTenantUserByTenant}
 ];
