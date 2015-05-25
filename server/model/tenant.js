@@ -65,8 +65,7 @@ var Tenant = new Schema({
 Tenant.statics.saveTenant = function(requestData, callback) {
     requestData.createdAt = new Date();
     requestData.updatedAt = new Date();
-    var tenant = new this(requestData);
-    tenant.save(callback);
+    this.create(requestData, callback);
 };
 
 Tenant.statics.updateTenant = function(id, tenant, callback) {

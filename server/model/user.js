@@ -126,8 +126,7 @@ var User = new Schema({
 User.statics.saveUser = function(requestData, callback) {
     requestData.createdAt = new Date();
     requestData.updatedAt = new Date();
-    var user = new this(requestData);
-    user.save(callback);
+    this.create(requestData, callback);
 };
 
 User.statics.updateUser = function(id, user, callback) {
@@ -138,6 +137,14 @@ User.statics.updateUser = function(id, user, callback) {
     this.update({
         '_id': id
     }, user, callback);
+};
+
+User.statics.activateUser = function(id, tenantId, callback) {
+    this.update({
+        '_id': id,
+        'scope': 'User',
+        'tenantId': tenantId
+    }, {'isActive': true}, callback);
 };
 
 User.statics.updateUserByTenantId = function(id, tenantId, user, callback) {
@@ -151,9 +158,9 @@ User.statics.updateUserByTenantId = function(id, tenantId, user, callback) {
     }, user, callback);
 };
 
-User.statics.findUser = function(userId, callback) {
+User.statics.findUser = function(username, callback) {
     this.findOne({
-        userId: userId
+        username: username
     }, callback);
 };
 
