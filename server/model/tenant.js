@@ -4,8 +4,7 @@ var mongoose = require('mongoose'),
     Schema = mongoose.Schema,
     ObjectId = Schema.ObjectId,
     constants = require('../Utility/constants').constants,
-    validator = require('mongoose-validators'),
-    Address = require('./address').Address;
+    validator = require('mongoose-validators');
 
 /** 
  * @module tenant
