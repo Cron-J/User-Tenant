@@ -192,7 +192,7 @@ User.statics.searchUser = function(query, callback) {
     this.find(query, callback);
 };
 
-var user = mongoose.model('user', User);
+var user = mongoose.model('User', User);
 
 /** export schema */
 module.exports = {

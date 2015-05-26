@@ -92,7 +92,7 @@ Tenant.statics.remove = function(id, callback) {
     }).remove(callback);
 };
 
-var tenant = mongoose.model('tenant', Tenant);
+var tenant = mongoose.model('Tenant', Tenant);
 
 module.exports = {
     Tenant: tenant
