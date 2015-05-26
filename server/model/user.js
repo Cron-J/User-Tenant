@@ -145,6 +145,14 @@ User.statics.activateUser = function(id, tenantId, callback) {
     }, {'isActive': true}, callback);
 };
 
+User.statics.deActivateUser = function(id, tenantId, callback) {
+    this.update({
+        '_id': id,
+        'scope': 'User',
+        'tenantId': tenantId
+    }, {'isActive': false}, callback);
+};
+
 User.statics.updateUserByTenantId = function(id, tenantId, user, callback) {
     if (user.createdAt) {
         delete user.createdAt;

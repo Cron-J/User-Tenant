@@ -14,6 +14,7 @@ exports.endpoints = [
     { method: 'GET',  path: '/countryList', config: Staticlist.getCountryList },
     { method: 'POST', path: '/admin', config: User.createAdmin},
     { method: 'POST', path: '/activateUser', config: User.activateUserByTenant},
+    { method: 'POST', path: '/deActivateUser', config: User.deActivateUserByTenant},
     { method: 'PUT', path: '/user/{id}', config: User.updateUser},
     { method: 'POST', path: '/searchUser', config: User.searchUser},
     { method: 'GET', path: '/exportUser', config: User.exportUser},

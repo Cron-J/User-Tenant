@@ -103,6 +103,31 @@ exports.activateUserByTenant = {
     }
 };
 
+exports.deActivateUserByTenant = {
+    auth: {
+        strategy: 'token',
+        scope: ['Tenant-Admin']
+    },
+    handler: function(request, reply) {
+       Jwt.verify(request.headers.authorization.split(' ')[1], Config.key.privateKey, function(err, decoded) {     
+            User.deActivateUser(request.payload.id, decoded.tenantId, function(err, user) {
+                if(err){
+                    return reply(Boom.badImplementation("unable to activate user"));
+                }
+                else{
+                    if(user){
+                        user.password = undefined;
+                        user.scope = undefined;
+                        return reply(user);    
+                    }
+                    return reply(Boom.forbidden("no user exist"));
+                }
+            });
+
+       });
+    }
+};
+
 exports.searchUser = {
     auth: {
         strategy: 'token',
