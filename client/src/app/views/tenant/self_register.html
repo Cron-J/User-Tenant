@@ -195,7 +195,7 @@
                             <label class="col-sm-3 control-label">Email</label>
 
                             <div class="col-sm-9">
-                                <input type="email" placeholder="jhon@example.com" class="form-control" ng-model="account.user.email" ng-pattern="/^[a-zA-Z]{5,50}$/"
+                                <input type="email" placeholder="jhon@example.com" class="form-control" ng-model="account.user.email" ng-minlength="5" maxlength="50"
                                 required>
                             </div>
                         </div>
@@ -204,7 +204,7 @@
 
                             <div class="col-sm-9">
                                 <input type="password" class="form-control"
-                                       ng-model="account.user.password" ng-pattern="/^[a-zA-Z]{5,50}$/" required
+                                       ng-model="account.user.password" ng-minlength="5" maxlength="50" required
                                        data-ng-class="{'ng-invalid':signUpForm.confirmPassword.$error.match}">
                             </div>
                         </div>

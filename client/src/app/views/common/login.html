@@ -64,10 +64,10 @@
       </div>
       <div class="list-group list-group-sm">
         <div class="list-group-item">
-          <input type="text" placeholder="User Name" class="form-control no-border" ng-model="user.username" required>
+          <input type="text" placeholder="User Name" class="form-control no-border" ng-model="credentials.username" required>
         </div>
         <div class="list-group-item">
-           <input type="password" placeholder="Password" class="form-control no-border" ng-model="user.password" required>
+           <input type="password" placeholder="Password" class="form-control no-border" ng-model="credentials.password" required>
         </div>
       </div>
       <button type="submit" class="btn btn-lg btn-primary btn-block" ng-click="login(credentials)" ng-disabled='form.$invalid'>Log in</button>

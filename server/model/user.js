@@ -59,7 +59,6 @@ var User = new Schema({
     */
     password: {
         type: String,
-        select: false,
         min: 5,
         required: true,
         max: 50

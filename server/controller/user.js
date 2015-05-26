@@ -227,7 +227,7 @@ exports.forgotPassword = {
 exports.getUser = {
     auth: {
         strategy: 'token',
-        scope: ['User']
+        scope: ['User', 'Tenant-Admin', 'Admin']
     },
     handler: function(request, reply) {
        Jwt.verify(request.headers.authorization.split(' ')[1], Config.key.privateKey, function(err, decoded) {        
