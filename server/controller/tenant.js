@@ -49,6 +49,7 @@ exports.searchTenant = {
     handler: function(request, reply) {
         var query = {};
         if (request.payload.name) query['name'] = new RegExp(request.payload.name, "i");
+        if (request.payload.description) query['description'] = new RegExp(request.payload.description, "i");
         
         Tenant.searchTenant(query, function( err, tenant ) {
             if (!err) {
