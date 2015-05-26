@@ -62,8 +62,11 @@ app.controller('mainCtrl', ['$scope', '$location', '$rootScope', '$http', '$moda
             modalInstance.result.then(function(tenant) {
             	if($scope.account == undefined)
             		$scope.account = {};
-            	$scope.account.tenantName = tenant.name;
-            	$scope.account.tenantId = tenant._id;
+                if(tenant.description)
+            	    $scope.account.tenantName = tenant.name+", "+tenant.description;
+            	else
+                    $scope.account.tenantName = tenant.name;
+                $scope.account.tenantId = tenant._id;
             }, function() {
                 $log.info('Modal dismissed at: ' + new Date());
             });

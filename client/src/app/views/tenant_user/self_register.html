@@ -18,10 +18,10 @@
                                 <div class="row">
                                     <div class="col-lg-11 col-md-11">
                                         <input type="text" class="form-control"
-                                       ng-model="account.tenantName" required name="tenantId" typeahead="result as result.name+ result.comma + (result.desc | limitTo:10) for result in searchTenantByName($viewValue)" typeahead-wait-ms="1000">
+                                       ng-model="account.tenantName" placeholder="Peter" required name="tenantId" typeahead="result as result.name+ result.comma + (result.desc | limitTo:10) for result in searchTenantByName($viewValue)" typeahead-wait-ms="1000">
                                     </div>
                                     <div class="">
-                                        <button class="btn btn-primary btn-xs" ng-click="tenantSearchModal()"><span class="fa fa-search"></span></button>
+                                        <button class="btn btn-primary btn-sm" ng-click="tenantSearchModal()"><span class="fa fa-search"></span></button>
                                     </div>
                                     <div ng-include="'app/views/common/tenantSearchModal.html'"></div>
                                 </div>
@@ -67,7 +67,7 @@
 
                             <div class="col-sm-9">
                                 <input type="password" class="form-control"
-                                       ng-model="account.password" ng-minlength="5" maxlength="50" required
+                                       ng-model="account.password" ng-minlength="5" maxlength="50" placeholder="******" required
                                        data-ng-class="{'ng-invalid':signUpForm.confirmPassword.$error.match}">
                             </div>
                         </div>
@@ -76,7 +76,9 @@
 
                             <div class="col-sm-9">
                                 <input type="password" class="form-control"
-                                       ng-model="account.passwordConfirm" required data-match="account.password"
+                                       ng-model="account.passwordConfirm" 
+                                       placeholder="******"
+                                       required data-match="account.password"
                                        name="confirmPassword">
                             </div>
                         </div>
