@@ -54,6 +54,10 @@
 .ut-acc-form-group {
 	margin-left: -15px;
 }
+.ut-fp, .ut-fp:hover{
+	color: black;
+	text-decoration: none;
+}
 /*modified css*/
 .form-horizontal .control-label {
   text-align: left;
