@@ -19,15 +19,17 @@
               </tr>
             </thead>
             <tbody>
-                <tr class="ut-pointer" ng-repeat="user in pagedItems[currentPage]" ng-click="getTenantUser(user._id)">
+                <tr class="ut-pointer" ng-repeat="user in pagedItems[currentPage]">
                   <td>{{$index+1}}
                   </td>
                   <td>{{user.firstName}}</td>
                   <td>{{user.lastName}}</td>
                   <td>{{user.username}}</td>
                   <td>
-                    <button type="button" ng-click="rem_tenant(user._id,$index)" class="btn btn-default btn-md">
+                    <button type="button" ng-click="getTenantUser(user._id)" class="btn btn-primary btn-sm">
                       <span class="fa fa-edit"></span> Edit</button>
+                      <button type="button" ng-click="deactivateTenantUser(user._id)" class="btn btn-default btn-sm">
+                      <span class="fa fa-user-times"></span> Deactivate</button>
                   </td>
               </tr>
               

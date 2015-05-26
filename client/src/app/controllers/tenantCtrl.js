@@ -154,6 +154,27 @@ app.controller('tenantCtrl', ['$scope', '$rootScope', '$http', '$location',
             });
         }
 
+        //Deactivate Tenant-User
+         $scope.deactivateTenantUser = function(id){
+            var obj = {
+                "id": id
+            }
+            $http.post('/deActivateUser', obj,  {
+                headers: AuthServ.getAuthHeader()
+            })
+            .success(function (data, status) {
+                getTenantUsers();
+                growl.addSuccessMessage('User account has been deactivated successfully');
+
+            })
+            .error(function (data, status) {
+                if(data.message == 'Invalid token') 
+                    $scope.sessionExpire();
+                else if(data.message != "no user for tenant exist")
+                    growl.addErrorMessage(data.message);
+            });
+        }
+
         //Inactive Users list 
         var inActiveUsersList = function () {
             $http.get('/tenantDeactiveUser/'+ $scope.current_usr._id, {
