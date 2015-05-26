@@ -38,8 +38,8 @@ app.controller('accountCtrl', ['$scope', '$rootScope', '$http', '$location',
                         $location.path('/tenants');
                     else if($rootScope.user.scope == 'Tenant-Admin')
                         $location.path('/tenantHome');
-                    else if($rootScope.user.scope == 'Tenant-User')
-                         $location.path('/home');
+                    else if($rootScope.user.scope == 'User')
+                        $location.path('/home');
                 })
                 .error(function (data, status) {
                     growl.addErrorMessage(data.message);
@@ -84,13 +84,17 @@ app.controller('accountCtrl', ['$scope', '$rootScope', '$http', '$location',
 
         //Tenant-User Self Registration
         $scope.tenantUserSelfRegistration = function (account_info) {
+                var dump = angular.copy(account_info.passwordConfirm);
                 delete account_info.passwordConfirm;
+                if(account_info.tenantName._id)
+                    account_info.tenantId = account_info.tenantName._id;
                 $http.post('/user', account_info)
                 .success(function (data, status) {
-                    growl.addSuccessMessage('Tenant has been successfully registered');
+                    growl.addSuccessMessage('User has been successfully registered');
                     $location.path('login');
                 })
                 .error(function (data, status) {
+                    account_info.passwordConfirm = dump;
                     growl.addErrorMessage(data.message);
                 });
      
@@ -99,14 +103,6 @@ app.controller('accountCtrl', ['$scope', '$rootScope', '$http', '$location',
         //Get Personal Account Details
         var getAccountDetails = function () {
             userInfo.async().then(function(response) {
-                for (var i = 0; i < $scope.countryList.length; i++) {
-                    if($scope.countryList[i].code == response.data.address.country ) {
-                        response.data.address.country = [];
-                        response.data.address.country[0] = {};
-                        response.data.address.country[0] = $scope.countryList[i];
-                        response.data.address.country[0].ticked = true;
-                    }
-                };
                 $scope.account = response.data;
                 $scope.current_usr.firstName = response.data.firstName;
                 $scope.current_usr.lastName = response.data.lastName;
@@ -116,9 +112,6 @@ app.controller('accountCtrl', ['$scope', '$rootScope', '$http', '$location',
         //Update Personal Account Details
         $scope.updateProfile = function (account_info, valid) {
             if(valid){
-                var dataDump = angular.copy(account_info);
-                var countryDump = angular.copy(account_info.address.country);
-                account_info.address.country = account_info.address.country[0].code;
                 delete account_info._id, delete account_info.createdAt, 
                 delete account_info.createdBy, delete account_info.updatedAt,
                 delete account_info.updatedBy;
@@ -135,9 +128,35 @@ app.controller('accountCtrl', ['$scope', '$rootScope', '$http', '$location',
                         $scope.sessionExpire();
                     else
                         growl.addErrorMessage(data.message);
-                    account_info.address.country = dataDump.address.country;
                 });
             }
+        }
+
+        //Tenant Search by name
+        $scope.searchTenantByName = function($viewValue){
+            console.log('entered');
+            var temp = [];
+            var obj = {};
+            obj['key'] = "name";
+            obj['value'] = $viewValue;
+            temp.push(obj);
+            console.log('$viewValue', $viewValue);
+            return $http.post('/searchTenant', obj).
+            then(function(data){
+              var tenantList = [];
+              angular.forEach(data.data, function(item){ 
+              console.log('item', item);    
+                if(item.description != undefined){
+                    tenantList.push({ "name": item.name, "_id": item._id, 
+                    "desc":item.description, "comma": ', ' });
+                } else {
+                    tenantList.push({ "name": item.name, "_id": item._id });
+                }
+              });
+              return tenantList;
+            }).catch(function(error){
+                growl.addErrorMessage('oops! Something went wrong');
+            });
         }
 
         $scope.resetPassword = function (isTrue) {

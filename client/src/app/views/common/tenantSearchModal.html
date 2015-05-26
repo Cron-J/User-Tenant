@@ -1,0 +1,72 @@
+<script type="text/ng-template" id="tenantSearchModal.html">
+      <div class="modal-header">
+        <button type="button" class="close" ng-click="cancel()"><span aria-hidden="true">&times;</span><span class="sr-only">Close</span></button>
+        <h4 class="modal-title" id="searchModalLabel">Search Tenant</h4>
+      </div>
+      <div class="modal-body">
+        <div class="row">
+      <div class="col-sm-12 col-md-12 col-lg-12" >
+        <div class="col-sm-10">
+          <div class="row">
+            <div class="col-sm-4">
+              <label >Name</label>
+              <input type="text" class="form-control" name="" 
+              ng-model="searchQuery.name" />
+            </div>
+            <div class="col-sm-4">
+              <label >Description</label>
+              <input type="text" class="form-control" name="" 
+              ng-model="searchQuery.description" />
+            </div>
+            <div class="col-sm-4 ut-search-btnset">
+              <button class="btn btn-primary btn-xs" ng-click="searchTenant(searchQuery)"><span class="glyphicon glyphicon-search"></span></button>
+              <button class="btn btn-primary btn-xs" ng-click="reset_search()">Clear</button>
+            </div>
+          </div>    
+        </div>
+        <div class="col-sm-12">
+          <div class="ut-search-result" ng-show="showTableData">
+            <div ng-show="pagedItems.length == 0">
+              <div class="col-lg-9 col-md-9 col-lg-offset-3 col-md-offset-3">
+                <p>There are no tenants. Please add tenant before creating tenant-user.</p>
+              </div>
+            </div>
+            <div ng-show="pagedItems.length > 0">
+              <table class="table table-bordered table-hover">
+                <thead class="active">
+                  <th class="text-center">S.No</th>
+                  <th>Name</th>
+                  <th>Description</th>
+                </thead>
+                <tbody>
+                  <tr class="ut-pointer" ng-repeat="result in pagedItems[currentPage]" ng-click="getTenantId(result)">
+                    <td>{{$index+1}}
+                    </td>
+                    <td>{{result.name}}</td>
+                    <td>{{result.description}}</td>
+                  </tr>
+                </tbody>
+              </table>
+              <div class="pagination table-pagination pull-right">
+                  <li ng-class="{disabled: currentPage == 0}">
+                    <a href ng-click="prevPage()">« Prev</a>
+                  </li>
+                  <li ng-repeat="n in range(pagedItems.length)" ng-class="{active: n == currentPage}"ng-click="setPage()">
+                  <a href ng-show="n >= min && n < max" ng-bind="n + 1">1</a>
+                  </li>
+                  <li ng-class="{disabled: currentPage == pagedItems.length - 1}">
+                    <a href ng-click="nextPage()">Next »</a>
+                  </li>
+              </div>
+            </div>  
+          </div>
+        </div>      
+      </div>
+    </div>
+      </div>
+      <div class="modal-footer">
+        <button type="button" class="btn btn-default" ng-click="isRedirectConformed()">Yes</button>
+        <button type="button" class="btn btn-default" ng-click="cancel()">No</button>
+      </div>
+    
+</script>

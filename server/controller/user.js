@@ -54,14 +54,12 @@ exports.createUser = {
                 return reply(Boom.forbidden("Please select tenant"));
             }
             else {
-                request.payload.password = Crypto.encrypt(Math.random().toString(8).substring(2));
                 Tenant.findTenantById( request.payload.tenantId, function( err, tenant ) {
                     if( tenant ){
                         request.payload.password = Crypto.encrypt(request.payload.password);
                         request.payload.scope = "User";
                         User.saveUser( request.payload, function(err, user) {
                             if (!err) {
-                                EmailServices.sentMailUserCreation(user.userId, user.password);
                                 return reply( "Tenant user successfully created" );
                             } else {
                                 if ( constants.kDuplicateKeyError === err.code || constants.kDuplicateKeyErrorForMongoDBv2_1_1 === err.code ) {
@@ -376,7 +374,7 @@ exports.getAllDeactiveTenantUserByTenant = {
                         return reply(user);    
                     }
                     else{
-                        return reply(Boom.forbidden("no user for tenant exist"));
+                        return reply(user);
                     }
                 }
             });

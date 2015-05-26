@@ -25,6 +25,8 @@ app.controller('searchModalInstanceCtrl', ['$scope', '$http', '$modalInstance',
         });
     }
 
+    
+
     //Get Tanant Id
     $scope.getTenantId = function(id) {
         $scope.submitted = true;

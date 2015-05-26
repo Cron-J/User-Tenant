@@ -9,9 +9,11 @@ app.controller('tenantCtrl', ['$scope', '$rootScope', '$http', '$location',
             $scope.isUser = true;
             if($location.path() == '/tenantHome') {
                 userInfo.async().then(function(response) {
+                    console.log(response);
                     $scope.current_usr.firstName = response.data.firstName;
                     $scope.current_usr.lastName = response.data.lastName;
                 });
+                console.log($scope.current_usr);
                 getTenantUsers();
             }
             //clear country selection
@@ -25,6 +27,9 @@ app.controller('tenantCtrl', ['$scope', '$rootScope', '$http', '$location',
                     $scope.getTenant();
                 }
             });
+            if($location.path() == '/addUser'){
+                inActiveUsersList();
+            }
         }
        
         // $scope.user = {};
@@ -122,7 +127,47 @@ app.controller('tenantCtrl', ['$scope', '$rootScope', '$http', '$location',
             .error(function (data, status) {
                 if(data.message == 'Invalid token') 
                     $scope.sessionExpire();
-                else
+                else if(data.message != "no user for tenant exist")
+                    growl.addErrorMessage(data.message);
+            });
+        }
+
+        //Activate Tenant-User
+        
+        $scope.activateTenantUser = function(id){
+            var obj = {
+                "id": id
+            }
+            $http.post('/activateUser', obj,  {
+                headers: AuthServ.getAuthHeader()
+            })
+            .success(function (data, status) {
+                inActiveUsersList();
+                growl.addSuccessMessage('User account has been activated successfully');
+
+            })
+            .error(function (data, status) {
+                if(data.message == 'Invalid token') 
+                    $scope.sessionExpire();
+                else if(data.message != "no user for tenant exist")
+                    growl.addErrorMessage(data.message);
+            });
+        }
+
+        //Inactive Users list 
+        var inActiveUsersList = function () {
+            $http.get('/tenantDeactiveUser/'+ $scope.current_usr._id, {
+                headers: AuthServ.getAuthHeader()
+            })
+            .success(function (data, status) {
+                $scope.resultList = data;
+                $scope.currentPage = 0;
+                $scope.groupToPages();
+            })
+            .error(function (data, status) {
+                if(data.message == 'Invalid token') 
+                    $scope.sessionExpire();
+                else if(data.message != "no user for tenant exist")
                     growl.addErrorMessage(data.message);
             });
         }
@@ -142,7 +187,7 @@ app.controller('tenantCtrl', ['$scope', '$rootScope', '$http', '$location',
             .error(function (data, status) {
                 if(data.message == 'Invalid token') 
                     $scope.sessionExpire();
-                else
+                else if(data.message != "no user for tenant exist")
                     growl.addErrorMessage(data.message);
             });
         }

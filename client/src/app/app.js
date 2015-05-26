@@ -122,6 +122,14 @@ var app = angular.module('app', [
               }
 
           })
+          .state('inActiveUsers', {
+            url: "/addUser",
+              templateUrl: "app/views/tenant/inactive_users.html",
+              controller: "tenantCtrl",
+              data: {
+                  authorizedRoles: [USER_ROLES.tenantadmin]
+              }
+          })
           .state('tenantHome', {
             url: "/tenantHome",
               templateUrl: "app/views/tenant/tenant_users_list.html",
@@ -176,6 +184,9 @@ var app = angular.module('app', [
             if($location.path() == '/signup') {
                 $location.path('/signup');
             }
+            else if($location.path() == '/userSignup') {
+                $location.path() == '/userSignup'
+            }
             else if($location.path() == '/forgotPassword') {
                 $location.path() == '/forgotPassword'
             }
@@ -221,6 +232,6 @@ angular.module('cons', [])
       all: '*',
       admin: 'Admin',
       tenantadmin: 'Tenant-Admin',
-      tenantuser:'Tenant-User'
+      tenantuser:'User'
   })
   

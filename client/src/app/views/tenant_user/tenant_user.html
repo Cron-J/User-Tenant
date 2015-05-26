@@ -1,15 +1,13 @@
 <div class="container">
     <header>
-        <p ng-show="view == 'create'" class="ut-lead">Create Tenant-User</p>
         <p ng-show="view == 'view'" class="ut-lead">Tenant-User Details</p>
         <p ng-show="view == 'edit'" class="ut-lead">Edit Tenant-User</p>
-        <p ng-show="viewByTenant == 'create'" class="ut-lead">Create Tenant-User</p>
-        <p ng-show="viewByTenant == 'view'" class="ut-lead">Tenant-User Details</p>
-        <p ng-show="viewByTenant == 'edit'" class="ut-lead">Edit Tenant-User Details</p>
+        <p ng-show="viewByTenant == 'view'" class="ut-lead">User Details</p>
+        <p ng-show="viewByTenant == 'edit'" class="ut-lead">Edit User Details</p>
     </header>
     <div class="col-lg-8 col-md-8 ut-container">
         <form id="signupForm" class="form-horizontal ut-form ng-pristine ng-valid" role="form" name="signupForm" novalidate>
-            <div class="row" ng-show="view">
+<!--             <div class="row" ng-show="view">
                 <div class="form-group">
                     <label class="col-lg-2 col-md-2 control-label">Tenant Id<span class="error" ng-show="signupForm.tenantId.$error.required"> *</span></label>
                     <div class="col-lg-6 col-md-6">        
@@ -190,10 +188,6 @@
                         </div>
                         <span class="error" ng-show="signupForm.country1.$dirty && signupForm.country1.$invalid">Invalid:
                             <span ng-show="signupForm.country1.$error.required">Tell us your country Name</span>
-            }
-            }
-<!--                             <span ng-show="signupForm.country1.$error.minlength">Country name should be minimum of 1 character</span>
-                            <span ng-show="signupForm.country1.$error.pattern">Country won't allow special characters</span> -->
                         </span>
                         </span>
                     </div>
@@ -215,11 +209,52 @@
                         </span>
                     </div>
                 </div>
+            </div> -->
+            <div class="row">
+                <div class="form-group">
+                    <label class="col-sm-2 control-label">User Name</label>
+
+                    <div class="col-sm-5">
+                        <input placeholder="jhon" class="form-control" ng-model="account.username" ng-pattern="/^[a-zA-Z0-9]{3,20}$/" disabled required>
+                    </div>
+                </div>
             </div>
+            <div class="row">
+                <div class="form-group">
+                    <label class="col-sm-2 control-label">First Name</label>
+
+                    <div class="col-sm-5">
+                        <input placeholder="Jhon" type="text" class="form-control"
+                               ng-model="account.firstName"
+                               ng-pattern="/^[a-zA-Z]{3,20}$/" required>
+                    </div>
+                </div>
+            </div>
+            <div class="row">
+                <div class="form-group">
+                    <label class="col-sm-2 control-label">Last Name</label>
+
+                    <div class="col-sm-5">
+                        <input placeholder="Michael" type="text" class="form-control" ng-model="account.lastName"
+                               ng-pattern="/^[a-zA-Z]{3,20}$/" required>
+                    </div>
+                </div>
+            </div>
+            <div class="row">
+                <div class="form-group">
+                    <label class="col-sm-2 control-label">Email</label>
+
+                    <div class="col-sm-5">
+                        <input type="email" placeholder="jhon@example.com" class="form-control" ng-model="account.email"
+                            ng-minlength="5" maxlength="50" required>
+                    </div>
+                </div>
+            </div>
+                        
             <div ng-include="'app/views/common/audit_info.html'" ng-hide="view == 'create' || viewByTenant == 'create'"></div>
             <div class="row">
-                <div class="col-lg-4 col-md-4 col-lg-offset-8 col-md-offset-8">
-                    <div class="pull-right">
+<!--                 <div class="col-lg-3 col-md-3 col-lg-offset-7 col-md-offset-7">
+                    <div class=""> -->
                         <!-- Admin view -->
                         <button class="btn btn-primary" ng-show="view == 'create'" ng-disabled="!signupForm.$valid" ng-click="createTenantUserAccount(account, signupForm.$valid)">Submit</button>
                         <button class="btn btn-primary" ng-show="view == 'edit'" ng-disabled="!signupForm.$valid" ng-click="updateUserAccount(account, signupForm.$valid)">Update</button>
@@ -234,8 +269,8 @@
                         <div ng-include="'app/views/common/confirmationDailogBox.html'"></div>
                         <button class="btn btn-primary" ng-show="viewByTenant == 'view'"  ng-click="viewByTenant = 'edit';">Edit</button>
                         <button class="btn btn-default" ng-show="viewByTenant == 'view'" ui-sref="tenantHome">Cancel</button>
-                    </div>
-                </div>
+<!--                     </div>
+                </div> -->
             </div>
         </form>
     </div> 

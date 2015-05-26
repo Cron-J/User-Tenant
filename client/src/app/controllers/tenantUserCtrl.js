@@ -71,14 +71,6 @@ app.controller('tenantUserCtrl', ['$scope', '$rootScope', '$http', '$location',
                 headers: AuthServ.getAuthHeader()
             })
             .success(function (data, status) {
-                for (var i = 0; i < $scope.countryList.length; i++) {
-                    if($scope.countryList[i].code == data.address.country ) {
-                        data.address.country = [];
-                        data.address.country[0] = {};
-                        data.address.country[0] = $scope.countryList[i];
-                        data.address.country[0].ticked = true;
-                    }
-                };
                 $scope.current_usr.firstName = data.firstName;
                 $scope.current_usr.lastName = data.lastName;
                 $scope.account = data;

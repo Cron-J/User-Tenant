@@ -1,7 +1,7 @@
 <div class="container">
 	<p class="ut-lead">Tenant Users</p>
   <div class="col-md-4 col-md-offset-8 ut-addbutton">
-    <a ui-sref="createTenantUser" class="btn btn-primary pull-right"><i class="fa fa-user-plus"></i> Add</a>
+    <a ui-sref="inActiveUsers" class="btn btn-primary pull-right"><i class="fa fa-user-plus"></i> Add</a>
   </div>      
   <div class="ut-container">
   	<div class="col-lg-12 col-md-12">
@@ -14,7 +14,7 @@
                 <th>#</th>
                 <th>First Name</th>
                 <th>Last Name</th>
-                <th>User Id</th>
+                <th>User Name</th>
                 <th></th>
               </tr>
             </thead>
@@ -24,7 +24,7 @@
                   </td>
                   <td>{{user.firstName}}</td>
                   <td>{{user.lastName}}</td>
-                  <td>{{user.userId}}</td>
+                  <td>{{user.username}}</td>
                   <td>
                     <button type="button" ng-click="rem_tenant(user._id,$index)" class="btn btn-default btn-md">
                       <span class="fa fa-edit"></span> Edit</button>
