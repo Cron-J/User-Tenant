@@ -165,7 +165,7 @@ exports.exportUser = {
 
         User.searchUser(query, function(err, user) {
             if (!err) {
-                json2csv({data: user,  fields: ['userId', 'firstName', 'lastName', 'scope'], fieldNames: ['User Id/ user email', 'First Name', 'Last Name', 'Userrole']}, function(err, csv) {
+                json2csv({data: user,  fields: ['username', 'firstName', 'lastName', 'email', 'scope', 'isActive'], fieldNames: ['User name', 'First Name', 'Last Name', 'Email', 'Userrole', 'Active']}, function(err, csv) {
                   if (err) console.log(err);
                   return reply(csv).header('Content-Type', 'application/octet-stream').header('content-disposition', 'attachment; filename=user.csv;');
                 });
