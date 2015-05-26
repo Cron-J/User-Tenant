@@ -42,11 +42,7 @@ exports.createTenantSelfRegistration = {
 };
 
 exports.searchTenant = {
-    auth: {
-        strategy: 'token',
-        scope: ['Admin']
-    },
-    handler: function(request, reply) {
+     handler: function(request, reply) {
         var query = {};
         if (request.payload.name) query['name'] = new RegExp(request.payload.name, "i");
         if (request.payload.description) query['description'] = new RegExp(request.payload.description, "i");
