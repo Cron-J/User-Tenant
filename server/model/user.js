@@ -162,6 +162,14 @@ User.statics.findUser = function(username, callback) {
     }, callback);
 };
 
+User.statics.findDeactiveUserByTenantId = function(id, callback) {
+    this.find({
+        'tenantId': id,
+        'scope': 'User',
+        'isActive': false
+    }, callback);
+};
+
 User.statics.findUserById = function(id, callback) {
     this.findOne({
         '_id': id
@@ -178,7 +186,8 @@ User.statics.findUserByIdTenantId = function(id, tenantId, callback) {
 User.statics.findUserByTenantIdScope = function(id, scope, callback) {
     this.find({
         'tenantId': id,
-        'scope': scope
+        'scope': scope,
+        'isActive': true
     }, callback);
 };
 

@@ -328,6 +328,38 @@ exports.getAllTenantUserByTenant = {
     }
 };
 
+exports.getAllDeactiveTenantUserByTenant = {
+    auth: {
+        strategy: 'token',
+        scope: ['Admin', 'Tenant-Admin']
+    },
+    handler: function(request, reply) {
+       Jwt.verify(request.headers.authorization.split(' ')[1], Config.key.privateKey, function(err, decoded) {
+            if(decoded.scope === 'Tenant-Admin'){
+                request.params.id = decoded.tenantId;
+            }
+            User.findDeactiveUserByTenantId(request.params.id, function(err, user) {
+                if(err){
+                    return reply(Boom.badImplementation("unable to get user detail"));
+                }
+                else{
+                    if(user.length != 0){
+                        for (var i = 0; i< user.length; i++) {
+                           if( user[i].password ) { user[i].password = undefined; }
+                           if( user[i].scope )  { user[i].scope = undefined; }
+                        }
+                        return reply(user);    
+                    }
+                    else{
+                        return reply(Boom.forbidden("no user for tenant exist"));
+                    }
+                }
+            });
+
+       });
+    }
+};
+
 
 exports.updateUser = {
     auth: {
