@@ -342,7 +342,7 @@ exports.getAllTenantUserByTenant = {
                         return reply(user);    
                     }
                     else{
-                        return reply(Boom.forbidden("no user for tenant exist"));
+                        return reply(user);
                     }
                 }
             });

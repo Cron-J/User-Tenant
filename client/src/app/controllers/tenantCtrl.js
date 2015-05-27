@@ -165,7 +165,6 @@ app.controller('tenantCtrl', ['$scope', '$rootScope', '$http', '$location',
             .success(function (data, status) {
                 getTenantUsers();
                 growl.addSuccessMessage('User account has been deactivated successfully');
-
             })
             .error(function (data, status) {
                 if(data.message == 'Invalid token') 
