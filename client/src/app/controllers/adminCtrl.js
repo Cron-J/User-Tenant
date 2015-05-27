@@ -71,7 +71,6 @@ app.controller('adminCtrl', ['$scope', '$rootScope', '$http', '$location',
         //Search Tenant
         $scope.searchTenant = function(searchObj){
             if(!searchObj) searchObj = {};
-            console.log(searchObj);
             $http.post('/searchTenant', searchObj,  {
                 headers: AuthServ.getAuthHeader()
             })
@@ -98,6 +97,10 @@ app.controller('adminCtrl', ['$scope', '$rootScope', '$http', '$location',
         $scope.searchTenantUser = function(searchObj){
             if(!searchObj) searchObj = {};
             console.log(searchObj);
+            if(searchObj.tenantName != undefined) {
+                if(searchObj.tenantName._id)
+                        searchObj.tenantId = searchObj.tenantName._id;
+            }
             $http.post('/searchUser', searchObj,  {
                 headers: AuthServ.getAuthHeader()
             })
@@ -129,14 +132,45 @@ app.controller('adminCtrl', ['$scope', '$rootScope', '$http', '$location',
             });
 
             modalInstance.result.then(function(tenant) {
-                if(!$scope.account) $scope.account = {};
-                $scope.account.tenantId = tenant._id;
-                $scope.account.tenant = tenant.name;
+                if($scope.srch == undefined)
+                    $scope.srch = {};
+                if(tenant.description) 
+                    $scope.srch.tenantName = tenant.name+", "+tenant.description;
+                else
+                     $scope.srch.tenantName = tenant.name;
+                $scope.srch.tenantId = tenant._id;
             }, function() {
                 $log.info('Modal dismissed at: ' + new Date());
             });
         }
 
+        //Tenant Search by name
+        $scope.searchTenantByName = function($viewValue){
+            console.log('entered');
+            var temp = [];
+            var obj = {};
+            obj['key'] = "name";
+            obj['value'] = $viewValue;
+            temp.push(obj);
+            return $http.post('/searchTenant', obj).
+            then(function(data){
+              var tenantList = [];
+              angular.forEach(data.data, function(item){ 
+              console.log('item', item);    
+                if(item.description != undefined){
+                    tenantList.push({ "name": item.name, "_id": item._id, 
+                    "desc":item.description, "comma": ', ' });
+                } else {
+                    tenantList.push({ "name": item.name, "_id": item._id });
+                }
+              });
+              return tenantList;
+            }).catch(function(error){
+                growl.addErrorMessage('oops! Something went wrong');
+            });
+        }
+
+        
         //Date picker
         $scope.open1 = function($event) {
             $event.preventDefault();

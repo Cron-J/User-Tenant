@@ -1,7 +1,7 @@
 <div class="container">
     <header>
-        <p ng-show="view == 'view'" class="ut-lead">Tenant-User Details</p>
-        <p ng-show="view == 'edit'" class="ut-lead">Edit Tenant-User</p>
+        <!-- <p ng-show="view == 'view'" class="ut-lead">Tenant-User Details</p>
+        <p ng-show="view == 'edit'" class="ut-lead">Edit Tenant-User</p> -->
         <p ng-show="viewByTenant == 'view'" class="ut-lead">User Details</p>
         <p ng-show="viewByTenant == 'edit'" class="ut-lead">Edit User Details</p>
     </header>
@@ -21,9 +21,10 @@
                     <label class="col-sm-2 control-label">First Name</label>
 
                     <div class="col-sm-5">
-                        <input placeholder="Jhon" type="text" class="form-control"
-                               ng-model="account.firstName"
-                               ng-pattern="/^[a-zA-Z]{3,20}$/" required>
+                        <input placeholder="Jhon" type="text" 
+                        class="form-control" ng-model="account.firstName"
+                        ng-pattern="/^[a-zA-Z]{3,20}$/" 
+                        ng-disabled="viewByTenant == 'view'" required>
                     </div>
                 </div>
             </div>
@@ -32,8 +33,10 @@
                     <label class="col-sm-2 control-label">Last Name</label>
 
                     <div class="col-sm-5">
-                        <input placeholder="Michael" type="text" class="form-control" ng-model="account.lastName"
-                               ng-pattern="/^[a-zA-Z]{3,20}$/" required>
+                        <input placeholder="Michael" type="text" 
+                        class="form-control" ng-model="account.lastName" 
+                        ng-pattern="/^[a-zA-Z]{3,20}$/" 
+                        ng-disabled="viewByTenant == 'view'"required>
                     </div>
                 </div>
             </div>
@@ -42,8 +45,10 @@
                     <label class="col-sm-2 control-label">Email</label>
 
                     <div class="col-sm-5">
-                        <input type="email" placeholder="jhon@example.com" class="form-control" ng-model="account.email"
-                            ng-minlength="5" maxlength="50" required>
+                        <input type="email" placeholder="jhon@example.com" 
+                        class="form-control" ng-model="account.email"
+                        ng-minlength="5" maxlength="50" 
+                        ng-disabled="viewByTenant == 'view'" required>
                     </div>
                 </div>
             </div>                

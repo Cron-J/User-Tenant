@@ -62,7 +62,7 @@ app.controller('mainCtrl', ['$scope', '$location', '$rootScope', '$http', '$moda
             modalInstance.result.then(function(tenant) {
             	if($scope.account == undefined)
             		$scope.account = {};
-                if(tenant.description)
+                if(tenant.description) 
             	    $scope.account.tenantName = tenant.name+", "+tenant.description;
             	else
                     $scope.account.tenantName = tenant.name;

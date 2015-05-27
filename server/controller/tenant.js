@@ -20,7 +20,6 @@ exports.createTenantSelfRegistration = {
                 
                 User.saveUser( request.payload.user, function(err, user) {
                     if (!err) {
-                        EmailServices.sentMailUserCreation(user.userId, user.password);
                         return reply( "user successfully created" );
                     } else {
                         var errMessage = "Opps something went wrong.."

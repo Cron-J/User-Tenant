@@ -25,7 +25,7 @@ exports.createAdmin = {
 
                 request.payload.password = Crypto.encrypt(request.payload.password);
                 request.payload.scope = "Admin";
-
+                request.payload.isActive= true;
                 if(request.payload.createdBy) {
                     delete request.payload.createdBy;
                 }
@@ -136,6 +136,7 @@ exports.searchUser = {
         if (request.payload.firstName) query['firstName'] = new RegExp(request.payload.firstName, "i");
         if (request.payload.lastName) query['lastName'] = new RegExp(request.payload.lastName, "i");
         if (request.payload.email) query['email'] = new RegExp(request.payload.email, "i");
+        if (request.payload.tenantId) query['tenantId'] = request.payload.tenantId;
         if (request.payload.scope) {
             query['scope'] = request.payload.scope;   
         }
@@ -235,7 +236,7 @@ exports.forgotPassword = {
                         return reply(Boom.badImplementation("Error in sending password"));
                     }
                     else{
-                        EmailServices.sentMailForgotPassword(user.username, password);
+                        EmailServices.sentMailForgotPassword(user.email, user.username, password);
                         reply("password is send to registered email id");
                     }
                 });
@@ -387,14 +388,11 @@ exports.getAllDeactiveTenantUserByTenant = {
 exports.updateUser = {
     auth: {
         strategy: 'token',
-        scope: ['Tenant-Admin', 'User']
+        scope: ['Admin', 'Tenant-Admin', 'User']
     },
     handler: function(request, reply) {
        Jwt.verify(request.headers.authorization.split(' ')[1], Config.key.privateKey, function(err, decoded) {
-
-            if(decoded.scope === 'User'){
-                request.params.id = decoded.id;
-            }
+ 
         
             /* filterening unwanted attributes which may have in request.payload and can enter bad data */
             if(request.payload.tenantId) delete request.payload.tenantId;
@@ -405,13 +403,49 @@ exports.updateUser = {
             if(request.payload.password) request.payload.password = Crypto.encrypt(request.payload.password);
 
 
-            User.updateUser(request.params.id, request.payload, function(err, user) {
+            User.updateUser(decoded.id, request.payload, function(err, user) {
                 if(err){
                     if ( constants.kDuplicateKeyError === err.code || constants.kDuplicateKeyErrorForMongoDBv2_1_1 === err.code ) {
                         reply(Boom.forbidden("user email already registered"));
                     } else return reply( Boom.badImplementation(err) ); // HTTP 403
                 }
                 else{
+                    return reply("user updated successfully");
+                }
+            });
+
+       });
+    }
+};
+
+exports.updateUserByTenantAdmin = {
+    auth: {
+        strategy: 'token',
+        scope: ['Tenant-Admin']
+    },
+    handler: function(request, reply) {
+       Jwt.verify(request.headers.authorization.split(' ')[1], Config.key.privateKey, function(err, decoded) {
+ 
+        
+            /* filterening unwanted attributes which may have in request.payload and can enter bad data */
+            if(request.payload.tenantId) delete request.payload.tenantId;
+            if(request.payload.firstLogin) delete request.payload.firstLogin;
+            if(request.payload.lastLogin) delete request.payload.lastLogin;
+            if(request.payload.createdBy) delete request.payload.createdBy;
+            if(request.payload.scope) delete request.payload.scope;
+            if(request.payload.password) request.payload.password = Crypto.encrypt(request.payload.password);
+
+            console.log(request.payload);
+            console.log(request.params.id);
+            console.log(decoded.id);
+            User.updateUserByTenantId(request.params.id, decoded.id, request.payload, function(err, user) {
+                if(err){
+                    if ( constants.kDuplicateKeyError === err.code || constants.kDuplicateKeyErrorForMongoDBv2_1_1 === err.code ) {
+                        reply(Boom.forbidden("user email already registered"));
+                    } else return reply( Boom.badImplementation(err) ); // HTTP 403
+                }
+                else{
+                    console.log(user);
                     return reply("user updated successfully");
                 }
             });

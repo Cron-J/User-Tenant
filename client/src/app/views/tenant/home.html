@@ -9,20 +9,26 @@
   </div>
   <form name="searchForm">
     <section class="row">      
-      <div class="col-md-6 form-group">   
+      <!-- <div class="col-md-6 form-group">   
           <label class="col-md-3 control-label">Tenant Id</label>
           <div class="col-md-5">
               <input class="form-control" type="text" ng-model="srch.tenantId">
           </div>                    
-      </div>
+      </div> -->
       <div class="col-md-6 form-group">
         <label class="col-md-3 control-label">Name</label>
         <div class="col-md-5">
             <input class="form-control" type="text" ng-model="srch.name">
         </div>                  
       </div>
+      <div class="col-md-6 form-group">
+        <label for="" class="col-md-3 control-label">Description</label>
+        <div class="col-md-5">
+            <input class="form-control" placeholder="" type="text" ng-model="srch.description">
+        </div>
+      </div>
     </section>
-    <section class="row">
+    <!-- <section class="row">
       <div class="col-md-6 form-group">
         <label for="" class="col-md-3 control-label">Description</label>
         <div class="col-md-5">
@@ -40,7 +46,7 @@
             </select>
         </div>
       </div>
-    </section>  
+    </section>   -->
     <div class="pull-right">
       <button value="Search" class="btn btn-primary" type="submit" ng-click="searchTenant(srch)">Search</button>
       <button type="button" value="Reset" class="btn btn-primary" ng-click="reset()">Reset</button>
@@ -61,21 +67,15 @@
         <thead>
           <tr>
             <th>#</th>
-            <th>Tenant Id</th>
             <th>Name</th>
-            <th>Status</th>
             <th>Description</th>
             <th></th>
           </tr>
         </thead>
         <tbody>
           <tr class="ut-pointer" ng-repeat="tenant in pagedItems[currentPage]" ng-click="getTenant(tenant._id)">
-            {{tenant.tenantId}}
-            <td>{{$index+1}}
-            </td>
-            <td>{{tenant.tenantId}}</td>
+            <td>{{$index+1}}</td>
             <td>{{tenant.name}}</td>
-            <td>{{tenant.status}}</td>
             <td>{{tenant.description}}</td>
             <td>
               <button type="button" class="btn btn-default btn-md">

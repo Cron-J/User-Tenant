@@ -55,17 +55,44 @@ app.controller('accountCtrl', ['$scope', '$rootScope', '$http', '$location',
         }
 
         //forgot password
-        $scope.forgotPassword = function (email_add) {
-            $http.post('/forgotPassword', {userId:email_add})
+        $scope.forgotPassword = function (username) {
+            $http.post('/forgotPassword', {username:username})
                 .success(function (data, status) {
                     console.log(data);
-                    growl.addSuccessMessage('Email has been sent successfully');
+                    growl.addSuccessMessage('Password has been successfully to registered email with your username');
                     $location.path('/login');
                 })
                 .error(function (data, status) {
                     growl.addErrorMessage(data.message);
                 })
         }
+
+        //Tenant Search by name
+        $scope.searchTenantByName = function($viewValue){
+            console.log('entered');
+            var temp = [];
+            var obj = {};
+            obj['key'] = "name";
+            obj['value'] = $viewValue;
+            temp.push(obj);
+            return $http.post('/searchTenant', obj).
+            then(function(data){
+              var tenantList = [];
+              angular.forEach(data.data, function(item){ 
+              console.log('item', item);    
+                if(item.description != undefined){
+                    tenantList.push({ "name": item.name, "_id": item._id, 
+                    "desc":item.description, "comma": ', ' });
+                } else {
+                    tenantList.push({ "name": item.name, "_id": item._id });
+                }
+              });
+              return tenantList;
+            }).catch(function(error){
+                growl.addErrorMessage('oops! Something went wrong');
+            });
+        }
+
 
         //Tenant Self Registration
         $scope.tenantSelfRegistration = function (account_info) {
@@ -75,6 +102,7 @@ app.controller('accountCtrl', ['$scope', '$rootScope', '$http', '$location',
                 .success(function (data, status) {
                     growl.addSuccessMessage('Tenant has been successfully registered');
                     $location.path('login');
+                    $scope.account = {};
                 })
                 .error(function (data, status) {
                     growl.addErrorMessage(data.message);
@@ -92,6 +120,7 @@ app.controller('accountCtrl', ['$scope', '$rootScope', '$http', '$location',
                 .success(function (data, status) {
                     growl.addSuccessMessage('User has been successfully registered');
                     $location.path('login');
+                    $scope.account = {};
                 })
                 .error(function (data, status) {
                     account_info.passwordConfirm = dump;
@@ -116,7 +145,7 @@ app.controller('accountCtrl', ['$scope', '$rootScope', '$http', '$location',
                 delete account_info._id, delete account_info.createdAt, 
                 delete account_info.createdBy, delete account_info.updatedAt,
                 delete account_info.updatedBy;
-                $http.put('/user/'+id, account_info, {
+                $http.put('/user', account_info, {
                     headers: AuthServ.getAuthHeader()
                 })
                 .success(function (data, status) {
@@ -131,33 +160,6 @@ app.controller('accountCtrl', ['$scope', '$rootScope', '$http', '$location',
                         growl.addErrorMessage(data.message);
                 });
             }
-        }
-
-        //Tenant Search by name
-        $scope.searchTenantByName = function($viewValue){
-            console.log('entered');
-            var temp = [];
-            var obj = {};
-            obj['key'] = "name";
-            obj['value'] = $viewValue;
-            temp.push(obj);
-            console.log('$viewValue', $viewValue);
-            return $http.post('/searchTenant', obj).
-            then(function(data){
-              var tenantList = [];
-              angular.forEach(data.data, function(item){ 
-              console.log('item', item);    
-                if(item.description != undefined){
-                    tenantList.push({ "name": item.name, "_id": item._id, 
-                    "desc":item.description, "comma": ', ' });
-                } else {
-                    tenantList.push({ "name": item.name, "_id": item._id });
-                }
-              });
-              return tenantList;
-            }).catch(function(error){
-                growl.addErrorMessage('oops! Something went wrong');
-            });
         }
 
         $scope.resetPassword = function (isTrue) {

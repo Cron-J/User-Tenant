@@ -18,15 +18,10 @@ app.controller('tenantCtrl', ['$scope', '$rootScope', '$http', '$location',
             }
             //clear country selection
             $scope.clearCountrySelection();
-           //country list
-            countryList.async().then(function(response) {
-                $scope.countryList = response.data;
-                $scope.countryList1 = angular.copy($scope.countryList);
-                if($stateParams.tenantId) {
-                    $scope.view = 'edit';
-                    $scope.getTenant();
-                }
-            });
+            if($stateParams.tenantId) {
+                $scope.view = 'edit';
+                $scope.getTenant();
+            }
             if($location.path() == '/addUser'){
                 inActiveUsersList();
             }

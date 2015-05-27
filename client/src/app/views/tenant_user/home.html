@@ -5,7 +5,7 @@
   <div class="row">
     <div class="col-lg-2 col-md-2 col-lg-offset-10 col-md-offset-10 ut-addbutton">
       <a class="btn btn-default" ng-click="exportUserData()"><i class="fa fa-download"></i> Export</a>
-      <a ui-sref="createTenantUser" class="btn btn-primary pull-right"><i class="fa fa-user-plus"></i> Add</a>
+     <!--  <a ui-sref="createTenantUser" class="btn btn-primary pull-right"><i class="fa fa-user-plus"></i> Add</a> -->
     </div>    
   </div>  
   <div class="ut-container">
@@ -32,14 +32,17 @@
           </div>
         </div>
         <div class="col-md-6 form-group">
-          <label for="" class="col-md-3 control-label">User Type</label>
-          <div class="col-md-5">
-            <select class="form-control" placeholder="" type="text" ng-model="srch.scope">
+          <label for="" class="col-md-3 control-label">Tenant Id</label>
+          <div class="col-md-4">
+            <input class="form-control" placeholder="" type="text" ng-model="srch.tenantName" typeahead="result as result.name+ result.comma + (result.desc | limitTo:10) for result in searchTenantByName($viewValue)" typeahead-wait-ms="1000">
+            <!-- <select class="form-control" placeholder="" type="text" ng-model="srch.scope">
               <option value=""></option>
               <option value="Tenant-Admin">Tenant-Admin</option>
               <option value="Tenant-User">Tenant-User</option>
-            </select>
+            </select> -->
           </div>
+          <button class="btn btn-primary btn-xs" ng-click="searchModal()"><i class="fa fa-search"></i></button>
+          <div ng-include="'app/views/tenant/search_tenants.html'"></div>
         </div>
       </div>
         

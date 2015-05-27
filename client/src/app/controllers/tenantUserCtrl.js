@@ -18,19 +18,16 @@ app.controller('tenantUserCtrl', ['$scope', '$rootScope', '$http', '$location',
                     $scope.current_usr.lastName = response.data.lastName;
                 });
             }
-            //country list
-            countryList.async().then(function(response) {
-                $scope.countryList = response.data;
-                if($stateParams.tenantUserId) {
-                    $scope.view = 'edit';
-                    getUserAccountDetails();
-                }
-                if($stateParams.tUserId) {
-                    $scope.viewByTenant = 'edit';
-                    getTenantUserbyTenant();
-                }
-            });
-            
+
+            if($stateParams.tenantUserId) {
+                $scope.view = 'edit';
+                getUserAccountDetails();
+            }
+            if($stateParams.tUserId) {
+                $scope.viewByTenant = 'edit';
+                getTenantUserbyTenant();
+            }
+
         }
         
         // $scope.user = {};
@@ -156,13 +153,13 @@ app.controller('tenantUserCtrl', ['$scope', '$rootScope', '$http', '$location',
 
         //Update Tenant-User account details by Tenant
         $scope.updatetenantUserAccountByTenant = function (account_info, valid) {
+            console.log("1", account_info._id);
+            console.log("2", $stateParams.tUserId);
             if(valid){
-                var dataDump = angular.copy(account_info);
-                account_info.address.country = account_info.address.country[0].code;
                 delete account_info._id, delete account_info.createdAt, 
                 delete account_info.createdBy, delete account_info.updatedAt,
                 delete account_info.updatedBy;
-                $http.put('/tenantUser/'+$stateParams.tUserId, account_info, {
+                $http.put('/user/'+$stateParams.tUserId, account_info, {
                     headers: AuthServ.getAuthHeader()
                 })
                 .success(function (data, status) {
@@ -175,7 +172,6 @@ app.controller('tenantUserCtrl', ['$scope', '$rootScope', '$http', '$location',
                         $scope.sessionExpire();
                     else
                         growl.addErrorMessage(data.message);
-                    account_info.address.country = dataDump.address.country;
                 });
                 
             }
