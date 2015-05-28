@@ -6,8 +6,6 @@ app.controller('tenantUserCtrl', ['$scope', '$rootScope', '$http', '$location',
         $stateParams, $modal, $log, userInfo, countryList) {
         var _scope = {};
         _scope.init = function() {
-            //clear country selection
-            $scope.clearCountrySelection();
             if($rootScope.user.scope == 'Admin')
                 $scope.view = 'create';
             if($rootScope.user.scope == 'Tenant-Admin')
@@ -20,7 +18,7 @@ app.controller('tenantUserCtrl', ['$scope', '$rootScope', '$http', '$location',
             }
 
             if($stateParams.tenantUserId) {
-                $scope.view = 'edit';
+                $scope.view = 'view';
                 getUserAccountDetails();
             }
             if($stateParams.tUserId) {
@@ -40,14 +38,6 @@ app.controller('tenantUserCtrl', ['$scope', '$rootScope', '$http', '$location',
                 headers: AuthServ.getAuthHeader()
             })
             .success(function (data, status) {
-                for (var i = 0; i < $scope.countryList.length; i++) {
-                    if($scope.countryList[i].code == data.address.country ) {
-                        data.address.country = [];
-                        data.address.country[0] = {};
-                        data.address.country[0] = $scope.countryList[i];
-                        data.address.country[0].ticked = true;
-                    }
-                };
                 $scope.current_usr.firstName = data.firstName;
                 $scope.current_usr.lastName = data.lastName;
                 $scope.account = data;
@@ -153,8 +143,6 @@ app.controller('tenantUserCtrl', ['$scope', '$rootScope', '$http', '$location',
 
         //Update Tenant-User account details by Tenant
         $scope.updatetenantUserAccountByTenant = function (account_info, valid) {
-            console.log("1", account_info._id);
-            console.log("2", $stateParams.tUserId);
             if(valid){
                 delete account_info._id, delete account_info.createdAt, 
                 delete account_info.createdBy, delete account_info.updatedAt,

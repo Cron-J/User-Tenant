@@ -1,18 +1,25 @@
 <div class="container">
     <header>
-        <!-- <p ng-show="view == 'view'" class="ut-lead">Tenant-User Details</p>
-        <p ng-show="view == 'edit'" class="ut-lead">Edit Tenant-User</p> -->
+        <p ng-show="view == 'view'" class="ut-lead">Tenant-User Details</p>
+        <!-- <p ng-show="view == 'edit'" class="ut-lead">Edit Tenant-User</p> -->
         <p ng-show="viewByTenant == 'view'" class="ut-lead">User Details</p>
         <p ng-show="viewByTenant == 'edit'" class="ut-lead">Edit User Details</p>
     </header>
     <div class="col-lg-8 col-md-8 ut-container">
-        <form id="signupForm" class="form-horizontal ut-form ng-pristine ng-valid" role="form" name="signupForm" novalidate>
+        <form id="userForm" class="form-horizontal ut-form form-validation" role="form" name="userForm">
+            <div class="row" ng-show="view == 'view'">
+                <div class="form-group">
+                    <label class="col-sm-2 control-label">Tenant Id</label>
+                    <div class="col-sm-5">
+                        <input name="tenantId" placeholder="jhon" class="form-control" ng-model="account.tenant" ng-pattern="/^[a-zA-Z0-9]{3,20}$/" disabled ng-required="view == 'view'">
+                    </div>
+                </div>
+            </div>
             <div class="row">
                 <div class="form-group">
                     <label class="col-sm-2 control-label">User Name</label>
-
                     <div class="col-sm-5">
-                        <input placeholder="jhon" class="form-control" ng-model="account.username" ng-pattern="/^[a-zA-Z0-9]{3,20}$/" disabled required>
+                        <input name="username" placeholder="jhon" class="form-control" ng-model="account.username" ng-pattern="/^[a-zA-Z0-9]{3,20}$/" disabled required>
                     </div>
                 </div>
             </div>
@@ -21,10 +28,10 @@
                     <label class="col-sm-2 control-label">First Name</label>
 
                     <div class="col-sm-5">
-                        <input placeholder="Jhon" type="text" 
+                        <input name="firstName" placeholder="Jhon" type="text" 
                         class="form-control" ng-model="account.firstName"
                         ng-pattern="/^[a-zA-Z]{3,20}$/" 
-                        ng-disabled="viewByTenant == 'view'" required>
+                        ng-disabled="viewByTenant == 'view' || view == 'view'" required>
                     </div>
                 </div>
             </div>
@@ -33,10 +40,10 @@
                     <label class="col-sm-2 control-label">Last Name</label>
 
                     <div class="col-sm-5">
-                        <input placeholder="Michael" type="text" 
+                        <input name="lastName" placeholder="Michael" type="text" 
                         class="form-control" ng-model="account.lastName" 
                         ng-pattern="/^[a-zA-Z]{3,20}$/" 
-                        ng-disabled="viewByTenant == 'view'"required>
+                        ng-disabled="viewByTenant == 'view' || view == 'view'"required>
                     </div>
                 </div>
             </div>
@@ -45,10 +52,10 @@
                     <label class="col-sm-2 control-label">Email</label>
 
                     <div class="col-sm-5">
-                        <input type="email" placeholder="jhon@example.com" 
+                        <input name="email" type="email" placeholder="jhon@example.com" 
                         class="form-control" ng-model="account.email"
                         ng-minlength="5" maxlength="50" 
-                        ng-disabled="viewByTenant == 'view'" required>
+                        ng-disabled="viewByTenant == 'view' || view == 'view'" required>
                     </div>
                 </div>
             </div>                
@@ -57,14 +64,14 @@
                 <div class="form-group">
                     <div class="col-lg-7 col-md-7">
                         <!-- Admin view -->
-                        <!-- <button class="btn btn-info" ui-sref="tenantHome"> Back</button> -->
-                        <button class="btn btn-primary" ng-show="view == 'edit'" ng-disabled="!signupForm.$valid" ng-click="updateUserAccount(account, signupForm.$valid)">Update</button>
-                        <button class="btn btn-default" ng-show="view == 'edit' || view == 'create'" ng-click="confirmationModal(true)">Cancel</button>
+                        <button class="btn btn-info" ui-sref="users" ng-show="view == 'view'"> Back</button>
+                        <!-- <button class="btn btn-primary" ng-show="view == 'edit'" ng-disabled="!userForm.$valid" ng-click="updateUserAccount(account, userForm.$valid)">Update</button> -->
+                        <!-- <button class="btn btn-default" ng-show="view == 'edit' || view == 'create'" ng-click="confirmationModal(true)">Cancel</button>
                         <div ng-include="'app/views/common/confirmationDailogBox.html'"></div>
-                        <button class="btn btn-primary" ng-show="view == 'view'"  ng-click="view = 'edit';">Edit</button>
-                        <button class="btn btn-default" ng-show="view == 'view'" ui-sref="users">Cancel</button>
+                        <button class="btn btn-primary" ng-show="view == 'view'"  ng-click="view = 'edit';">Edit</button> -->
+                        <!-- <button class="btn btn-default" ng-show="view == 'view'" ui-sref="users">Cancel</button> -->
                         <!-- Tenant-Admin view -->
-                        <button class="btn btn-primary" ng-show="viewByTenant == 'edit'" ng-disabled="!signupForm.$valid" ng-click="updatetenantUserAccountByTenant(account, signupForm.$valid)">Update</button>
+                        <button class="btn btn-primary" ng-show="viewByTenant == 'edit'" ng-disabled="!userForm.$valid" ng-click="updatetenantUserAccountByTenant(account, userForm.$valid)">Update</button>
                         <button class="btn btn-default" ng-show="viewByTenant == 'edit' || viewByTenant == 'create'" ng-click="confirmationModal()">Cancel</button>
                         <div ng-include="'app/views/common/confirmationDailogBox.html'"></div>
                         <button class="btn btn-primary" ng-show="viewByTenant == 'view'"  ng-click="viewByTenant = 'edit';">Edit</button>

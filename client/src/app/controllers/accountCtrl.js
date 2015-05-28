@@ -10,21 +10,14 @@ app.controller('accountCtrl', ['$scope', '$rootScope', '$http', '$location',
                 remember: true
             };
             $scope.authError = null;
-            //clear country selection
-            $scope.clearCountrySelection();
-            //country list
+ 
             if($location.path() != '/login' && $location.path() !='/forgotPassword') {
-                countryList.async().then(function(response) {
-                    $scope.countryList = response.data;
-                    $scope.countryList1 = angular.copy($scope.countryList);
-                    if($location.path() == '/editProfile') {
-                        $scope.profileView = 'edit';
-                        getAccountDetails();
-                    }
-                });
+                if($location.path() == '/editProfile') {
+                    $scope.profileView = 'edit';
+                    getAccountDetails();
+                }
             }
             $scope.setPassword = false;
-            $scope.isUser = true;
         }
 
         //User login
@@ -168,30 +161,6 @@ app.controller('accountCtrl', ['$scope', '$rootScope', '$http', '$location',
             else
                 $scope.setPassword = true;
         }
-
-
-        //Date picker
-        $scope.open1 = function($event) {
-            $event.preventDefault();
-            $event.stopPropagation();
-
-            $scope.opened1 = true;
-        };
-
-        $scope.open2 = function($event) {
-            $event.preventDefault();
-            $event.stopPropagation();
-
-            $scope.opened2 = true;
-        };
-
-        // $scope.dateOptions = {
-        //     formatYear: 'yy',
-        //     startingDay: 1
-        // };
-
-        $scope.formats = ['MM/dd/yyyy', 'yyyy/MM/dd', 'dd.MM.yyyy', 'shortDate'];
-        $scope.format = $scope.formats[0];
 
         _scope.init();
 }]);

@@ -8,17 +8,10 @@ app.controller('adminCtrl', ['$scope', '$rootScope', '$http', '$location',
         var _scope = {};
         _scope.init = function() {
             $scope.view = 'create';
-            //clear country selection
-            $scope.clearCountrySelection();
             userInfo.async().then(function(response) {
                 $scope.current_usr.firstName = response.data.firstName;
                 $scope.current_usr.lastName = response.data.lastName;
             });
-            //country list
-            countryList.async().then(function(response) {
-                $scope.countryList = response.data;
-            });
-
         }
 
         $scope.user = $cookieStore.get('user');
@@ -170,29 +163,6 @@ app.controller('adminCtrl', ['$scope', '$rootScope', '$http', '$location',
             });
         }
 
-        
-        //Date picker
-        $scope.open1 = function($event) {
-            $event.preventDefault();
-            $event.stopPropagation();
-
-            $scope.opened1 = true;
-        };
-
-        $scope.open2 = function($event) {
-            $event.preventDefault();
-            $event.stopPropagation();
-
-            $scope.opened2 = true;
-        };
-
-        // $scope.dateOptions = {
-        //     formatYear: 'yy',
-        //     startingDay: 1
-        // };
-
-        $scope.formats = ['MM/dd/yyyy', 'yyyy/MM/dd', 'dd.MM.yyyy', 'shortDate'];
-        $scope.format = $scope.formats[0];
 
         //Pagination
         $scope.pagedItems = [];

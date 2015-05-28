@@ -1,262 +1,46 @@
-<!-- <div class="container">
-  <header>
-    <p class="ut-lead" ng-show="view == 'view'">Tenant Details</p>
-    <p class="ut-lead" ng-show="view == 'edit'">Edit Tenant</p>
-  </header>
-  <div class="col-lg-8 col-md-8 ut-container">  
-    <form id="editForm" class="form-horizontal ut-form ng-pristine ng-valid" role="form" name="editForm" novalidate>          
-        <div class="row">
-          <div class="form-group">
-            <label class="col-lg-2 col-md-2 control-label">Tenant Id <span class="error" ng-show="editForm.tenantId.$error.required"> *</span></label>
-            <div class="col-lg-6 col-md-6">            
-              <div class="input-group">
-                <span class="input-group-addon"><i class="fa fa-fw fa-user"></i></span>
-                <input type="text" class="form-control" name="tenantId" ng-model="account.tenantId" ng-minlength="2" maxlength="30" ng-pattern="/^[a-zA-Z0-9]*$/" ng-disabled='true' required>
-              </div>
-              <div class="error" ng-show="editForm.tenantId.$dirty && editForm.tenantId.$invalid">Invalid:
-                <span ng-show="editForm.tenantId.$error.required">Tell us your tenant id</span>
-                <span ng-show="editForm.tenantId.$error.minlength">Tenant id should be minimum of 2 characters</span>
-                <span ng-show="editForm.tenantId.$error.pattern">Tenant id won't special characters</span>
-                </span>
-              </div>
-            </div>
-          </div>
-        </div>
-        <div class="row">
-          <div class="form-group">
-            <label class="col-lg-2 col-md-2 control-label">Name<span class="error" ng-show="editForm.name.$error.required"> *</span></label>
-            <div class="col-lg-6 col-md-6">            
-              <div class="input-group">
-                <span class="input-group-addon"><i class="fa fa-fw fa-pencil"></i></span>
-                <input type="text" class="form-control" name="name" ng-model="account.name" ng-minlength="2" maxlength="30" ng-pattern="/^[a-zA-Z0-9 ]*$/" ng-disabled="view == 'view'" required>
-              </div>
-              <div class="error" ng-show="editForm.name.$dirty && editForm.name.$invalid">Invalid:
-                <span ng-show="editForm.name.$error.required">Tell us your name</span>
-                <span ng-show="editForm.name.$error.minlength">Name should be minimum of 2 characters</span>
-                <span ng-show="editForm.name.$error.pattern">Name won't allow special characters</span>
-                </span>
-              </div>
-            </div>
-          </div>
-        </div>
-        <div class="row">
-          <div class="form-group">
-            <label class="col-lg-2 col-md-2 control-label">Status<span class="error" ng-show="editForm.status.$error.required"> *</span></label>
-            <div class="col-lg-3 col-md-3">            
-              <div class="input-group">
-                <span class="input-group-addon"><i class="fa fa-fw fa-pencil"></i></span>
-                  <select  type="text" class="form-control" name="status" ng-model="account.status" ng-disabled="view == 'view'" required>
-                  <option value="">Select</option>
-                  <option value="confirmed">Confirmed</option>
-                  <option value="active">Active</option>
-                  <option value="inactive">Inactive</option>
-                </select>
-              </div>
-              <div class="error" ng-show="editForm.status.$dirty && editForm.status.$invalid">Invalid:
-                <span ng-show="editForm.status.$error.required">Tell us your status</span>
-              </div>
-            </div>
-          </div>
-        </div>
-        <div class="row">
-          <div class="form-group">
-            <label class="col-lg-2 col-md-2 control-label">Description</label>
-            <div class="col-lg-6 col-md-6">   
-              <div class="input-group">
-                <span class="input-group-addon"><i class="fa fa-fw fa-pencil"></i></span>
-                <input type="text" class="form-control" rows="4" name="description" ng-model="account.description" ng-minlength="2" maxlength="30" ng-pattern="/^[a-zA-Z0-9 ]*$/" ng-disabled="view == 'view'" />
-              </div>
-              <div class="error" ng-show="editForm.description.$dirty && editForm.description.$invalid">Invalid:
-                <span ng-show="editForm.description.$error.minlength">Description should be minimum of 2 characters</span>
-                <span ng-show="editForm.description.$error.pattern">Description won't allow special characters</span>
-                </span>
-              </div>
-            </div>
-          </div>
-        </div>
-        <div class="row">
-          <div class="form-group">
-            <label class="col-lg-2 col-md-2 control-label">Valid from <span class="error" ng-show="editForm.date1.$error.required">*</span></label>
-            <div class="col-lg-4 col-md-4">
-              <div class="input-group">
-                <div class="row">
-                  <div class="col-md-9">
-                    <p class="input-group">
-                    <span class="input-group-addon"><i class="fa fa-fw fa-calendar"></i></span>
-                    <input type="text" class="form-control" datepicker-popup="{{format}}" ng-model="account.validFrom" is-open="opened1" ng-required="true" close-text="Close" name="date1" ng-click="open1($event)" ng-disabled="view == 'view'"/>
-                    </p>
-                  </div>
+<div class="container">
+    <header>
+        <!-- <p ng-show="view == 'view'" class="ut-lead">Tenant-User Details</p>
+        <p ng-show="view == 'edit'" class="ut-lead">Edit Tenant-User</p> -->
+        <p ng-show="view == 'view'" class="ut-lead">Tenant Details</p>
+        <p ng-show="view == 'edit'" class="ut-lead">Edit Tenant Details</p>
+    </header>
+    <div class="col-lg-8 col-md-8 ut-container">
+        <form id="tenantForm" class="form-horizontal ut-form form-validation" role="form" name="tenantForm" >
+            <div class="row">
+                <div class="form-group">
+                    <label class="col-sm-2 control-label">Tenant Name</label>
+
+                    <div class="col-sm-5">
+                        <input placeholder="jhon" class="form-control" ng-model="account.name" ng-pattern="/^[a-zA-Z0-9]{2,30}$/" 
+                        ng-disacled="view == 'view'" required>
+                    </div>
                 </div>
-              </div>
-              <div class="error" ng-show="editForm.date1.$dirty && editForm.date1.$invalid">Invalid:
-                  <span ng-show="editForm.date1.$error.required">Tell us Valid from</span>
-              </div>
             </div>
-          </div>
-        </div>
-        <div class="row">
-          <div class="form-group">
-            <label class="col-lg-2 col-md-2 control-label">Valid to <span class="error" ng-show="editForm.date2.$error.required">*</span></label>
-            <div class="col-lg-4 col-md-4">
-              <div class="input-group">
-                <div class="row">
-                  <div class="col-md-9">
-                    <p class="input-group">
-                      <span class="input-group-addon"><i class="fa fa-fw fa-calendar"></i></span>
-                      <input type="text" class="form-control" datepicker-popup="{{format}}" ng-model="account.validTo" is-open="opened2" min-date="account.validFrom" datepicker-options="dateOptions" date-disabled="disabled(date, mode)" ng-required="true" close-text="Close" name="date2" ng-click="open2($event)" ng-disabled="view == 'view'"/>
-                    </p>
-                  </div>
+            <div class="row">
+                <div class="form-group">
+                    <label class="col-sm-2 control-label">Tenant Description</label>
+
+                    <div class="col-sm-5">
+                        <textarea placeholder="Jhon" type="text" 
+                        class="form-control" ng-model="account.description"
+                        ng-disacled="view == 'view'"
+                        ng-pattern="/^[a-zA-Z_ ]{2,30}$/"
+                       ></textarea>
+                    </div>
                 </div>
-              </div>
-              <div class="error" ng-show="(editForm.date2.$dirty && editForm.date2.$invalid) || (account.validTo <account.validFrom)">Invalid:
-                  <span ng-show="editForm.date2.$error.required">Tell us Valid to</span>
-                  <span ng-show="account.validTo <account.validFrom">Valid to should be greater than valid from</span>
-              </div>
             </div>
-          </div>
-        </div>
-        <div class="row">
-          <div class="form-group">
-            <label class="col-lg-2 col-md-2"><h4>Address</h4></label>
-          </div>
-        </div>
-        <div class="row">
-          <div class="form-group">
-              <label class="col-lg-2 col-md-2 control-label">Unit</label>
-              <div class="col-lg-6 col-md-6">
-                  <div class="input-group">
-                      <span class="input-group-addon"><span class="fa fa-fw fa-th"></span></span>
-                      <input type="text" class="form-control" name="unit" ng-model="account.address.unit" ng-minlength="1" maxlength="20" ng-pattern="/^[a-zA-Z0-9 ]*$/" ng-disabled="view == 'view'">
-                  </div>
-                  <span class="error" ng-show="editForm.unit.$dirty 
-                  && editForm.unit.$invalid">Invalid:
-                      <span ng-show="editForm.unit.$error.required"> Unit field is required</span>
-                      <span ng-show="editForm.unit.$error.minlength">Unit field should be minimum of 1 digit</span>
-                      <span ng-show="editForm.unit.$error.pattern">Unit field won't allow special characters</span>
-                  </span>
-              </div>
-          </div>
-        </div>
-        <div class="row">
-          <div class="form-group">
-              <label class="col-lg-2 col-md-2 control-label">Building</label>
-              <div class="col-lg-6 col-md-6">
-                  <div class="input-group">
-                      <span class="input-group-addon"><span class="fa fa-fw fa-building"></span></span>
-                      <input type="text" class="form-control" name="building" ng-model="account.address.building" ng-minlength="1" maxlength="20" ng-pattern="/^[a-zA-Z0-9 ]*$/" ng-disabled="view == 'view'">
-                  </div>
-                  <span class="error" ng-show="editForm.building.$dirty && editForm.building.$invalid">Invalid:
-                      <span ng-show="editForm.building.$error.required">Tell us your Building Name</span>
-                      <span ng-show="editForm.building.$error.minlength">Building Name should be minimum of 1 character</span>
-                      <span ng-show="editForm.building.$error.pattern">Building name won't allow special characters</span>
-                  </span>
-              </div>
-          </div>
-        </div>
-        <div class="row">
-          <div class="form-group">
-              <label class="col-lg-2 col-md-2 control-label">Street</label>
-              <div class="col-lg-6 col-md-6">
-                  <div class="input-group">
-                      <span class="input-group-addon"><span class="fa fa-fw fa-map-marker"></span></span>
-                      <input type="text" class="form-control" name="street" ng-model="account.address.street" ng-minlength="1" maxlength="20" ng-pattern="/^[a-zA-Z0-9 ]*$/" ng-disabled="view == 'view'">
-                  </div>
-                  <span class="error" ng-show="editForm.street.$dirty && editForm.street.$invalid">Invalid:
-                      <span ng-show="editForm.street.$error.required">Street  is required</span>
-                      <span ng-show="editForm.street.$error.minlength">Street should be minimum of 1 character</span>
-                      <span ng-show="editForm.street.$error.pattern">Street name won't allow  special characters</span>
-                  </span>
-              </div>
-          </div>
-        </div>
-        <div class="row">
-          <div class="form-group">
-              <label class="col-lg-2 col-md-2 control-label">City<span class="error" ng-show="editForm.city.$error.required"> *</span></label>
-              <div class="col-lg-6 col-md-6">
-                  <div class="input-group">
-                      <span class="input-group-addon"><span class="fa fa-fw fa-map-marker"></span></span>
-                      <input type="text" class="form-control" name="city" ng-model="account.address.city" ng-minlength="1" maxlength="20" ng-pattern="/^[a-zA-Z0-9 ]*$/" ng-disabled="view == 'view'" required>
-                  </div>
-                  <span class="error" ng-show="editForm.city.$dirty 
-                  && editForm.city.$invalid">Invalid:
-                      <span ng-show="editForm.city.$error.required">City name is required</span>
-                      <span ng-show="editForm.city.$error.minlength">City name should be minimum of 1 character</span>
-                      <span ng-show="editForm.city.$error.pattern">City name won't allow special characters</span>
-                  </span>
-              </div>
-          </div>
-        </div>
-        <div class="row">
-          <div class="form-group">
-              <label class="col-lg-2 col-md-2 control-label">Region</label>
-              <div class="col-lg-6 col-md-6">
-                  <div class="input-group">
-                      <span class="input-group-addon"><span class="fa fa-fw fa-map-marker"></span></span>
-                      <input type="text" class="form-control" name="region" ng-model="account.address.region" ng-minlength="1" maxlength="20" ng-pattern="/^[a-zA-Z0-9 ]*$/" ng-disabled="view == 'view'">
-                  </div>
-                  <span class="error" ng-show="editForm.region.$dirty && editForm.region.$invalid">Invalid:
-                      <span ng-show="editForm.region.$error.minlength">Region should be minimum of 1 character</span>
-                      <span ng-show="editForm.region.$error.pattern">Region won't allow special characters</span>
-                  </span>
-              </div>
-          </div>
-        </div>
-        <div class="row">
-          <div class="form-group">
-              <label class="col-lg-2 col-md-2 control-label">Country<span class="error" ng-show="editForm.country.$error.required"> *</span></label>
-              <div class="col-lg-7 col-md-7">
-                  <div class="input-group">
-                      <span class="input-group-addon"><span class="fa fa-fw fa-map-marker"></span></span>
-                      <input type="text" class="form-control" name="country" ng-model="account.address.country[0].name" ng-show="view == 'view'" ng-disabled="view == 'view'" required>
-                      <div class="select-group" ng-hide="view == 'view'"
-                        multi-select  
-                        name="country"
-                        input-model="countryList"
-                        output-model="account.address.country"
-                        button-label="name"         
-                        item-label="name" 
-                        tick-property="ticked" 
-                        selection-mode="single"
-                        helper-elements="reset filter"
-                        max-height="100px"
-                        ng-required="true"
-                      >
-                      </div>
-                  </div>
-                  <span class="error" ng-show="editForm.country.$dirty && editForm.country.$invalid">Invalid:
-                      <span ng-show="editForm.country.$error.required">Tell us your Country Name</span>
-                  </span>
-              </div>
-          </div>
-        </div>
-        <div class="row">
-          <div class="form-group">
-              <label class="col-lg-2 col-md-2 control-label">ZipCode<span class="error" ng-show="editForm.zipcode.$error.required"> *</span></label>
-              <div class="col-lg-4 col-md-4">
-                  <div class="input-group">
-                      <span class="input-group-addon"><span class="fa fa-fw fa-link"></span></span>
-                      <input type="text" class="form-control" name="zipcode" ng-model="account.address.addressCode" ng-minlength="3" maxlength="10" ng-pattern="/^[a-zA-Z0-9]*$/" ng-disabled="view == 'view'" required>
-                  </div>
-                  <span class="error" ng-show="editForm.zipcode.$dirty && editForm.zipcode.$invalid">Invalid:
-                      <span ng-show="editForm.zipcode.$error.required">Zip code is required</span>
-                  <span ng-show="editForm.zipcode.$error.minlength">Zip code should be minimum of 3 digit</span>
-                  <span ng-show="editForm.zipcode.$error.pattern">Zip code won't allow special characters</span>
-                  </span>
-              </div>
-          </div>
-        </div>
-        <div ng-include="'app/views/common/audit_info.html'"></div>
-        <div class="row">
-          <div class="col-lg-4 col-md-4 col-lg-offset-7 col-md-offset-7">
-            <div class="pull-right">
-                <button class="btn btn-primary" ng-show="view == 'edit'" ng-disabled="!editForm.$valid" ng-click="updateTenantAccount(account, editForm.$valid)">Update</button>
-                <button class="btn btn-default" ng-show="view == 'edit'" ng-click="confirmationModal()">Cancel</button>
-                <div ng-include="'app/views/common/confirmationDailogBox.html'"></div>
-                <button class="btn btn-primary" ng-show="view == 'view'" ng-click="view = 'edit';">Edit</button>
-                <button class="btn btn-default" ng-show="view == 'view'" ui-sref="tenants">Cancel</button>
+            <div class="row">
+                <div class="form-group">
+                    <div class="col-lg-7 col-md-7">
+                        <button class="btn btn-primary" ng-show="view == 'edit'" ng-disabled="!tenantForm.$valid" ng-click="updateTenantAccount(account, tenantForm.$valid)">Update</button>
+                        <button class="btn btn-default" ng-show="view == 'edit'" ng-click="confirmationModal()">Cancel</button>
+                        <div ng-include="'app/views/common/confirmationDailogBox.html'"></div>
+                        <button class="btn btn-primary" ng-show="view == 'view'"  ng-click="view = 'edit';">Edit</button>
+                        <button class="btn btn-default" ng-show="viewByTenant == 'view'" ui-sref="tenants">Cancel</button>
+                    </div>
+                </div>
             </div>
-          </div>
-        </div>
-    </form>
-  </div> 
-</div> -->
+        </form>
+    </div> 
+</div>

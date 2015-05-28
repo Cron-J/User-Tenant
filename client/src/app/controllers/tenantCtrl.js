@@ -16,8 +16,6 @@ app.controller('tenantCtrl', ['$scope', '$rootScope', '$http', '$location',
                 console.log($scope.current_usr);
                 getTenantUsers();
             }
-            //clear country selection
-            $scope.clearCountrySelection();
             if($stateParams.tenantId) {
                 $scope.view = 'edit';
                 $scope.getTenant();
@@ -38,14 +36,6 @@ app.controller('tenantCtrl', ['$scope', '$rootScope', '$http', '$location',
             .success(function (data, status) {
                 $scope.current_usr.firstName = data.name;
                 $scope.current_usr.lastName = '';
-                for (var i = 0; i < $scope.countryList.length; i++) {
-                    if($scope.countryList[i].code == data.address.country ) {
-                        data.address.country = [];
-                        data.address.country[0] = {};
-                        data.address.country[0] = $scope.countryList[i];
-                        data.address.country[0].ticked = true;
-                    }
-                };
                 $scope.account = data;
             })
             .error(function (data, status) {
@@ -79,9 +69,7 @@ app.controller('tenantCtrl', ['$scope', '$rootScope', '$http', '$location',
         $scope.updateTenantAccount = function (account_info, valid) {
             if(valid){
                 var dataDump = angular.copy(account_info);
-                account_info.address.country = account_info.address.country[0].code;
-                console.log(account_info.address.country);
-                delete account_info._id, delete account_info.tenantId, 
+                delete account_info._id, delete account_info.__v, 
                 delete account_info.createdAt, delete account_info.createdBy, delete account_info.updatedAt,
                 delete account_info.updatedBy;
                 $http.put('/tenant/'+$stateParams.tenantId, account_info, {
@@ -98,7 +86,6 @@ app.controller('tenantCtrl', ['$scope', '$rootScope', '$http', '$location',
                         $scope.sessionExpire();
                     else
                         growl.addErrorMessage(data.message);
-                    $scope.account.address.country = dataDump.address.country;
                 });        
                $scope.account.tenantId = dataDump.tenantId;
             }
@@ -260,29 +247,6 @@ app.controller('tenantCtrl', ['$scope', '$rootScope', '$http', '$location',
         }
      
         $scope.groupToPages();
-
-        //Date picker
-        $scope.open1 = function($event) {
-            $event.preventDefault();
-            $event.stopPropagation();
-
-            $scope.opened1 = true;
-        };
-
-        $scope.open2 = function($event) {
-            $event.preventDefault();
-            $event.stopPropagation();
-
-            $scope.opened2 = true;
-        };
-
-        // $scope.dateOptions = {
-        //     formatYear: 'yy',
-        //     startingDay: 1
-        // };
-
-        $scope.formats = ['MM/dd/yyyy', 'yyyy/MM/dd', 'dd.MM.yyyy', 'shortDate'];
-        $scope.format = $scope.formats[0];
 
         _scope.init();
 }]);

@@ -21,7 +21,7 @@
                                        ng-model="account.tenantName" placeholder="Peter" required name="tenantId" typeahead="result as result.name+ result.comma + (result.desc | limitTo:10) for result in searchTenantByName($viewValue)" typeahead-wait-ms="1000">
                                     </div>
                                     <div class="">
-                                        <button class="btn btn-primary btn-sm" ng-click="tenantSearchModal()"><span class="fa fa-search"></span></button>
+                                        <a class="btn btn-primary btn-sm" ng-click="tenantSearchModal()"><span class="fa fa-search"></span></a>
                                     </div>
                                     <div ng-include="'app/views/common/tenantSearchModal.html'"></div>
                                 </div>

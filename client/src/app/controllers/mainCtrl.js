@@ -11,9 +11,6 @@ app.controller('mainCtrl', ['$scope', '$location', '$rootScope', '$http', '$moda
 			        userInfo.async().then(function(response) {
 			          $scope.current_usr = response.data;
 			        });
-			        countryList.async().then(function(response) {
-				        $scope.countryList = response.data;
-			        });
 			      }
         }
 
@@ -27,7 +24,7 @@ app.controller('mainCtrl', ['$scope', '$location', '$rootScope', '$http', '$moda
 
 	      $scope.sessionExpire = function () {
 	      	delete $rootScope.user;
-          growl.addErrorMessage('Session has expired');
+            growl.addErrorMessage('Session has expired');
 	      }
 
 	      $scope.confirmationModal = function(isUser) {
@@ -40,9 +37,7 @@ app.controller('mainCtrl', ['$scope', '$location', '$rootScope', '$http', '$moda
 					        }
 					      }
             });
-
             modalInstance.result.then(function(tenant) {
-
             }, function() {
                 $log.info('Modal dismissed at: ' + new Date());
             });
@@ -53,10 +48,10 @@ app.controller('mainCtrl', ['$scope', '$location', '$rootScope', '$http', '$moda
                templateUrl: 'tenantSearchModal.html',
                 controller: 'searchModalInstanceCtrl',
                 resolve: {
-					        detail: function () {
-					          return isUser;
-					        }
-					      }
+    		        detail: function () {
+    		          return isUser;
+    		        }
+    		    }
             });
 
             modalInstance.result.then(function(tenant) {
