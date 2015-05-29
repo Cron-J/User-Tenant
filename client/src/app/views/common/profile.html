@@ -14,7 +14,7 @@
                                 <input placeholder="jhon" class="form-control" ng-model="account.username"
                                        ng-pattern="/^[a-zA-Z0-9]{3,20}$/" required disabled>
                             </div>
-                            <div class="col-md-5 ut-pointer" >
+                            <div class="col-md-5 ut-pointer" ng-show="profileView == 'edit'">
                                 <a ng-hide="setPassword" ng-click="setPassword = true">Change password?</a>
                                 <a ng-show="setPassword" ng-click="setPassword = false">Cancel</a>
                             </div>
@@ -26,7 +26,6 @@
                 <div ng-show="profileView == 'edit' && setPassword == true">
                     <div class="form-group">
                         <label class="col-sm-2 control-label">Password</label>
-
                         <div class="col-sm-5">
                             <input type="password" class="form-control"
                                    ng-model="account.password" ng-minlength="5" maxlength="50" 
@@ -39,7 +38,6 @@
             <div class="row">
                 <div class="form-group">
                     <label class="col-sm-2 control-label">First Name</label>
-
                     <div class="col-sm-5">
                         <input placeholder="Jhon" type="text" 
                         class="form-control" ng-model="account.firstName"
@@ -51,7 +49,6 @@
             <div class="row">
                 <div class="form-group">
                     <label class="col-sm-2 control-label">Last Name</label>
-
                     <div class="col-sm-5">
                         <input placeholder="Michael" type="text" 
                         class="form-control" ng-model="account.lastName"
@@ -63,7 +60,6 @@
             <div class="row">
                 <div class="form-group">
                     <label class="col-sm-2 control-label">Email</label>
-
                     <div class="col-sm-5">
                         <input type="email" placeholder="jhon@example.com" 
                         class="form-control" ng-model="account.email" 

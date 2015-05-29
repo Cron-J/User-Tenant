@@ -9,12 +9,6 @@
   </div>
   <form name="searchForm">
     <section class="row">      
-      <!-- <div class="col-md-6 form-group">   
-          <label class="col-md-3 control-label">Tenant Id</label>
-          <div class="col-md-5">
-              <input class="form-control" type="text" ng-model="srch.tenantId">
-          </div>                    
-      </div> -->
       <div class="col-md-6 form-group">
         <label class="col-md-3 control-label">Name</label>
         <div class="col-md-5">
@@ -28,25 +22,6 @@
         </div>
       </div>
     </section>
-    <!-- <section class="row">
-      <div class="col-md-6 form-group">
-        <label for="" class="col-md-3 control-label">Description</label>
-        <div class="col-md-5">
-            <input class="form-control" placeholder="" type="text" ng-model="srch.description">
-        </div>
-      </div>
-      <div class="col-md-6 form-group">
-        <label for="" class="col-md-3 control-label">Status</label>
-        <div class="col-md-5">
-            <select class="form-control" type="text" ng-model="srch.status">
-              <option value=""></option>
-              <option value="confirmed">Confirmed</option>
-              <option value="active">Active</option>
-              <option value="inactive">Inactive</option>
-            </select>
-        </div>
-      </div>
-    </section>   -->
     <div class="pull-right">
       <button value="Search" class="btn btn-primary" type="submit" ng-click="searchTenant(srch)">Search</button>
       <button type="button" value="Reset" class="btn btn-primary" ng-click="reset()">Reset</button>
@@ -86,19 +61,19 @@
         <tfoot>
           <td colspan="6">
             <div class="pagination pull-right">
-                 <li ng-class="{disabled: currentPage == 0}">
-                   <a href ng-click="prevPage()">« Prev</a>
-                 </li>
-                 <li ng-repeat="n in range(pagedItems.length)"
+                <li ng-class="{disabled: currentPage == 0}">
+                  <a href ng-click="prevPage()">« Prev</a>
+                </li>
+                <li ng-repeat="n in range(pagedItems.length)"
                      ng-class="{active: n == currentPage}"
                      ng-click="setPage()">
                    <a href ng-bind="n + 1">1</a>
-                 </li>
-                 <li ng-class="{disabled: currentPage == pagedItems.length - 1}">
+                </li>
+                <li ng-class="{disabled: currentPage == pagedItems.length - 1}">
                    <a href ng-click="nextPage()">Next »</a>
-                 </li>
+                </li>
               </div>
-         </td>
+          </td>
         </tfoot>
       </table>
     </div>

@@ -5,7 +5,6 @@
   <div class="row">
     <div class="col-lg-2 col-md-2 col-lg-offset-10 col-md-offset-10 ut-addbutton">
       <a class="btn btn-default" ng-click="exportUserData()"><i class="fa fa-download"></i> Export</a>
-     <!--  <a ui-sref="createTenantUser" class="btn btn-primary pull-right"><i class="fa fa-user-plus"></i> Add</a> -->
     </div>    
   </div>  
   <div class="ut-container">
@@ -35,17 +34,11 @@
           <label for="" class="col-md-3 control-label">Tenant Id</label>
           <div class="col-md-4">
             <input class="form-control" placeholder="" type="text" ng-model="srch.tenantName" typeahead="result as result.name+ result.comma + (result.desc | limitTo:10) for result in searchTenantByName($viewValue)" typeahead-wait-ms="1000">
-            <!-- <select class="form-control" placeholder="" type="text" ng-model="srch.scope">
-              <option value=""></option>
-              <option value="Tenant-Admin">Tenant-Admin</option>
-              <option value="Tenant-User">Tenant-User</option>
-            </select> -->
           </div>
           <button class="btn btn-primary btn-xs" ng-click="searchModal()"><i class="fa fa-search"></i></button>
           <div ng-include="'app/views/tenant/search_tenants.html'"></div>
         </div>
       </div>
-        
       <div class="pull-right">
         <button value="Search" class="btn btn-primary" type="submit" ng-click="searchTenantUser(srch)">Search</button>
         <button type="button" value="Reset" class="btn btn-primary" ng-click="reset()">Reset</button>
@@ -84,8 +77,7 @@
                     <button type="button" ng-click="rem_tenant(user._id,$index)" class="btn btn-default btn-md">
                       <span class="fa fa-edit"></span> Edit</button>
                   </td>
-              </tr>
-              
+              </tr>  
             </tbody>
             <tfoot>
               <td colspan="6">
