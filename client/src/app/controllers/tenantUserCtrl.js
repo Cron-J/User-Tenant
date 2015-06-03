@@ -90,8 +90,8 @@ app.controller('tenantUserCtrl', ['$scope', '$rootScope', '$http', '$location',
         //Tenant-User account creation
         $scope.createTenantUserAccount = function (account_info, valid) {
             if(valid){
-                var dataDump = angular.copy(account_info);
-                account_info.address.country = account_info.address.country[0].code;
+                // var dataDump = angular.copy(account_info);
+                // account_info.address.country = account_info.address.country[0].code;
                 $http.post('/tenantUser', account_info, {
                     headers: AuthServ.getAuthHeader()
                 })
@@ -109,7 +109,7 @@ app.controller('tenantUserCtrl', ['$scope', '$rootScope', '$http', '$location',
                         $scope.sessionExpire();
                     else
                       growl.addErrorMessage(data.message);
-                    account_info.address.country = dataDump.address.country;
+                    // account_info.address.country = dataDump.address.country;
                 });
             }
         }

@@ -4,7 +4,7 @@
   </header>  
   <div class="row">
     <div class="col-lg-1 col-md-1 col-lg-offset-11 col-md-offset-11 ut-addbutton">
-      <a ui-sref="createTenant" class="btn btn-primary"><i class="fa fa-user-plus"></i> Add</a>
+      <!-- <a ui-sref="createTenant" class="btn btn-primary"><i class="fa fa-user-plus"></i> Add</a> -->
     </div>
   </div>
   <form name="searchForm">
@@ -48,13 +48,15 @@
           </tr>
         </thead>
         <tbody>
-          <tr class="ut-pointer" ng-repeat="tenant in pagedItems[currentPage]" ng-click="getTenant(tenant._id)">
+          <tr class="ut-pointer" ng-repeat="tenant in pagedItems[currentPage]" >
             <td>{{$index+1}}</td>
             <td>{{tenant.name}}</td>
             <td>{{tenant.description}}</td>
             <td>
-              <button type="button" class="btn btn-default btn-md">
+              <button type="button" class="btn btn-primary btn-md" ng-click="getTenant(tenant._id)">
                 <span class="fa fa-edit"></span> Edit</button>
+                <button type="button" class="btn btn-default btn-md" ui-sref="tenantHome">
+                <span class="fa fa-users"></span> Users</button>
             </td>
           </tr>
         </tbody>

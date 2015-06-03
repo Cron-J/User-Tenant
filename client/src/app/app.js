@@ -32,8 +32,8 @@ var app = angular.module('app', [
               }
           })
           .state('tenantSignup', {
-            url: "/signup",
-              templateUrl: "app/views/tenant/self_register.html",
+            url: "/tenantSignup",
+              templateUrl: "app/views/registration/tenant_self_registration.html",
               controller: 'accountCtrl',
               data: {
                   authorizedRoles: [USER_ROLES.all]
@@ -41,7 +41,7 @@ var app = angular.module('app', [
           }) 
           .state('tenantUserSignup', {
             url: "/userSignup",
-              templateUrl: "app/views/tenant_user/self_register.html",
+              templateUrl: "app/views/registration/user_self_registration.html",
               controller: 'accountCtrl',
               data: {
                   authorizedRoles: [USER_ROLES.all]
@@ -124,7 +124,7 @@ var app = angular.module('app', [
           })
           .state('inActiveUsers', {
             url: "/addUser",
-              templateUrl: "app/views/tenant/inactive_users.html",
+              templateUrl: "app/views/tenant/tenant_users_list.html",
               controller: "tenantCtrl",
               data: {
                   authorizedRoles: [USER_ROLES.tenantadmin]
@@ -181,8 +181,8 @@ var app = angular.module('app', [
       else if(isAuthorized){
         AuthServ.isLoggedInAsync(function(loggedIn) {
           if (!loggedIn) {      
-            if($location.path() == '/signup') {
-                $location.path('/signup');
+            if($location.path() == '/tenantSignup') {
+                $location.path('/tenantSignup');
             }
             else if($location.path() == '/userSignup') {
                 $location.path() == '/userSignup'

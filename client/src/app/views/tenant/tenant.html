@@ -11,7 +11,7 @@
 
                     <div class="col-sm-5">
                         <input placeholder="jhon" class="form-control" ng-model="account.name" ng-pattern="/^[a-zA-Z0-9]{2,30}$/" 
-                        ng-disacled="view == 'view'" required>
+                        ng-disacled="view == 'view'" ng-click="isChanged = true"required>
                     </div>
                 </div>
             </div>
@@ -23,19 +23,21 @@
                         <textarea placeholder="Jhon" type="text" 
                         class="form-control" ng-model="account.description"
                         ng-disacled="view == 'view'"
-                        ng-pattern="/^[a-zA-Z_ ]{2,30}$/"
+                        ng-pattern="/^[a-zA-Z_ ]{2,30}$/" ng-click="isChanged = true"
                        ></textarea>
                     </div>
                 </div>
             </div>
-            <div class="row">
+            <div class="row">isChanged:{{isChanged}}
                 <div class="form-group">
-                    <div class="col-lg-7 col-md-7">
+                    <div class="col-lg-12 col-md-12">
                         <button class="btn btn-primary" ng-show="view == 'edit'" ng-disabled="!tenantForm.$valid" ng-click="updateTenantAccount(account, tenantForm.$valid)">Update</button>
-                        <button class="btn btn-default" ng-show="view == 'edit'" ng-click="confirmationModal()">Cancel</button>
+                        <button class="btn btn-default" ng-show="view == 'edit' 
+                        && isChanged" ng-click="confirmationModal()">Cancel</button>
+                        
+                        <button class="btn btn-primary" ng-show="view == 'view'"  ng-click="view = 'edit';isChanged = false">Edit</button>
+                        <button class="btn btn-default" ng-show="!isChanged" ui-sref="tenants">Cancel</button>
                         <div ng-include="'app/views/common/confirmationDailogBox.html'"></div>
-                        <button class="btn btn-primary" ng-show="view == 'view'"  ng-click="view = 'edit';">Edit</button>
-                        <button class="btn btn-default" ng-show="viewByTenant == 'view'" ui-sref="tenants">Cancel</button>
                     </div>
                 </div>
             </div>

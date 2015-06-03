@@ -29,6 +29,7 @@
                         <input name="firstName" placeholder="Jhon" type="text" 
                         class="form-control" ng-model="account.firstName"
                         ng-pattern="/^[a-zA-Z]{3,20}$/" 
+                        ng-click="isChanged = true"
                         ng-disabled="viewByTenant == 'view' || view == 'view'" required>
                     </div>
                 </div>
@@ -41,6 +42,7 @@
                         <input name="lastName" placeholder="Michael" type="text" 
                         class="form-control" ng-model="account.lastName" 
                         ng-pattern="/^[a-zA-Z]{3,20}$/" 
+                        ng-click="isChanged = true"
                         ng-disabled="viewByTenant == 'view' || view == 'view'"required>
                     </div>
                 </div>
@@ -52,6 +54,7 @@
                         <input name="email" type="email" placeholder="jhon@example.com" 
                         class="form-control" ng-model="account.email"
                         ng-minlength="5" maxlength="50" 
+                        ng-click="isChanged = true"
                         ng-disabled="viewByTenant == 'view' || view == 'view'" required>
                     </div>
                 </div>
@@ -59,15 +62,15 @@
             <div ng-include="'app/views/common/audit_info.html'" ng-hide="view == 'create' || viewByTenant == 'create'"></div>
             <div class="row">
                 <div class="form-group">
-                    <div class="col-lg-7 col-md-7">
+                    <div class="col-lg-12 col-md-12">
                         <!-- Admin view -->
                         <button class="btn btn-info" ui-sref="users" ng-show="view == 'view'"> Back</button>
                         <!-- Tenant view -->
-                        <button class="btn btn-primary" ng-show="viewByTenant == 'edit'" ng-disabled="!userForm.$valid" ng-click="updatetenantUserAccountByTenant(account, userForm.$valid)">Update</button>
-                        <button class="btn btn-default" ng-show="viewByTenant == 'edit' || viewByTenant == 'create'" ng-click="confirmationModal()">Cancel</button>
-                        <div ng-include="'app/views/common/confirmationDailogBox.html'"></div>
+                        <button class="btn btn-primary" ng-show="viewByTenant == 'edit'" ng-disabled="!userForm.$valid" ng-click="isChanged = false;updatetenantUserAccountByTenant(account, userForm.$valid)">Update</button>
                         <button class="btn btn-primary" ng-show="viewByTenant == 'view'"  ng-click="viewByTenant = 'edit';">Edit</button>
-                        <button class="btn btn-default" ng-show="viewByTenant == 'view'" ui-sref="tenantHome">Cancel</button>
+                        <button class="btn btn-default" ng-show="viewByTenant == 'view' || !isChanged" ui-sref="tenantHome">Cancel</button>
+                        <button class="btn btn-default" ng-show="isChanged" ng-click="confirmationModal()">Cancel</button>
+                        <div ng-include="'app/views/common/confirmationDailogBox.html'"></div>
                     </div>
                 </div>
             </div>

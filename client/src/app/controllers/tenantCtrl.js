@@ -14,6 +14,7 @@ app.controller('tenantCtrl', ['$scope', '$rootScope', '$http', '$location',
                     $scope.current_usr.lastName = response.data.lastName;
                 });
                 console.log($scope.current_usr);
+                $scope.inActiveUsers = false;
                 getTenantUsers();
             }
             if($stateParams.tenantId) {
@@ -21,6 +22,7 @@ app.controller('tenantCtrl', ['$scope', '$rootScope', '$http', '$location',
                 $scope.getTenant();
             }
             if($location.path() == '/addUser'){
+                $scope.inActiveUsers = true;
                 inActiveUsersList();
             }
         }

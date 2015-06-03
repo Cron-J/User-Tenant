@@ -89,7 +89,7 @@ app.controller('accountCtrl', ['$scope', '$rootScope', '$http', '$location',
 
         //Tenant Self Registration
         $scope.tenantSelfRegistration = function (account_info) {
-
+                var dump = angular.copy(account_info.passwordConfirm);
                 delete account_info.passwordConfirm;
                 $http.post('/tenantSelfRegistration', account_info)
                 .success(function (data, status) {
@@ -99,6 +99,7 @@ app.controller('accountCtrl', ['$scope', '$rootScope', '$http', '$location',
                 })
                 .error(function (data, status) {
                     growl.addErrorMessage(data.message);
+                    account_info.passwordConfirm = dump;
                 });
      
         }
@@ -113,7 +114,6 @@ app.controller('accountCtrl', ['$scope', '$rootScope', '$http', '$location',
                 .success(function (data, status) {
                     growl.addSuccessMessage('User has been successfully registered');
                     $location.path('login');
-                    $scope.account = {};
                 })
                 .error(function (data, status) {
                     account_info.passwordConfirm = dump;

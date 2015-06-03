@@ -60,19 +60,24 @@
             <thead>
               <tr>
                 <th>#</th>
+                <th>User Name</th>
                 <th>First Name</th>
                 <th>Last Name</th>
-                <th>User Id</th>
+                <th>Email</th>
+                <th>User Role</th>
+                <th>Status</th>
                 <th></th>
               </tr>
             </thead>
             <tbody>
                 <tr class="ut-pointer" ng-repeat="user in pagedItems[currentPage]" ng-click="getTenantUser(user._id)">
-                  <td>{{$index+1}}
-                  </td>
+                  <td>{{$index+1}}</td>
+                  <td>{{user.username}}</td>
                   <td>{{user.firstName}}</td>
                   <td>{{user.lastName}}</td>
-                  <td>{{user.userId}}</td>
+                  <td>{{user.email}}</td>
+                  <td>{{user.scope}}</td>
+                  <td>{{user.isActive}}</td>
                   <td>
                     <button type="button" ng-click="rem_tenant(user._id,$index)" class="btn btn-default btn-md">
                       <span class="fa fa-edit"></span> Edit</button>
@@ -80,7 +85,7 @@
               </tr>  
             </tbody>
             <tfoot>
-              <td colspan="6">
+              <td colspan="8">
                 <div class="pagination pull-right">
                   <li ng-class="{disabled: currentPage == 0}">
                     <a href ng-click="prevPage()">« Prev</a>

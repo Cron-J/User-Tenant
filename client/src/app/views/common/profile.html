@@ -7,12 +7,46 @@
         <form id="profileForm" class="form-horizontal ut-form form-validation" role="form" name="profileForm">
             <div class="row">
                 <div class="form-group">
-                    <label class="col-sm-2 control-label">Username</label>
-                    <div class="col-md-10">
+                    <label class="col-sm-3 control-label">User Name</label>
+                    <div class="col-sm-5">
+                        <input placeholder="jhon" class="form-control" ng-model="account.username" ng-pattern="/^[a-zA-Z0-9]{3,20}$/" required disabled>
+                    </div>
+                </div>
+            </div>
+            <div class="row">
+                <div class="form-group">
+                    <label class="col-sm-3 control-label">First Name</label>
+                    <div class="col-sm-5">
+                        <input placeholder="Jhon" type="text" 
+                        class="form-control" ng-model="account.firstName"
+                        ng-disabled="profileView == 'view'" 
+                        ng-click="isChanged = true"
+                        ng-pattern="/^[a-zA-Z]{3,20}$/" required>
+                    </div>
+                </div>
+            </div>
+            <div class="row">
+                <div class="form-group">
+                    <label class="col-sm-3 control-label">Last Name</label>
+                    <div class="col-sm-5">
+                        <input placeholder="Michael" type="text" 
+                        class="form-control" ng-model="account.lastName"
+                        ng-disabled="profileView == 'view'" 
+                        ng-click="isChanged = true"
+                        ng-pattern="/^[a-zA-Z]{3,20}$/" required>
+                    </div>
+                </div>
+            </div>
+            <div class="row">
+                <div class="form-group">
+                    <label class="col-sm-3 control-label">Email</label>
+                    <div class="col-md-9">
                         <div class="row">
-                            <div class="col-sm-6">
-                                <input placeholder="jhon" class="form-control" ng-model="account.username"
-                                       ng-pattern="/^[a-zA-Z0-9]{3,20}$/" required disabled>
+                            <div class="col-sm-7">
+                                <input type="email" placeholder="jhon@example.com" class="form-control" ng-model="account.email" ng-minlength="5" maxlength="50" 
+                                style="width: 299px;"
+                                ng-click="isChanged = true"
+                                ng-disabled="profileView == 'view'" required>
                             </div>
                             <div class="col-md-5 ut-pointer" ng-show="profileView == 'edit'">
                                 <a ng-hide="setPassword" ng-click="setPassword = true">Change password?</a>
@@ -25,46 +59,26 @@
             <div class="row">
                 <div ng-show="profileView == 'edit' && setPassword == true">
                     <div class="form-group">
-                        <label class="col-sm-2 control-label">Password</label>
+                        <label class="col-sm-3 control-label">Password</label>
                         <div class="col-sm-5">
                             <input type="password" class="form-control"
-                                   ng-model="account.password" ng-minlength="5" maxlength="50" 
-                                   ng-disabled="profileView == 'view'"
+                                   ng-model="account.password" ng-minlength="5" maxlength="50" placeholder="******"
+                                   ng-click="isChanged = true"
                                    data-ng-class="{'ng-invalid':profileForm.confirmPassword.$error.match}">
                         </div>
                     </div>
                 </div>
             </div>
             <div class="row">
-                <div class="form-group">
-                    <label class="col-sm-2 control-label">First Name</label>
-                    <div class="col-sm-5">
-                        <input placeholder="Jhon" type="text" 
-                        class="form-control" ng-model="account.firstName"
-                        ng-disabled="profileView == 'view'"
-                        ng-pattern="/^[a-zA-Z]{3,20}$/" required>
-                    </div>
-                </div>
-            </div>
-            <div class="row">
-                <div class="form-group">
-                    <label class="col-sm-2 control-label">Last Name</label>
-                    <div class="col-sm-5">
-                        <input placeholder="Michael" type="text" 
-                        class="form-control" ng-model="account.lastName"
-                        ng-disabled="profileView == 'view'"
-                        ng-pattern="/^[a-zA-Z]{3,20}$/" required>
-                    </div>
-                </div>
-            </div>
-            <div class="row">
-                <div class="form-group">
-                    <label class="col-sm-2 control-label">Email</label>
-                    <div class="col-sm-5">
-                        <input type="email" placeholder="jhon@example.com" 
-                        class="form-control" ng-model="account.email" 
-                        ng-minlength="5" maxlength="50"
-                        ng-disabled="profileView == 'view'" required>
+                <div ng-show="profileView == 'edit' && setPassword == true">
+                    <div class="form-group">
+                        <label class="col-sm-3 control-label">Confirm Password</label>
+                        <div class="col-sm-5">
+                            <input type="password" class="form-control" name="confirmPassword" ng-model="account.cnfpassword" ng-minlength="5" maxlength="50" placeholder="******"
+                            ng-disabled="profileView == 'view'"
+                            ng-click="isChanged = true"
+                            data-match="account.password">
+                        </div>
                     </div>
                 </div>
             </div>
@@ -98,16 +112,15 @@
                 </div>
             </div>
             <div ng-include="'app/views/common/audit_info.html'"></div>
-            <div class="row">
-                <div class="col-lg-4 col-md-4 col-lg-offset-7 col-md-offset-7">
-                    <div class="pull-right">
-                        <button class="btn btn-primary" ng-show="profileView == 'edit'" ng-disabled="!profileForm.$valid" ng-click="updateProfile(account, profileForm.$valid)">Update</button>
-                        <button class="btn btn-default" ng-show="profileView == 'edit'" ng-click="confirmationModal()">Cancel</button>
-                        <div ng-include="'app/views/common/confirmationDailogBox.html'"></div>
+                <div class="row">
+                    <div class="">
+                        <button class="btn btn-primary" ng-show="profileView == 'edit'" ng-disabled="!profileForm.$valid" ng-click="isChanged = false;updateProfile(account, profileForm.$valid)">Update</button>
                         <button class="btn btn-primary" ng-show="profileView == 'view'"  ng-click="profileView = 'edit';">Edit</button>
-                        <button class="btn btn-default" ng-show="profileView == 'view' && user.scope == 'Admin'" ui-sref="tenants">Cancel</button>
-                        <button class="btn btn-default" ng-show="profileView == 'view' && user.scope == 'Tenant-Admin'" ui-sref="tenantHome">Cancel</button>
-                        <button class="btn btn-default" ng-show="profileView == 'view' && user.scope == 'User'" ui-sref="home">Cancel</button>
+                        <button class="btn btn-default" ng-show="!isChanged && user.scope == 'Admin'" ui-sref="tenants">Cancel</button>
+                        <button class="btn btn-default" ng-show="!isChanged && user.scope == 'Tenant-Admin'" ui-sref="tenantHome">Cancel</button>
+                        <button class="btn btn-default" ng-show="!isChanged && user.scope == 'User'" ui-sref="home">Cancel</button>
+                        <button class="btn btn-default" ng-show="isChanged" ng-click="confirmationModal()">Cancel</button>
+                        <div ng-include="'app/views/common/confirmationDailogBox.html'"></div>
                     </div>
                 </div>
             </div>
