@@ -86,6 +86,11 @@ app.controller('adminCtrl', ['$scope', '$rootScope', '$http', '$location',
              $location.path('/tenant/'+id);
         }
 
+        //Get TenantUsers List for Particular Tenant
+        $scope.getTenantUsersOfTenant = function (id) {
+             $location.path('/tenantusersOfSelectedTenant/'+id);
+        }
+
         //Search Tenant-User
         $scope.searchTenantUser = function(searchObj){
             if(!searchObj) searchObj = {};
@@ -162,7 +167,6 @@ app.controller('adminCtrl', ['$scope', '$rootScope', '$http', '$location',
                 growl.addErrorMessage('oops! Something went wrong');
             });
         }
-
 
         //Pagination
         $scope.pagedItems = [];

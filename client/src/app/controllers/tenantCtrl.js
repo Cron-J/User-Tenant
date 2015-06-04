@@ -13,9 +13,8 @@ app.controller('tenantCtrl', ['$scope', '$rootScope', '$http', '$location',
                     $scope.current_usr.firstName = response.data.firstName;
                     $scope.current_usr.lastName = response.data.lastName;
                 });
-                console.log($scope.current_usr);
                 $scope.inActiveUsers = false;
-                getTenantUsers();
+                $scope.getTenantUsers();
             }
             if($stateParams.tenantId) {
                 $scope.view = 'edit';
@@ -25,14 +24,29 @@ app.controller('tenantCtrl', ['$scope', '$rootScope', '$http', '$location',
                 $scope.inActiveUsers = true;
                 inActiveUsersList();
             }
+            console.log($stateParams.selectedId);
+            if($location.path() == '/tenantusersOfSelectedTenant/'+$stateParams.selectedId) {
+                $scope.getTenantUsers();
+                $scope.getTenant();
+            }
         }
        
         // $scope.user = {};
         $scope.authError = null;
 
+        //getInfo 
+        var loadInfo = function () {
+
+        }
+
         //Get Tenant Details
         $scope.getTenant = function () {
-            $http.get('/tenant/'+ $stateParams.tenantId, {
+            var id;
+            if($stateParams.tenantId)
+                id = $stateParams.tenantId;
+            else
+                id = $stateParams.selectedId;
+            $http.get('/tenant/'+ id, {
                 headers: AuthServ.getAuthHeader()
             })
             .success(function (data, status) {
@@ -99,8 +113,13 @@ app.controller('tenantCtrl', ['$scope', '$rootScope', '$http', '$location',
         }
 
         //Get Tenant-Users List
-        var getTenantUsers = function () {
-            $http.get('/tenantUser/'+ $scope.current_usr._id, {
+        $scope.getTenantUsers = function () {
+            var id;
+            if($stateParams.selectedId) 
+                id = $stateParams.selectedId;
+            else
+                id = $scope.current_usr._id;
+            $http.get('/tenantUser/'+ id, {
                 headers: AuthServ.getAuthHeader()
             })
             .success(function (data, status) {
@@ -147,7 +166,7 @@ app.controller('tenantCtrl', ['$scope', '$rootScope', '$http', '$location',
                 headers: AuthServ.getAuthHeader()
             })
             .success(function (data, status) {
-                getTenantUsers();
+                $scope.getTenantUsers();
                 growl.addSuccessMessage('User account has been deactivated successfully');
             })
             .error(function (data, status) {

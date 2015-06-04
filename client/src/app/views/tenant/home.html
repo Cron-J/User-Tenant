@@ -55,7 +55,7 @@
             <td>
               <button type="button" class="btn btn-primary btn-md" ng-click="getTenant(tenant._id)">
                 <span class="fa fa-edit"></span> Edit</button>
-                <button type="button" class="btn btn-default btn-md" ui-sref="tenantHome">
+                <button type="button" class="btn btn-default btn-md" ng-click="getTenantUsersOfTenant(tenant._id)">
                 <span class="fa fa-users"></span> Users</button>
             </td>
           </tr>

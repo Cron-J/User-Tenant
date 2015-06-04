@@ -68,7 +68,7 @@
                         <!-- Tenant view -->
                         <button class="btn btn-primary" ng-show="viewByTenant == 'edit'" ng-disabled="!userForm.$valid" ng-click="isChanged = false;updatetenantUserAccountByTenant(account, userForm.$valid)">Update</button>
                         <button class="btn btn-primary" ng-show="viewByTenant == 'view'"  ng-click="viewByTenant = 'edit';">Edit</button>
-                        <button class="btn btn-default" ng-show="viewByTenant == 'view' || !isChanged" ui-sref="tenantHome">Cancel</button>
+                        <button class="btn btn-default" ng-show="viewByTenant == 'view' || !isChanged" ng-hide="view" ui-sref="tenantHome">Cancel</button>
                         <button class="btn btn-default" ng-show="isChanged" ng-click="confirmationModal()">Cancel</button>
                         <div ng-include="'app/views/common/confirmationDailogBox.html'"></div>
                     </div>
