@@ -111,4 +111,56 @@ exports.updateTenantByAdmin = {
     }
 };
 
+exports.exportTenant = {
+    auth: {
+        strategy: 'token',
+        scope: ['Admin']
+    },
+    handler: function(request, reply) {
+        var query = {};
+            query['scope'] = {'$ne': 'Admin'};
+        var dump = [];
+        Tenant.searchTenant(query, function(err, tenants) {
+            if (!err) {
+                    var query1 = {};
+                    async.each(tenants,
+                      function(tenant, callback){
+                        query1['tenantId'] = tenant._id;
+                            User.searchUser(query1, function(err, user) {
+                                if (!err) {
+                                    for(var i = 0; i < user.length; i++)
+                                      dump.push(customJson(tenant, user[i]));
+                                    callback();
+                                } 
+                                else reply(Boom.forbidden(err));
 
+                            }); 
+                        },
+                        function(err){
+                            if(!err) {
+                                json2csv({data: dump,  fields: ['name', 'description', 'username', 'firstName', 'lastName', 'email', 'role', 'isActive'], fieldNames: ['Tenant Name', 'Tenant Description', 'User name', 'First Name', 'Last Name', 'Email', 'Userrole', 'Active']}, function(err, csv1) {
+                                  if (err) console.log(err);
+                                    return reply(csv1).header('Content-Type', 'application/octet-stream').header('content-disposition', 'attachment; filename=user.csv;');
+                                });
+
+                            } else reply(Boom.forbidden(err));
+                        }
+                    );
+                    
+            } else reply(Boom.forbidden(err));
+        });
+    }
+};
+ var customJson = function (obj, list ) {
+    var result = {};
+    result['name'] = obj.name;
+    result['description'] = obj.description;
+    result['username'] = list.username;
+    result['firstName'] = list.firstName;
+    result['lastName'] = list.lastName;
+    result['email'] = list.email;
+    result['role'] = list.scope;
+    result['isActive'] = list.isActive;
+
+    return result;
+ }
