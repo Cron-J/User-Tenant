@@ -17,6 +17,8 @@
                 <th>First Name</th>
                 <th>Last Name</th>
                 <th>Email</th> 
+                <th>User Role</th> 
+                <th>Active</th> 
                 <th></th>
               </tr>
             </thead>
@@ -27,6 +29,8 @@
                   <td>{{user.firstName}}</td>
                   <td>{{user.lastName}}</td>
                   <td>{{user.email}}</td>
+                  <td>{{user.scope}}</td>
+                  <td>{{user.isActive}}</td>
                   <td>
                     <!-- <button type="button" ng-click="getTenantUser(user._id)" class="btn btn-primary btn-sm" ng-hide="inActiveUsers">
                       <span class="fa fa-edit"></span> Edit
@@ -42,7 +46,7 @@
               
             </tbody>
             <tfoot>
-              <td colspan="6">
+              <td colspan="8">
                 <div class="pagination pull-right">
                   <li ng-class="{disabled: currentPage == 0}">
                     <a href ng-click="prevPage()">« Prev</a>

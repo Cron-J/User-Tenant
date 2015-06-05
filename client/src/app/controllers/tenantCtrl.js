@@ -26,7 +26,7 @@ app.controller('tenantCtrl', ['$scope', '$rootScope', '$http', '$location',
             }
             console.log($stateParams.selectedId);
             if($location.path() == '/tenantusersOfSelectedTenant/'+$stateParams.selectedId) {
-                $scope.getTenantUsers();
+                allusers();
                 $scope.getTenant();
             }
         }
@@ -114,12 +114,7 @@ app.controller('tenantCtrl', ['$scope', '$rootScope', '$http', '$location',
 
         //Get Tenant-Users List
         $scope.getTenantUsers = function () {
-            var id;
-            if($stateParams.selectedId) 
-                id = $stateParams.selectedId;
-            else
-                id = $scope.current_usr._id;
-            $http.get('/tenantUser/'+ id, {
+            $http.get('/tenantUser/'+ $scope.current_usr._id, {
                 headers: AuthServ.getAuthHeader()
             })
             .success(function (data, status) {
@@ -131,6 +126,26 @@ app.controller('tenantCtrl', ['$scope', '$rootScope', '$http', '$location',
                 if(data.message == 'Invalid token') 
                     $scope.sessionExpire();
                 else if(data.message != "no user for tenant exist")
+                    growl.addErrorMessage(data.message);
+            });
+        }
+
+        //Get all Tenant-Users of a particular tenant
+        var allusers = function () {
+            var searchObj = {};
+            searchObj.tenantId = $stateParams.selectedId;
+            $http.post('/searchUser', searchObj,  {
+                headers: AuthServ.getAuthHeader()
+            })
+            .success(function (data, status) {
+                $scope.resultList = data;
+                $scope.currentPage = 0;
+                $scope.groupToPages();
+            })
+            .error(function (data, status) {
+                if(data.message == 'Invalid token') 
+                    $scope.sessionExpire();
+                else
                     growl.addErrorMessage(data.message);
             });
         }
