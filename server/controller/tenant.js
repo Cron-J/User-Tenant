@@ -5,9 +5,11 @@ var Boom = require('boom'),
     Jwt = require('jsonwebtoken'),
     EmailServices = require('../Utility/emailServices'),
     constants = require('../Utility/constants').constants,
+    json2csv = require('json2csv'),
     Crypto = require('../Utility/cryptolib'),
     User = require('../model/user').User,
-    Tenant = require('../model/tenant').Tenant;
+    Tenant = require('../model/tenant').Tenant,
+    async = require("async");
 
 exports.createTenantSelfRegistration = {
     handler: function(request, reply) {
@@ -90,7 +92,7 @@ exports.updateTenantByAdmin = {
             /* filterening unwanted attributes which may have in request.payload and can enter bad data */
             if(request.payload.createdBy) delete request.payload.createdBy;
 
-            request.payload.updatedBy = 'Admin';
+            request.payload.updatedBy = decoded.id;
 
             Tenant.updateTenant(request.params.id, request.payload, function(err, user) {
                 if(err){
@@ -108,3 +110,5 @@ exports.updateTenantByAdmin = {
        });
     }
 };
+
+

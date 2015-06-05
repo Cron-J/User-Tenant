@@ -147,6 +147,7 @@ app.controller('tenantUserCtrl', ['$scope', '$rootScope', '$http', '$location',
                 delete account_info._id, delete account_info.createdAt, 
                 delete account_info.createdBy, delete account_info.updatedAt,
                 delete account_info.updatedBy;
+                account_info.tenantId = account_info.tenantId._id;
                 $http.put('/user/'+$stateParams.tUserId, account_info, {
                     headers: AuthServ.getAuthHeader()
                 })

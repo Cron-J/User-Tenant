@@ -11,7 +11,7 @@
 
                     <div class="col-sm-5">
                         <input placeholder="jhon" class="form-control" ng-model="account.name" ng-pattern="/^[a-zA-Z0-9]{2,30}$/" 
-                        ng-disacled="view == 'view'" ng-click="isChanged = true"required>
+                        ng-disabled="view == 'view'" ng-click="isChanged = true"required>
                     </div>
                 </div>
             </div>
@@ -22,7 +22,7 @@
                     <div class="col-sm-5">
                         <textarea placeholder="Jhon" type="text" 
                         class="form-control" ng-model="account.description"
-                        ng-disacled="view == 'view'"
+                        ng-disabled="view == 'view'"
                         ng-pattern="/^[a-zA-Z_ ]{2,30}$/" ng-click="isChanged = true"
                        ></textarea>
                     </div>
@@ -36,7 +36,7 @@
                         && isChanged" ng-click="confirmationModal()">Cancel</button>
                         
                         <button class="btn btn-primary" ng-show="view == 'view'"  ng-click="view = 'edit';isChanged = false">Edit</button>
-                        <button class="btn btn-default" ng-show="!isChanged" ui-sref="tenants">Cancel</button>
+                        <button class="btn btn-default" ng-show="!isChanged || view == 'view'" ui-sref="tenants">Cancel</button>
                         <div ng-include="'app/views/common/confirmationDailogBox.html'"></div>
                     </div>
                 </div>

@@ -65,8 +65,8 @@ app.controller('accountCtrl', ['$scope', '$rootScope', '$http', '$location',
             console.log('entered');
             var temp = [];
             var obj = {};
-            obj['key'] = "name";
-            obj['value'] = $viewValue;
+            obj['name'] = $viewValue;
+            // obj['value'] = $viewValue;
             temp.push(obj);
             return $http.post('/searchTenant', obj).
             then(function(data){

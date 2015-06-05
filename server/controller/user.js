@@ -435,17 +435,13 @@ exports.updateUserByTenantAdmin = {
             if(request.payload.scope) delete request.payload.scope;
             if(request.payload.password) request.payload.password = Crypto.encrypt(request.payload.password);
 
-            console.log(request.payload);
-            console.log(request.params.id);
-            console.log(decoded.id);
-            User.updateUserByTenantId(request.params.id, decoded.id, request.payload, function(err, user) {
+            User.updateUserByTenantId(request.params.id, decoded.tenantId, request.payload, function(err, user) {
                 if(err){
                     if ( constants.kDuplicateKeyError === err.code || constants.kDuplicateKeyErrorForMongoDBv2_1_1 === err.code ) {
                         reply(Boom.forbidden("user email already registered"));
                     } else return reply( Boom.badImplementation(err) ); // HTTP 403
                 }
                 else{
-                    console.log(user);
                     return reply("user updated successfully");
                 }
             });

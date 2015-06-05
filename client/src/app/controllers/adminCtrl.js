@@ -38,6 +38,29 @@ app.controller('adminCtrl', ['$scope', '$rootScope', '$http', '$location',
             $scope.srch = {};
         }
 
+        //Export Tenants with related users Data
+        $scope.exportTenantsData = function () {
+            $http.get('/exportTenant', {
+                headers: AuthServ.getAuthHeader()
+            })
+            .success(function(data, status) {
+                var element = angular.element('<a/>');
+                element.attr({
+                   href: 'data:attachment/csv;charset=utf-8,' + encodeURI(data),
+                   target: '_blank',
+                   download: 'tenants.csv'
+                })[0].click();
+                 growl.addSuccessMessage('Export is successfull');
+            })
+            .error(function(data, status) {
+                if(data.message == 'Invalid token') 
+                    $scope.sessionExpire();
+                else
+                    growl.addErrorMessage(data.message);    
+            });
+
+        }
+
         //Export Tent-Users Data
         $scope.exportUserData = function () {
             $http.get('/exportUser', {
@@ -147,8 +170,8 @@ app.controller('adminCtrl', ['$scope', '$rootScope', '$http', '$location',
             console.log('entered');
             var temp = [];
             var obj = {};
-            obj['key'] = "name";
-            obj['value'] = $viewValue;
+            obj['name'] = $viewValue;
+            // obj['value'] = $viewValue;
             temp.push(obj);
             return $http.post('/searchTenant', obj).
             then(function(data){
