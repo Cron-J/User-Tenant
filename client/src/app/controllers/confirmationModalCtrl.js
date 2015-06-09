@@ -15,7 +15,7 @@ app.controller('confirmationModalInstanceCtrl', ['$scope', '$rootScope', '$http'
                 }
                 else if($rootScope.user.scope == 'Tenant-Admin') 
                     $location.path('/tenantHome');
-                else if($rootScope.user.scope == 'Tenant-User') 
+                else if($rootScope.user.scope == 'User') 
                     $location.path('/home');
             }
             else 

@@ -1,6 +1,7 @@
 <div class="container">
     <header>
-        <p ng-show="view == 'view'" class="ut-lead">Tenant-User Details</p>
+        <p ng-show="view == 'view' && account.scope == 'Tenant-Admin'" class="ut-lead">Tenant-Admin Details</p>
+        <p ng-show="view == 'view' && account.scope == 'User'" class="ut-lead">Tenant-User Details</p>
         <p ng-show="viewByTenant == 'view'" class="ut-lead">User Details</p>
         <p ng-show="viewByTenant == 'edit'" class="ut-lead">Edit User Details</p>
     </header>

@@ -286,7 +286,7 @@ exports.getUserByAdmin = {
                 else{
                     if(user){
                         user.password = undefined;
-                        user.scope = undefined;
+                        // user.scope = undefined;
                         return reply(user);    
                     }
                     return reply(Boom.forbidden("no user exist"));

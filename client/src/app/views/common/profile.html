@@ -82,7 +82,7 @@
                     </div>
                 </div>
             </div>
-            <div class="row">
+            <div class="row ut-login-block">
                 <div class="ut-acc-form-group ">
                     <div class="col-lg-6 col-md-6">
                         <accordion close-others="oneAtATime">
@@ -112,16 +112,15 @@
                 </div>
             </div>
             <div ng-include="'app/views/common/audit_info.html'"></div>
-                <div class="row">
-                    <div class="">
-                        <button class="btn btn-primary" ng-show="profileView == 'edit'" ng-disabled="!profileForm.$valid" ng-click="isChanged = false;updateProfile(account, profileForm.$valid)">Update</button>
-                        <button class="btn btn-primary" ng-show="profileView == 'view'"  ng-click="profileView = 'edit';">Edit</button>
-                        <button class="btn btn-default" ng-show="!isChanged && user.scope == 'Admin'" ui-sref="tenants">Cancel</button>
-                        <button class="btn btn-default" ng-show="!isChanged && user.scope == 'Tenant-Admin'" ui-sref="tenantHome">Cancel</button>
-                        <button class="btn btn-default" ng-show="!isChanged && user.scope == 'User'" ui-sref="home">Cancel</button>
-                        <button class="btn btn-default" ng-show="isChanged" ng-click="confirmationModal()">Cancel</button>
-                        <div ng-include="'app/views/common/confirmationDailogBox.html'"></div>
-                    </div>
+            <div class="row">
+                <div class="">
+                    <button class="btn btn-primary" ng-show="profileView == 'edit'" ng-disabled="!profileForm.$valid" ng-click="isChanged = false;updateProfile(account, profileForm.$valid)">Update</button>
+                    <button class="btn btn-primary" ng-show="profileView == 'view'"  ng-click="profileView = 'edit';">Edit</button>
+                    <button class="btn btn-default" ng-show="!isChanged && user.scope == 'Admin'" ui-sref="tenants">Cancel</button>
+                    <button class="btn btn-default" ng-show="!isChanged && user.scope == 'Tenant-Admin'" ui-sref="tenantHome">Cancel</button>
+                    <button class="btn btn-default" ng-show="!isChanged && user.scope == 'User'" ui-sref="home">Cancel</button>
+                    <button class="btn btn-default" ng-show="isChanged" ng-click="confirmationModal()">Cancel</button>
+                    <div ng-include="'app/views/common/confirmationDailogBox.html'"></div>
                 </div>
             </div>
         </form>

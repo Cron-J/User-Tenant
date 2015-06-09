@@ -12,6 +12,7 @@ app.controller('tenantCtrl', ['$scope', '$rootScope', '$http', '$location',
                     console.log(response);
                     $scope.current_usr.firstName = response.data.firstName;
                     $scope.current_usr.lastName = response.data.lastName;
+                    $scope.current_usr.tenantName = response.data.tenantId.name;
                 });
                 $scope.inActiveUsers = false;
                 $scope.getTenantUsers();

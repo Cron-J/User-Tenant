@@ -14,6 +14,7 @@ app.controller('tenantUserCtrl', ['$scope', '$rootScope', '$http', '$location',
                 userInfo.async().then(function(response) {
                     $scope.current_usr.firstName = response.data.firstName;
                     $scope.current_usr.lastName = response.data.lastName;
+                    $scope.current_usr.tenantName = response.data.tenantId.name;
                 });
             }
 

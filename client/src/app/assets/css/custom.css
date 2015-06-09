@@ -58,9 +58,20 @@
 	color: black;
 	text-decoration: none;
 }
+.ut-nohover {
+  color: #333;
+  background-color: transparent;
+  padding-top: 15px;
+  display: block;
+}
+.ut-login-block {
+	padding-top: 20px;
+}
+
 /*modified css*/
 .form-horizontal .control-label {
   text-align: left;
   color: #888;
 }
+
 

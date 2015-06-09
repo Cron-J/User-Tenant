@@ -17,6 +17,7 @@
     </div>
 
     <ul class="nav navbar-nav navbar-right" ng-show="user">
+        <li class="dropdown" ng-show="user.scope == 'Tenant-Admin' || user.scope == 'User'"><span class="ut-nohover"><i class="fa fa-building"></i> {{current_usr.tenantName | uppercase}}</span></li>
         <li class="dropdown" ng-controller="accountCtrl" >
           <a class="dropdown-toggle ut-pointer" data-toggle="dropdown" >
               <span>{{current_usr.firstName}} {{current_usr.lastName}} </span><b class="caret"></b>

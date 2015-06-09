@@ -138,7 +138,7 @@ exports.exportTenant = {
                         },
                         function(err){
                             if(!err) {
-                                json2csv({data: dump,  fields: ['name', 'description', 'username', 'firstName', 'lastName', 'email', 'role', 'isActive'], fieldNames: ['Tenant Name', 'Tenant Description', 'User name', 'First Name', 'Last Name', 'Email', 'Userrole', 'Active']}, function(err, csv1) {
+                                json2csv({data: dump,  fields: ['name', 'description', 'username', 'firstName', 'lastName', 'email', 'role', 'isActive'], fieldNames: ['Tenant Name', 'Tenant Description', 'User name', 'First Name', 'Last Name', 'Email', 'User Role', 'Active']}, function(err, csv1) {
                                   if (err) console.log(err);
                                     return reply(csv1).header('Content-Type', 'application/octet-stream').header('content-disposition', 'attachment; filename=user.csv;');
                                 });
