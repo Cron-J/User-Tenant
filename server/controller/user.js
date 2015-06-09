@@ -25,14 +25,16 @@ exports.createAdmin = {
 
                 request.payload.password = Crypto.encrypt(request.payload.password);
                 request.payload.scope = "Admin";
+                request.payload.createdBy = "Admin";
+                request.payload.updatedBy = "-";
                 request.payload.isActive= true;
-                if(request.payload.createdBy) {
-                    delete request.payload.createdBy;
-                }
+                // if(request.payload.createdBy) {
+                //     delete request.payload.createdBy;
+                // }
 
-                if(request.payload.updatedBy){
-                    delete request.payload.updatedBy;
-                }
+                // if(request.payload.updatedBy){
+                //     delete request.payload.updatedBy;
+                // }
 
                 User.saveUser( request.payload, function(err, user) {
                     if (!err) {
@@ -58,6 +60,8 @@ exports.createUser = {
                     if( tenant ){
                         request.payload.password = Crypto.encrypt(request.payload.password);
                         request.payload.scope = "User";
+                        request.payload.createdBy = "Self";
+                        request.payload.updatedBy = "-";
                         User.saveUser( request.payload, function(err, user) {
                             if (!err) {
                                 return reply( "Tenant user successfully created" );
@@ -392,8 +396,6 @@ exports.updateUser = {
     },
     handler: function(request, reply) {
        Jwt.verify(request.headers.authorization.split(' ')[1], Config.key.privateKey, function(err, decoded) {
- 
-        
             /* filterening unwanted attributes which may have in request.payload and can enter bad data */
             if(request.payload.tenantId) delete request.payload.tenantId;
             if(request.payload.firstLogin) delete request.payload.firstLogin;
@@ -401,7 +403,7 @@ exports.updateUser = {
             if(request.payload.createdBy) delete request.payload.createdBy;
             if(request.payload.scope) delete request.payload.scope;
             if(request.payload.password) request.payload.password = Crypto.encrypt(request.payload.password);
-
+            request.payload.updatedBy = "Self";
 
             User.updateUser(decoded.id, request.payload, function(err, user) {
                 if(err){
@@ -434,7 +436,9 @@ exports.updateUserByTenantAdmin = {
             if(request.payload.createdBy) delete request.payload.createdBy;
             if(request.payload.scope) delete request.payload.scope;
             if(request.payload.password) request.payload.password = Crypto.encrypt(request.payload.password);
-
+                        console.log('**********************');
+            console.log(decoded);
+            request.payload.updatedBy = decoded.scope;
             User.updateUserByTenantId(request.params.id, decoded.tenantId, request.payload, function(err, user) {
                 if(err){
                     if ( constants.kDuplicateKeyError === err.code || constants.kDuplicateKeyErrorForMongoDBv2_1_1 === err.code ) {

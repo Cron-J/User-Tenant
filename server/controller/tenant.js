@@ -18,6 +18,8 @@ exports.createTenantSelfRegistration = {
                 request.payload.user.tenantId = tenant._id;
                 request.payload.user.password = Crypto.encrypt(request.payload.user.password);
                 request.payload.user.scope = "Tenant-Admin";
+                request.payload.user.createdBy = "Self";
+                request.payload.user.updatedBy = "-";
                 request.payload.user.isActive = true;
                 
                 User.saveUser( request.payload.user, function(err, user) {
@@ -92,7 +94,7 @@ exports.updateTenantByAdmin = {
             /* filterening unwanted attributes which may have in request.payload and can enter bad data */
             if(request.payload.createdBy) delete request.payload.createdBy;
 
-            request.payload.updatedBy = decoded.id;
+            request.payload.updatedBy = decoded.scope;
 
             Tenant.updateTenant(request.params.id, request.payload, function(err, user) {
                 if(err){

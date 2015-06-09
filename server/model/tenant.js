@@ -33,17 +33,17 @@ var Tenant = new Schema({
     },
 
     /**
-     * User name who has created the tenant.
+     * createdBy must be string who has created tenant.
      */
     createdBy: {
-        type: ObjectId
+        type: String
     },
 
     /**
-     * User name who has updated tenant recently.
+     * updatedBy must be string who has updated tenant recently.
      */
     updatedBy: {
-        type: ObjectId
+        type: String
     },
 
     /**

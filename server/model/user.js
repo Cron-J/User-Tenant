@@ -77,16 +77,16 @@ var User = new Schema({
         type: Date
     },
     /**
-     * User id of creator.
+     * createdBy must be string who has created user.
      */
     createdBy: {
-        type: ObjectId
+        type: String
     },
     /**
-     * User id of updated person.
+     * updatedBy must be string who has updated user recently.
      */
     updatedBy: {
-        type: ObjectId
+        type: String
     },
     /**
      * User last login timestamp.
