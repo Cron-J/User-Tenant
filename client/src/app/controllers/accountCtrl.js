@@ -1,9 +1,9 @@
 'use strict';
 
 app.controller('accountCtrl', ['$scope', '$rootScope', '$http', '$location', 
-    'AuthServ', 'growl', '$filter', 'userInfo','countryList', '$modal',
+    'AuthServ', 'growl', '$filter', 'userInfo','countryList', '$modal', '$log',
     function ($scope, $rootScope, $http, $location, AuthServ, growl, $filter, 
-        userInfo, countryList, $modal) {
+        userInfo, countryList, $modal, $log) {
         var _scope = {};
         _scope.init = function() {
             $scope.loginForm = {
@@ -52,7 +52,6 @@ app.controller('accountCtrl', ['$scope', '$rootScope', '$http', '$location',
         $scope.forgotPassword = function (username) {
             $http.post('/forgotPassword', {username:username})
                 .success(function (data, status) {
-                    console.log(data);
                     growl.addSuccessMessage('Password has been successfully to registered email with your username');
                     $location.path('/login');
                 })
@@ -63,7 +62,6 @@ app.controller('accountCtrl', ['$scope', '$rootScope', '$http', '$location',
 
         //Tenant Search by name
         $scope.searchTenantByName = function($viewValue){
-            console.log('entered');
             var temp = [];
             var obj = {};
             obj['name'] = $viewValue;
@@ -72,8 +70,7 @@ app.controller('accountCtrl', ['$scope', '$rootScope', '$http', '$location',
             return $http.post('/searchTenant', obj).
             then(function(data){
               var tenantList = [];
-              angular.forEach(data.data, function(item){ 
-              console.log('item', item);    
+              angular.forEach(data.data, function(item){   
                 if(item.description != undefined){
                     tenantList.push({ "name": item.name, "_id": item._id, 
                     "desc":item.description, "comma": ', ' });
@@ -134,19 +131,32 @@ app.controller('accountCtrl', ['$scope', '$rootScope', '$http', '$location',
 
         //Tenant-User Self Registration
         $scope.tenantUserSelfRegistration = function (account_info) {
-                var dump = angular.copy(account_info.passwordConfirm);
+            var valid;
                 delete account_info.passwordConfirm;
-                if(account_info.tenantName._id)
+                if(account_info.tenantName._id) {
                     account_info.tenantId = account_info.tenantName._id;
-                $http.post('/user', account_info)
-                .success(function (data, status) {
-                    growl.addSuccessMessage('User has been successfully registered');
-                    $location.path('login');
-                })
-                .error(function (data, status) {
-                    account_info.passwordConfirm = dump;
-                    growl.addErrorMessage(data.message);
-                });
+                    delete account_info.tenantName;
+                    valid = true;
+                } else {
+                    if(checkTenantName(account_info.tenantName) == true)
+                        valid = true;
+                    else
+                        valid = false;
+                }
+                if(valid) {
+                    $http.post('/user', account_info)
+                    .success(function (data, status) {
+                        growl.addSuccessMessage('User has been successfully registered');
+                        $location.path('login');
+                    })
+                    .error(function (data, status) {
+                        account_info.passwordConfirm = dump;
+                        growl.addErrorMessage(data.message);
+                    });
+                }
+                else {
+                    growl.addErrorMessage('Please select tenant');
+                }
      
         }
 
@@ -190,7 +200,7 @@ app.controller('accountCtrl', ['$scope', '$rootScope', '$http', '$location',
                 $scope.setPassword = true;
         }
 
-        $scope.checkTenantName = function (name) {
+        var checkTenantName = function (name) {
             if($scope.tenantNameDup == name)
                 return true;
             else 
