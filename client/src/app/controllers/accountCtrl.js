@@ -1,9 +1,9 @@
 'use strict';
 
 app.controller('accountCtrl', ['$scope', '$rootScope', '$http', '$location', 
-    'AuthServ', 'growl', '$filter', 'userInfo','countryList',
+    'AuthServ', 'growl', '$filter', 'userInfo','countryList', '$modal',
     function ($scope, $rootScope, $http, $location, AuthServ, growl, $filter, 
-        userInfo, countryList) {
+        userInfo, countryList, $modal) {
         var _scope = {};
         _scope.init = function() {
             $scope.loginForm = {
@@ -11,11 +11,12 @@ app.controller('accountCtrl', ['$scope', '$rootScope', '$http', '$location',
             };
             $scope.authError = null;
  
-            if($location.path() != '/login' && $location.path() !='/forgotPassword') {
-                if($location.path() == '/editProfile') {
-                    $scope.profileView = 'edit';
-                    getAccountDetails();
-                }
+            if($location.path() == '/tenantSignup' || $location.path() =='/userSignup') {
+                $scope.account = {};
+            }
+            if($location.path() == '/editProfile') {
+                $scope.profileView = 'edit';
+                getAccountDetails();
             }
             $scope.setPassword = false;
         }
@@ -104,6 +105,33 @@ app.controller('accountCtrl', ['$scope', '$rootScope', '$http', '$location',
      
         }
 
+        //TenantId Search Modal
+        $scope.tenantSearchModal = function(isUser) {
+            var modalInstance = $modal.open({
+               templateUrl: 'tenantSearchModal.html',
+                controller: 'searchModalInstanceCtrl',
+                resolve: {
+                    detail: function () {
+                      return isUser;
+                    }
+                }
+            });
+
+            modalInstance.result.then(function(tenant) {
+                if($scope.account == undefined)
+                    $scope.account = {};
+                if(tenant.description) {
+                    $scope.account.tenantName = tenant.name+", "+tenant.description;
+                }
+                else
+                    $scope.account.tenantName = tenant.name;
+                $scope.tenantNameDup = angular.copy($scope.account.tenantName);
+                $scope.account.tenantId = tenant._id;
+            }, function() {
+                $log.info('Modal dismissed at: ' + new Date());
+            });
+        }
+
         //Tenant-User Self Registration
         $scope.tenantUserSelfRegistration = function (account_info) {
                 var dump = angular.copy(account_info.passwordConfirm);
@@ -160,6 +188,13 @@ app.controller('accountCtrl', ['$scope', '$rootScope', '$http', '$location',
                 $scope.setPassword = false;
             else
                 $scope.setPassword = true;
+        }
+
+        $scope.checkTenantName = function (name) {
+            if($scope.tenantNameDup == name)
+                return true;
+            else 
+                return false;
         }
 
         _scope.init();

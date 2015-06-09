@@ -43,29 +43,6 @@ app.controller('mainCtrl', ['$scope', '$location', '$rootScope', '$http', '$moda
             });
         }
 
-        $scope.tenantSearchModal = function(isUser) {
-            var modalInstance = $modal.open({
-               templateUrl: 'tenantSearchModal.html',
-                controller: 'searchModalInstanceCtrl',
-                resolve: {
-    		        detail: function () {
-    		          return isUser;
-    		        }
-    		    }
-            });
-
-            modalInstance.result.then(function(tenant) {
-            	if($scope.account == undefined)
-            		$scope.account = {};
-                if(tenant.description) 
-            	    $scope.account.tenantName = tenant.name+", "+tenant.description;
-            	else
-                    $scope.account.tenantName = tenant.name;
-                $scope.account.tenantId = tenant._id;
-            }, function() {
-                $log.info('Modal dismissed at: ' + new Date());
-            });
-        }
 
 	      _scope.init();
 }]);
