@@ -87,8 +87,7 @@ app.controller('accountCtrl', ['$scope', '$rootScope', '$http', '$location',
 
         //Tenant Self Registration
         $scope.tenantSelfRegistration = function (account_info) {
-                var dump = angular.copy(account_info.passwordConfirm);
-                delete account_info.passwordConfirm;
+                delete account_info.user.passwordConfirm;
                 $http.post('/tenantSelfRegistration', account_info)
                 .success(function (data, status) {
                     growl.addSuccessMessage('Tenant has been successfully registered');
@@ -97,7 +96,6 @@ app.controller('accountCtrl', ['$scope', '$rootScope', '$http', '$location',
                 })
                 .error(function (data, status) {
                     growl.addErrorMessage(data.message);
-                    account_info.passwordConfirm = dump;
                 });
      
         }
