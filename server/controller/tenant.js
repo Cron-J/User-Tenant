@@ -130,7 +130,7 @@ exports.exportTenant = {
                         query1['tenantId'] = tenant._id;
                             User.searchUser(query1, function(err, user) {
                                 if (!err) {
-                                    for(var i = 0; i < user.length; i++)
+                                    for(var i = 0; i < user.length; i++) 
                                       dump.push(customJson(tenant, user[i]));
                                     callback();
                                 } 
@@ -140,6 +140,13 @@ exports.exportTenant = {
                         },
                         function(err){
                             if(!err) {
+                                //sorting data by tenant name
+                                dump.sort(function(a, b) {
+                                    var textA = a.name.toUpperCase();
+                                    var textB = b.name.toUpperCase();
+                                    return (textA < textB) ? -1 : (textA > textB) ? 1 : 0;
+                                });
+                                //writing data into csv file
                                 json2csv({data: dump,  fields: ['name', 'description', 'username', 'firstName', 'lastName', 'email', 'role', 'isActive'], fieldNames: ['Tenant Name', 'Tenant Description', 'User name', 'First Name', 'Last Name', 'Email', 'User Role', 'Active']}, function(err, csv1) {
                                   if (err) console.log(err);
                                     return reply(csv1).header('Content-Type', 'application/octet-stream').header('content-disposition', 'attachment; filename=user.csv;');

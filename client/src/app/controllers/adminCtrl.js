@@ -117,7 +117,6 @@ app.controller('adminCtrl', ['$scope', '$rootScope', '$http', '$location',
         //Search Tenant-User
         $scope.searchTenantUser = function(searchObj){
             if(!searchObj) searchObj = {};
-            console.log(searchObj);
             if(searchObj.tenantName != undefined) {
                 if(searchObj.tenantName._id)
                         searchObj.tenantId = searchObj.tenantName._id;
@@ -167,7 +166,6 @@ app.controller('adminCtrl', ['$scope', '$rootScope', '$http', '$location',
 
         //Tenant Search by name
         $scope.searchTenantByName = function($viewValue){
-            console.log('entered');
             var temp = [];
             var obj = {};
             obj['name'] = $viewValue;
@@ -176,8 +174,7 @@ app.controller('adminCtrl', ['$scope', '$rootScope', '$http', '$location',
             return $http.post('/searchTenant', obj).
             then(function(data){
               var tenantList = [];
-              angular.forEach(data.data, function(item){ 
-              console.log('item', item);    
+              angular.forEach(data.data, function(item){    
                 if(item.description != undefined){
                     tenantList.push({ "name": item.name, "_id": item._id, 
                     "desc":item.description, "comma": ', ' });

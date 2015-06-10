@@ -436,8 +436,7 @@ exports.updateUserByTenantAdmin = {
             if(request.payload.createdBy) delete request.payload.createdBy;
             if(request.payload.scope) delete request.payload.scope;
             if(request.payload.password) request.payload.password = Crypto.encrypt(request.payload.password);
-                        console.log('**********************');
-            console.log(decoded);
+
             request.payload.updatedBy = decoded.scope;
             User.updateUserByTenantId(request.params.id, decoded.tenantId, request.payload, function(err, user) {
                 if(err){

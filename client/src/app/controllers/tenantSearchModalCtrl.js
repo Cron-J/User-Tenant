@@ -7,7 +7,6 @@ app.controller('searchModalInstanceCtrl', ['$scope', '$http', '$modalInstance',
     //Search Tenant
     $scope.searchTenant = function(searchObj){
         if(!searchObj) searchObj = {};
-        console.log(searchObj);
         $http.post('/searchTenant', searchObj,  {
             headers: AuthServ.getAuthHeader()
         })

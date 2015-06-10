@@ -130,32 +130,32 @@ app.controller('accountCtrl', ['$scope', '$rootScope', '$http', '$location',
         //Tenant-User Self Registration
         $scope.tenantUserSelfRegistration = function (account_info) {
             var valid;
-                delete account_info.passwordConfirm;
-                if(account_info.tenantName._id) {
-                    account_info.tenantId = account_info.tenantName._id;
-                    delete account_info.tenantName;
+                // delete account_info.passwordConfirm;
+            if(account_info.tenantName._id) {
+                account_info.tenantId = account_info.tenantName._id;
+                delete account_info.tenantName;
+                valid = true;
+            } else {
+                if(checkTenantName(account_info.tenantName) == true)
                     valid = true;
-                } else {
-                    if(checkTenantName(account_info.tenantName) == true)
-                        valid = true;
-                    else
-                        valid = false;
-                }
-                if(valid) {
-                    $http.post('/user', account_info)
-                    .success(function (data, status) {
-                        growl.addSuccessMessage('User has been successfully registered');
-                        $location.path('login');
-                    })
-                    .error(function (data, status) {
-                        account_info.passwordConfirm = dump;
-                        growl.addErrorMessage(data.message);
-                    });
-                }
-                else {
-                    growl.addErrorMessage('Please select tenant');
-                }
-     
+                else
+                    valid = false;
+            }
+            if(valid) {
+                $http.post('/user', account_info)
+                .success(function (data, status) {
+                    growl.addSuccessMessage('User has been successfully registered');
+                    $location.path('login');
+                })
+                .error(function (data, status) {
+                    account_info.passwordConfirm = dump;
+                    growl.addErrorMessage(data.message);
+                });
+            }
+            else {
+                growl.addErrorMessage('Please select tenant');
+            }
+ 
         }
 
         //Get Personal Account Details

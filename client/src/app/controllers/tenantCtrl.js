@@ -9,7 +9,6 @@ app.controller('tenantCtrl', ['$scope', '$rootScope', '$http', '$location',
             $scope.isUser = true;
             if($location.path() == '/tenantHome') {
                 userInfo.async().then(function(response) {
-                    console.log(response);
                     $scope.current_usr.firstName = response.data.firstName;
                     $scope.current_usr.lastName = response.data.lastName;
                     $scope.current_usr.tenantName = response.data.tenantId.name;
@@ -25,7 +24,6 @@ app.controller('tenantCtrl', ['$scope', '$rootScope', '$http', '$location',
                 $scope.inActiveUsers = true;
                 inActiveUsersList();
             }
-            console.log($stateParams.selectedId);
             if($location.path() == '/tenantusersOfSelectedTenant/'+$stateParams.selectedId) {
                 allusers();
                 $scope.getTenant();
