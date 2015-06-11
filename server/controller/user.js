@@ -26,7 +26,7 @@ exports.createAdmin = {
                 request.payload.password = Crypto.encrypt(request.payload.password);
                 request.payload.scope = "Admin";
                 request.payload.createdBy = "Admin";
-                request.payload.updatedBy = "-";
+                request.payload.updatedBy = "Admin";
                 request.payload.isActive= true;
                 // if(request.payload.createdBy) {
                 //     delete request.payload.createdBy;
@@ -61,7 +61,7 @@ exports.createUser = {
                         request.payload.password = Crypto.encrypt(request.payload.password);
                         request.payload.scope = "User";
                         request.payload.createdBy = "Self";
-                        request.payload.updatedBy = "-";
+                        request.payload.updatedBy = "Self";
                         User.saveUser( request.payload, function(err, user) {
                             if (!err) {
                                 return reply( "Tenant user successfully created" );
