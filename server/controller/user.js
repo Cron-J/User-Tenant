@@ -80,14 +80,26 @@ exports.createUser = {
     }
 };
 
-exports.activateUserByTenant = {
+/**
+   POST: /activateUser
+   SCOPE: 'Admin', 'Tenant-Admin'
+   Description: Activate tenant User.
+*/
+exports.activateTenantUser = {
     auth: {
         strategy: 'token',
-        scope: ['Tenant-Admin']
+        scope: ['Tenant-Admin', 'Admin']
     },
     handler: function(request, reply) {
-       Jwt.verify(request.headers.authorization.split(' ')[1], Config.key.privateKey, function(err, decoded) {     
-            User.activateUser(request.payload.id, decoded.tenantId, function(err, user) {
+       Jwt.verify(request.headers.authorization.split(' ')[1], Config.key.privateKey, function(err, decoded) { 
+            var tenantId;
+            if(decoded.scope === 'Admin'){
+                tenantId = decoded.tenantId;
+            }
+            else{
+                tenantId = request.payload.tenantId;
+            }
+            User.activateUser(request.payload.id, tenantId, function(err, user) {
                 if(err){
                     return reply(Boom.badImplementation("unable to activate user"));
                 }
@@ -105,14 +117,26 @@ exports.activateUserByTenant = {
     }
 };
 
-exports.deActivateUserByTenant = {
+/**
+   POST: /deActivateUser
+   SCOPE: 'Admin', 'Tenant-Admin'
+   Description: deActivate tenant User.
+*/
+exports.deActivateTenantUser = {
     auth: {
         strategy: 'token',
-        scope: ['Tenant-Admin']
+        scope: ['Tenant-Admin', 'Admin']
     },
     handler: function(request, reply) {
        Jwt.verify(request.headers.authorization.split(' ')[1], Config.key.privateKey, function(err, decoded) {     
-            User.deActivateUser(request.payload.id, decoded.tenantId, function(err, user) {
+            var tenantId;
+            if(decoded.scope === 'Admin'){
+                tenantId = decoded.tenantId;
+            }
+            else{
+                tenantId = request.payload.tenantId;
+            }
+            User.deActivateUser(request.payload.id, tenantId, function(err, user) {
                 if(err){
                     return reply(Boom.badImplementation("unable to activate user"));
                 }
@@ -132,9 +156,9 @@ exports.deActivateUserByTenant = {
 
 /**
     POST: /searchUser
+    SCOPE: 'Admin'
     Description: Search User based on certain field/criteria (firstName, lastName, email, tenantId).
 */
-    
 exports.searchUser = {
     auth: {
         strategy: 'token',
@@ -181,6 +205,12 @@ exports.exportUser = {
         });
     }
 };
+
+/**
+    POST: /login
+    SCOPE: Open for all
+    Description: Login user.
+*/
 
 exports.login = {
     handler: function(request, reply) {
@@ -234,6 +264,12 @@ exports.login = {
     }
 };
 
+/**
+    POST: /forgotPassword
+    SCOPE: Open for all
+    Description: Email will be send to user email.
+*/
+
 exports.forgotPassword = {
     handler: function(request, reply) {
         User.findUser(request.payload.username, function(err, user) {
@@ -257,6 +293,10 @@ exports.forgotPassword = {
     }
 };
 
+/**
+    GET: /user
+    Description: Get User own information.
+*/
 exports.getUser = {
     auth: {
         strategy: 'token',
@@ -282,6 +322,12 @@ exports.getUser = {
     }
 };
 
+/**
+    GET: /user/{id}
+    @param id : user id of Tenant User whose info is to be get
+    Description: Get User own information.
+*/
+
 exports.getUserByAdmin = {
     auth: {
         strategy: 'token',
@@ -303,6 +349,12 @@ exports.getUserByAdmin = {
             });
     }
 };
+
+/**
+    GET: /user/{id}
+    @param id : user id of Tenant User whose info is to be get
+    Description: Get Tenant User information.
+*/
 
 exports.getUserByTenant = {
     auth: {
@@ -395,6 +447,7 @@ exports.getAllDeactiveTenantUserByTenant = {
 
 /**
    PUT: /user
+   SCOPE: 'Admin', 'Tenant-Admin', 'User'
    Description: Update own info for one who is logged in i.e. Admin, Tenant Admin, Tenant User.
  */
 
@@ -432,6 +485,7 @@ exports.updateUser = {
 /**
     PUT: /user/{id}
     PUT: /user/{id}/{tenantId}
+    SCOPE: 'Admin', 'Tenant-Admin'
     @param id : user id of Tenant User whose info need to be edited.
     @param tenantId : tenant id of tenant whose use info is to be updated.
     Description: Update Tenant User info by System Admin.
