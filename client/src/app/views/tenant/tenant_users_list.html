@@ -52,7 +52,7 @@
                   <li ng-repeat="n in range(pagedItems.length)"
                        ng-class="{active: n == currentPage}"
                        ng-click="setPage()">
-                    <a href ng-bind="n + 1">1</a>
+                    <a href ng-show="n >= min && n < max" ng-bind="n + 1">1</a>
                   </li>
                   <li ng-class="{disabled: currentPage == pagedItems.length - 1}">
                     <a href ng-click="nextPage()">Next »</a>

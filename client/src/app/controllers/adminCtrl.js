@@ -195,6 +195,8 @@ app.controller('adminCtrl', ['$scope', '$rootScope', '$http', '$location',
         $scope.itemsPerPage = 5;
         $scope.min = 0;
         $scope.max =5;
+        // $scope.groupToPages();
+
          $scope.range = function (start, end) {
             var ret = [];
             if (!end) {
@@ -211,13 +213,27 @@ app.controller('adminCtrl', ['$scope', '$rootScope', '$http', '$location',
             if ($scope.currentPage > 0) {
                 $scope.currentPage--;
             }
+            if($scope.min > 0){ 
+                $scope.min--;
+            }
+            if($scope.max > 5){ 
+                $scope.max--;
+            }
         };
         
         $scope.nextPage = function () {
             if ($scope.currentPage < $scope.pagedItems.length - 1) {
                 $scope.currentPage++;
             }
+            $scope.limit = $scope.pagedItems.length;
+            if($scope.min < $scope.limit && $scope.min <= $scope.limit - 6) {
+                $scope.min++;
+            }
+            if($scope.max < $scope.limit && $scope.min <= $scope.limit) {
+                $scope.max++;
+            }
         };
+
         
         $scope.setPage = function () {
             $scope.currentPage = this.n;
