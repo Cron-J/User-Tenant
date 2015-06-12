@@ -15,7 +15,7 @@
 							<input type="text" class="form-control" name="" 
 							ng-model="searchQuery.name" />
 						</div>
-						<div class="col-sm-4">
+						<div class="col-sm-8">
 							<label >Description</label>
 							<input type="text" class="form-control" name="" 
 							ng-model="searchQuery.description" />
@@ -36,14 +36,11 @@
 						<div ng-show="pagedItems.length > 0">
 							<table class="table table-bordered table-hover">
 							  <thead class="active">
-							  	<th class="text-center">S.No</th>
 							  	<th>Name</th>
 							  	<th>Description</th>
 							  </thead>
 							  <tbody>
 							  	<tr class="ut-pointer" ng-repeat="result in pagedItems[currentPage]" ng-click="getTenantId(result)">
-								  	<td>{{$index+1}}
-								  	</td>
 								  	<td>{{result.name}}</td>
 								  	<td>{{result.description}}</td>
 							  	</tr>

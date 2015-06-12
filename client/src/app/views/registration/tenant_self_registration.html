@@ -1,8 +1,8 @@
-<div class="wrapper-md">
+<div class="container">
     <div class="row">
-        <div class="col-sm-6 col-sm-offset-3">
+        <div class="col-sm-7 col-sm-offset-3">
             <a class="navbar-brand-1 block m-t" href="javascript:void(0)">
-                <img src="app/assets/img/jc-logo-rgb.svg" class="img-circle">
+                <img src="app/assets/img/jclogo.png" class="img-circle">
             </a>
             <form name="signUpForm" class="form-horizontal form-validation">
                 <div class="panel panel-default">
@@ -10,6 +10,22 @@
                         Tenant Registration
                     </div>
                     <div class="panel-body">
+                        <div class="form-group">
+                            <label class="col-sm-3 control-label">Company Name</label>
+
+                            <div class="col-sm-9">
+                                <input type="text" class="form-control"
+                                       ng-model="account.tenant.name" ng-pattern="/^[a-zA-Z0-9]{2,30}$/" required name="tenantName" placeholder="Peter" >
+                            </div>
+                        </div>
+                        <div class="form-group">
+                            <label class="col-sm-3 control-label">Description</label>
+
+                            <div class="col-sm-9">
+                                <textarea class="form-control" ng-model="account.tenant.description" ng-pattern="/^[a-zA-Z_ ]{2,30}$/" name="tenantDesc"></textarea>
+                            </div>
+                        </div>
+                        <hr>
                         <div class="form-group">
                             <label class="col-sm-3 control-label">User Name</label>
 
@@ -61,21 +77,7 @@
                                        name="confirmPassword">
                             </div>
                         </div>
-                        <div class="form-group">
-                            <label class="col-sm-3 control-label">Tenant Name</label>
-
-                            <div class="col-sm-9">
-                                <input type="text" class="form-control"
-                                       ng-model="account.tenant.name" ng-pattern="/^[a-zA-Z0-9]{2,30}$/" required name="tenantName" placeholder="Peter" >
-                            </div>
-                        </div>
-                        <div class="form-group">
-                            <label class="col-sm-3 control-label">Tenant Description</label>
-
-                            <div class="col-sm-9">
-                                <textarea class="form-control" ng-model="account.tenant.description" ng-pattern="/^[a-zA-Z_ ]{2,30}$/" name="tenantDesc"></textarea>
-                            </div>
-                        </div>
+                        
                         <div class="form-group">
                             <div class="col-sm-6 col-sm-offset-3 checkbox m-b-md m-t-none">
                                 <label class="i-checks">

@@ -1,11 +1,10 @@
-<div class="container" >
+<div ng-show="page.view == 'search'" >
   <header>
     <p class="ut-lead">Search Users</p>
       <div class="col-lg-1 col-md-1 col-lg-offset-11 col-md-offset-11 ut-addbutton">
         <a class="btn btn-default" ng-click="exportUserData()"><i class="fa fa-download"></i> Export</a>
       </div>    
   </header>  
-  
   <div class="ut-container">
     <form name="searchForm">
       <div class="row"> 
@@ -22,7 +21,7 @@
           </div>                  
         </div>
       </div>
-      <div class="row">
+            <div class="row">
         <div class="col-md-6 form-group">
           <label for="" class="col-md-3 control-label">Email</label>
           <div class="col-md-5">
@@ -30,8 +29,20 @@
           </div>
         </div>
         <div class="col-md-6 form-group">
+          <label for="" class="col-md-3 control-label">User Role</label>
+          <div class="col-md-5">
+              <select class="form-control" placeholder="" type="text" ng-model="srch.role">
+                  <option value="">Select role</option>
+                  <option value="Tenant-Admin">Tenant-Admin</option>
+                  <option value="User">User</option>
+              </select> 
+          </div>
+        </div>
+      </div>
+      <div class="row">
+        <div class="col-md-6 form-group">
           <label for="" class="col-md-3 control-label">Tenant Id</label>
-          <div class="col-md-4">
+          <div class="col-md-5">
             <input class="form-control" placeholder="" type="text" ng-model="srch.tenantName" typeahead="res as res.name+ res.comma + (res.desc | limitTo:10) for res in searchTenantByName($viewValue)" typeahead-wait-ms="1000" />
           </div>
           <button class="btn btn-primary btn-sm" ng-click="searchModal()"><i class="fa fa-search"></i></button>
@@ -58,7 +69,6 @@
           <table class="table" cellspacing="0">
             <thead>
               <tr>
-                <th>#</th>
                 <th>User Name</th>
                 <th>First Name</th>
                 <th>Last Name</th>
@@ -69,8 +79,7 @@
               </tr>
             </thead>
             <tbody>
-                <tr class="ut-pointer" ng-repeat="user in pagedItems[currentPage]" ng-click="getTenantUser(user._id)">
-                  <td>{{$index+1}}</td>
+                <tr class="ut-pointer" ng-repeat="user in pagedItems[currentPage]" ng-click="getUserAccountDetails(user._id)">
                   <td>{{user.username}}</td>
                   <td>{{user.firstName}}</td>
                   <td>{{user.lastName}}</td>
@@ -79,7 +88,11 @@
                   <td>{{user.isActive}}</td>
                   <td>
                     <button type="button" ng-click="rem_tenant(user._id,$index)" class="btn btn-default btn-md">
-                      <span class="fa fa-eye"></span> View</button>
+                      <span class="fa fa-eye"></span> View
+                    </button>
+                    <button type="button" ng-click="rem_tenant(user._id,$index)" class="btn btn-default btn-md">
+                      <span class="fa fa-pencil"></span> Edit
+                    </button>
                   </td>
               </tr>  
             </tbody>

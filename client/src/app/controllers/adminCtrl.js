@@ -113,35 +113,6 @@ app.controller('adminCtrl', ['$scope', '$rootScope', '$http', '$location',
         $scope.getTenantUsersOfTenant = function (id) {
              $location.path('/tenantusersOfSelectedTenant/'+id);
         }
-
-        //Search Tenant-User
-        $scope.searchTenantUser = function(searchObj){
-            if(!searchObj) searchObj = {};
-            if(searchObj.tenantName != undefined) {
-                if(searchObj.tenantName._id)
-                        searchObj.tenantId = searchObj.tenantName._id;
-            }
-            $http.post('/searchUser', searchObj,  {
-                headers: AuthServ.getAuthHeader()
-            })
-            .success(function (data, status) {
-                $scope.showUserResult = true;
-                $scope.resultList = data;
-                $scope.currentPage = 0;
-                $scope.groupToPages();
-            })
-            .error(function (data, status) {
-                if(data.message == 'Invalid token') 
-                    $scope.sessionExpire();
-                else
-                    growl.addErrorMessage(data.message);
-            });
-        }
-
-        //Get Tenant-User Details
-        $scope.getTenantUser = function (id) {
-             $location.path('/user/'+id);
-        }
     
         //Open tenant search modal
         $scope.searchModal = function(size) {

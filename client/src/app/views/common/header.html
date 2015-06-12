@@ -2,17 +2,8 @@
   <div class="container-fluid">
     <!-- Brand and toggle get grouped for better mobile display -->
     <div class="navbar-header">
-      <a ui-sref="login" ng-hide="user">
-        <img src="app/assets/img/jc-logo-rgb.svg" style="height: 1.5em; margin-top: 1.00em; margin-bottom: 0.75em;">
-      </a>
-      <a ui-sref="tenants" ng-if="user.scope == 'Admin'">
-        <img src="app/assets/img/jc-logo-rgb.svg" style="height: 1.5em; margin-top: 1.00em; margin-bottom: 0.75em;">
-      </a>
-      <a ui-sref="tenantHome" ng-if="user.scope == 'Tenant-Admin'">
-        <img src="app/assets/img/jc-logo-rgb.svg" style="height: 1.5em; margin-top: 1.00em; margin-bottom: 0.75em;">
-      </a>
-      <a ui-sref="home" ng-if="user.scope == 'User'">
-        <img src="app/assets/img/jc-logo-rgb.svg" style="height: 1.5em; margin-top: 1.00em; margin-bottom: 0.75em;">
+      <a ui-sref="login">
+        <img src="app/assets/img/jclogo.png" style="height: 1.5em; margin-top: 1.00em; margin-bottom: 0.75em;">
       </a>
     </div>
 

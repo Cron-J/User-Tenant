@@ -115,10 +115,10 @@ var app = angular.module('app', [
           })
           .state('users', {
             url: "/users",
-              templateUrl: "app/views/tenant_user/home.html",
-              controller: "adminCtrl",
+              templateUrl: "app/views/tenant_user/userHome.html",
+              controller: "tenantUserCtrl",
               data: {
-                  authorizedRoles: [USER_ROLES.admin]
+                  authorizedRoles: [USER_ROLES.admin, USER_ROLES.tenantadmin]
               }
 
           })
@@ -149,7 +149,7 @@ var app = angular.module('app', [
           })
           .state('tenantUser', {
             url: "/tenantUser/:tUserId",
-              templateUrl: "app/views/tenant_user/tenant_user.html",
+              templateUrl: "app/views/tenant_user/tenantUser.html",
               controller: "tenantUserCtrl",
               data: {
                   authorizedRoles: [USER_ROLES.tenantadmin]
@@ -160,7 +160,7 @@ var app = angular.module('app', [
               templateUrl: "app/views/common/home.html",
               controller: 'tenantUserCtrl',
               data: {
-                  authorizedRoles: [USER_ROLES.tenantuser]
+                  authorizedRoles: [USER_ROLES.all]
               }
           })
 

@@ -28,12 +28,10 @@ app.controller('accountCtrl', ['$scope', '$rootScope', '$http', '$location',
                     AuthServ.setUserToken(data, $scope.loginForm.remember);
                     growl.addSuccessMessage('Successfully logged in');
                     $rootScope.user =  data;
-                    if($rootScope.user.scope == 'Admin')
-                        $location.path('/tenants');
-                    else if($rootScope.user.scope == 'Tenant-Admin')
-                        $location.path('/tenantHome');
-                    else if($rootScope.user.scope == 'User')
-                        $location.path('/home');
+                    if($rootScope.user.scope == 'Admin' || 
+                        $rootScope.user.scope == 'Tenant-Admin' || 
+                        $rootScope.user.scope == 'User')
+                                $location.path('/home');
                 })
                 .error(function (data, status) {
                     growl.addErrorMessage(data.message);
@@ -203,6 +201,11 @@ app.controller('accountCtrl', ['$scope', '$rootScope', '$http', '$location',
                 return true;
             else 
                 return false;
+        }
+
+        //accordion
+        $scope.status = {
+            open: true
         }
 
         _scope.init();

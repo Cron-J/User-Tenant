@@ -39,7 +39,6 @@
       <table class="table" cellspacing="0">
         <thead>
           <tr>
-            <th>#</th>
             <th>Name</th>
             <th>Description</th>
             <th></th>
@@ -47,7 +46,6 @@
         </thead>
         <tbody>
           <tr class="ut-pointer" ng-repeat="tenant in pagedItems[currentPage]" >
-            <td>{{$index+1}}</td>
             <td>{{tenant.name}}</td>
             <td>{{tenant.description}}</td>
             <td>

@@ -1,19 +1,19 @@
 <script type="text/ng-template" id="tenantSearchModal.html">
   <div class="modal-header">
     <button type="button" class="close" ng-click="cancel()"><span aria-hidden="true">&times;</span><span class="sr-only">Close</span></button>
-    <h4 class="modal-title" id="searchModalLabel">Search Tenant</h4>
+    <h4 class="modal-title" id="searchModalLabel">Search for Tenant</h4>
   </div>
   <div class="modal-body">
     <div class="row">
       <div class="col-sm-12 col-md-12 col-lg-12" >
-        <div class="col-sm-10">
+        <div class="col-sm-12">
           <div class="row">
             <div class="col-sm-4">
               <label >Name</label>
               <input type="text" class="form-control" name="" 
               ng-model="searchQuery.name" />
             </div>
-            <div class="col-sm-4">
+            <div class="col-sm-8">
               <label >Description</label>
               <input type="text" class="form-control" name="" 
               ng-model="searchQuery.description" />
@@ -34,14 +34,11 @@
             <div ng-show="pagedItems.length > 0">
               <table class="table table-bordered table-hover">
                 <thead class="active">
-                  <th class="text-center">S.No</th>
                   <th>Name</th>
                   <th>Description</th>
                 </thead>
                 <tbody>
                   <tr class="ut-pointer" ng-repeat="result in pagedItems[currentPage]" ng-click="getTenantId(result)">
-                    <td>{{$index+1}}
-                    </td>
                     <td>{{result.name}}</td>
                     <td>{{result.description}}</td>
                   </tr>

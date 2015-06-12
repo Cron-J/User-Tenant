@@ -1,9 +1,7 @@
-<div class="container">
+<div ng-hide="page.view == 'search'" >
     <header>
-        <p ng-show="view == 'view' && account.scope == 'Tenant-Admin'" class="ut-lead">Tenant-Admin Details</p>
-        <p ng-show="view == 'view' && account.scope == 'User'" class="ut-lead">Tenant-User Details</p>
-        <p ng-show="viewByTenant == 'view'" class="ut-lead">User Details</p>
-        <p ng-show="viewByTenant == 'edit'" class="ut-lead">Edit User Details</p>
+        <p ng-show="page.view == 'view'" class="ut-lead">User Details</p>
+        <p ng-show="page.view == 'edit'" class="ut-lead">Edit User Details</p>
     </header>
     <div class="col-lg-8 col-md-8 ut-container">
         <form id="userForm" class="form-horizontal ut-form form-validation" role="form" name="userForm">
@@ -60,16 +58,17 @@
                     </div>
                 </div>
             </div>                
-            <div ng-include="'app/views/common/audit_info.html'" ng-hide="view == 'create' || viewByTenant == 'create'"></div>
+            <div ng-include="'app/views/common/audit_info.html'" ng-hide="page.view == 'create'"></div>
             <div class="row">
                 <div class="form-group">
                     <div class="col-lg-12 col-md-12">
                         <!-- Admin view -->
                         <button class="btn btn-info" ui-sref="users" ng-show="view == 'view'"> Back</button>
                         <!-- Tenant view -->
-                        <button class="btn btn-primary" ng-show="viewByTenant == 'edit'" ng-disabled="!userForm.$valid" ng-click="isChanged = false;updatetenantUserAccountByTenant(account, userForm.$valid)">Update</button>
-                        <button class="btn btn-primary" ng-show="viewByTenant == 'view'"  ng-click="viewByTenant = 'edit';">Edit</button>
-                        <button class="btn btn-default" ng-show="viewByTenant == 'view' || !isChanged" ng-hide="view" ui-sref="tenantHome">Cancel</button>
+                        <button class="btn btn-primary" ng-show="page.view == 'edit'" ng-disabled="!userForm.$valid" ng-click="isChanged = false;updatetenantUserAccountByTenant(account, userForm.$valid)">Create</button>
+                        <button class="btn btn-primary" ng-show="page.view == 'edit'" ng-disabled="!userForm.$valid" ng-click="isChanged = false;updatetenantUserAccountByTenant(account, userForm.$valid)">Update</button>
+                        <button class="btn btn-primary" ng-show="page.view == 'view'"  ng-click="page.view = 'edit';">Edit</button>
+                        <button class="btn btn-default" ng-show="page.view == 'view' || !isChanged" ng-hide="view" ui-sref="tenantHome">Cancel</button>
                         <button class="btn btn-default" ng-show="isChanged" ng-click="confirmationModal()">Cancel</button>
                         <div ng-include="'app/views/common/confirmationDailogBox.html'"></div>
                     </div>
