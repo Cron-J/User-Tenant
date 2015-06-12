@@ -162,7 +162,7 @@ exports.deActivateTenantUser = {
 exports.searchUser = {
     auth: {
         strategy: 'token',
-        scope: ['Admin']
+        scope: ['Admin', 'Tenant-Admin']
     },
     handler: function(request, reply) {
         var query = {};
