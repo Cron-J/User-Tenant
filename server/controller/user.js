@@ -130,6 +130,11 @@ exports.deActivateUserByTenant = {
     }
 };
 
+/**
+    POST: /searchUser
+    Description: Search User based on certain field/criteria (firstName, lastName, email, tenantId).
+*/
+    
 exports.searchUser = {
     auth: {
         strategy: 'token',
@@ -388,6 +393,10 @@ exports.getAllDeactiveTenantUserByTenant = {
     }
 };
 
+/**
+   PUT: /user
+   Description: Update own info for one who is logged in i.e. Admin, Tenant Admin, Tenant User.
+ */
 
 exports.updateUser = {
     auth: {
@@ -420,10 +429,18 @@ exports.updateUser = {
     }
 };
 
-exports.updateUserByTenantAdmin = {
+/**
+    PUT: /user/{id}
+    PUT: /user/{id}/{tenantId}
+    @param id : user id of Tenant User whose info need to be edited.
+    @param tenantId : tenant id of tenant whose use info is to be updated.
+    Description: Update Tenant User info by System Admin.
+ */
+
+exports.updateTenantUser = {
     auth: {
         strategy: 'token',
-        scope: ['Tenant-Admin']
+        scope: ['Tenant-Admin','Admin']
     },
     handler: function(request, reply) {
        Jwt.verify(request.headers.authorization.split(' ')[1], Config.key.privateKey, function(err, decoded) {
@@ -438,7 +455,16 @@ exports.updateUserByTenantAdmin = {
             if(request.payload.password) request.payload.password = Crypto.encrypt(request.payload.password);
 
             request.payload.updatedBy = decoded.scope;
-            User.updateUserByTenantId(request.params.id, decoded.tenantId, request.payload, function(err, user) {
+            var tenantId;
+
+            if(decoded.scope === 'Tenant-Admin'){
+                tenantId = decoded.tenantId;    
+            }
+            else{
+                tenantId = request.params.tenantId;
+            }
+            
+            User.updateUserByTenantId(request.params.id, tenantId, request.payload, function(err, user) {
                 if(err){
                     if ( constants.kDuplicateKeyError === err.code || constants.kDuplicateKeyErrorForMongoDBv2_1_1 === err.code ) {
                         reply(Boom.forbidden("user email already registered"));
