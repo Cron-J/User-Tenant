@@ -3,7 +3,9 @@
     You have unsaved changes on this page. Do you want to leave this page and discard your changes ?
   </div>
   <div class="modal-footer">
-    <button type="button" class="btn btn-default" ng-click="isRedirectConformed()">Yes</button>
+    <button type="button" class="btn btn-default" ng-show="user.scope == 'Admin'" ng-click="isRedirectConformed()">Yes</button>
+    <button type="button" class="btn btn-default" ng-show="user.scope == 'Tenant-Admin'" ng-click="isRedirectConformed()">Yes</button>
+    <button type="button" class="btn btn-default" ng-show="user.scope == 'User'" ng-click="isRedirectConformed()">Yes</button>
     <button type="button" class="btn btn-default" ng-click="cancel()">No</button>
   </div>
 </script>

@@ -1,23 +1,24 @@
-<div ng-show="page.view == 'search'" >
-  <header>
-    <p class="ut-lead">Search Users</p>
-      <div class="col-lg-1 col-md-1 col-lg-offset-11 col-md-offset-11 ut-addbutton">
-        <a class="btn btn-default" ng-click="exportUserData()"><i class="fa fa-download"></i> Export</a>
-      </div>    
-  </header>  
+<div ng-show="page.view == 'search'" > 
+  <div class="row ut-pageheader">
+    <div class="ut-lead col-lg-10 col-md-10 ">Search Users</div>
+    <div class="col-lg-2 col-md-2 pull-right">
+      <a class="btn btn-primary" ng-click="createUser()"><i class="fa fa-user"></i> New</a>
+      <a class="btn btn-default" ng-click="exportUserData()"><i class="fa fa-download"></i> Export</a>
+    </div>
+  </div>  
   <div class="ut-container">
     <form name="searchForm">
       <div class="row"> 
         <div class="col-md-6 form-group">
           <label class="col-md-3 control-label">First Name</label>
             <div class="col-md-5">
-                <input class="form-control" type="text" ng-model="srch.firstName">           
+                <input class="form-control" type="text" name="srchfn" ng-model="srch.firstName">           
             </div>                    
         </div>
         <div class="col-md-6 form-group">
           <label class="col-md-3 control-label">Last Name</label>
           <div class="col-md-5">
-              <input class="form-control" type="text" ng-model="srch.lastName">
+              <input class="form-control" type="text" name="srchln" ng-model="srch.lastName">
           </div>                  
         </div>
       </div>
@@ -25,13 +26,13 @@
         <div class="col-md-6 form-group">
           <label for="" class="col-md-3 control-label">Email</label>
           <div class="col-md-5">
-              <input class="form-control" placeholder="" type="text" ng-model="srch.email">
+              <input class="form-control" placeholder="" name="srchmail" type="text" ng-model="srch.email">
           </div>
         </div>
         <div class="col-md-6 form-group">
           <label for="" class="col-md-3 control-label">User Role</label>
           <div class="col-md-5">
-              <select class="form-control" placeholder="" type="text" ng-model="srch.role">
+              <select class="form-control" placeholder="" name="srchrole" type="text" ng-model="srch.scope">
                   <option value="">Select role</option>
                   <option value="Tenant-Admin">Tenant-Admin</option>
                   <option value="User">User</option>
@@ -50,7 +51,7 @@
         </div>
       </div>
       <div class="pull-right">
-        <button value="Search" class="btn btn-primary" type="submit" ng-click="searchTenantUser(srch)">Search</button>
+        <button class="btn btn-primary" type="submit" ng-click="searchTenantUser(srch)">Search</button>
         <button type="button" value="Reset" class="btn btn-primary" ng-click="reset()">Reset</button>
       </div>
     </form>
@@ -79,7 +80,7 @@
               </tr>
             </thead>
             <tbody>
-                <tr class="ut-pointer" ng-repeat="user in pagedItems[currentPage]" ng-click="getUserAccountDetails(user._id)">
+                <tr class="ut-pointer" ng-repeat="user in pagedItems[currentPage]" ng-click="getUserAccountDetails(user._id);page.view = 'edit'">
                   <td>{{user.username}}</td>
                   <td>{{user.firstName}}</td>
                   <td>{{user.lastName}}</td>
@@ -88,10 +89,7 @@
                   <td>{{user.isActive}}</td>
                   <td>
                     <button type="button" ng-click="rem_tenant(user._id,$index)" class="btn btn-default btn-md">
-                      <span class="fa fa-eye"></span> View
-                    </button>
-                    <button type="button" ng-click="rem_tenant(user._id,$index)" class="btn btn-default btn-md">
-                      <span class="fa fa-pencil"></span> Edit
+                      <span class="fa fa-edit"></span> Edit
                     </button>
                   </td>
               </tr>  

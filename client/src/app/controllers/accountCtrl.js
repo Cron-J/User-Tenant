@@ -58,31 +58,6 @@ app.controller('accountCtrl', ['$scope', '$rootScope', '$http', '$location',
                 })
         }
 
-        //Tenant Search by name
-        $scope.searchTenantByName = function($viewValue){
-            var temp = [];
-            var obj = {};
-            obj['name'] = $viewValue;
-            // obj['value'] = $viewValue;
-            temp.push(obj);
-            return $http.post('/searchTenant', obj).
-            then(function(data){
-              var tenantList = [];
-              angular.forEach(data.data, function(item){   
-                if(item.description != undefined){
-                    tenantList.push({ "name": item.name, "_id": item._id, 
-                    "desc":item.description, "comma": ', ' });
-                } else {
-                    tenantList.push({ "name": item.name, "_id": item._id });
-                }
-              });
-              return tenantList;
-            }).catch(function(error){
-                growl.addErrorMessage('oops! Something went wrong');
-            });
-        }
-
-
         //Tenant Self Registration
         $scope.tenantSelfRegistration = function (account_info) {
                 delete account_info.user.passwordConfirm;

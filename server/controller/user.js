@@ -22,7 +22,6 @@ exports.createAdmin = {
                 if(request.payload.tenantId) {
                     delete request.payload.tenantId;
                 }
-
                 request.payload.password = Crypto.encrypt(request.payload.password);
                 request.payload.scope = "Admin";
                 request.payload.createdBy = "Admin";
@@ -64,6 +63,38 @@ exports.createUser = {
                         request.payload.updatedBy = "Self";
                         User.saveUser( request.payload, function(err, user) {
                             if (!err) {
+                                return reply( "Tenant user successfully created" );
+                            } else {
+                                if ( constants.kDuplicateKeyError === err.code || constants.kDuplicateKeyErrorForMongoDBv2_1_1 === err.code ) {
+                                    return reply(Boom.forbidden("user email already registered"));
+                                } else return reply( Boom.forbidden(err) ); // HTTP 403
+                            }
+                        });
+                    }
+                    else {
+                        return reply(Boom.forbidden("Invalid tenant selected"));
+                    }
+                });
+            }
+    }
+};
+
+exports.createTenantUser = {
+    handler: function(request, reply) {
+            if( !request.payload.tenantId ){
+                return reply(Boom.forbidden("Please select tenant"));
+            }
+            else {
+                Tenant.findTenantById( request.payload.tenantId, function( err, tenant ) {
+                    if( tenant ){
+                        request.payload.password = Crypto.encrypt(Math.random().toString(8).substring(2));
+                        request.payload.createdBy = "Admin";
+                        request.payload.updatedBy = "Admin";
+                        request.payload.isActive = true;
+                        
+                        User.saveUser( request.payload, function(err, user) {
+                            if (!err) {
+                                EmailServices.sentMailUserCreation(user.username, user.password);
                                 return reply( "Tenant user successfully created" );
                             } else {
                                 if ( constants.kDuplicateKeyError === err.code || constants.kDuplicateKeyErrorForMongoDBv2_1_1 === err.code ) {

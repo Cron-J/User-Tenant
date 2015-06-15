@@ -84,26 +84,6 @@ app.controller('adminCtrl', ['$scope', '$rootScope', '$http', '$location',
 
         }
 
-        //Search Tenant
-        $scope.searchTenant = function(searchObj){
-            if(!searchObj) searchObj = {};
-            $http.post('/searchTenant', searchObj,  {
-                headers: AuthServ.getAuthHeader()
-            })
-            .success(function (data, status) {
-                $scope.showResult = true;
-                $scope.resultList = data;
-                $scope.currentPage = 0;
-                $scope.groupToPages();     
-            })
-            .error(function (data, status) {
-                if(data.message == 'Invalid token') 
-                    $scope.sessionExpire();
-                else
-                    growl.addErrorMessage(data.message);
-            });
-        }
-
         //Get Tenant Details
         $scope.getTenant = function (id) {
              $location.path('/tenant/'+id);

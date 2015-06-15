@@ -1,22 +1,23 @@
-<div class="container" >
-  <header>
-    <p class="ut-lead">Search Tenants</p>
-    <div class="col-lg-1 col-md-1 col-lg-offset-11 col-md-offset-11 ut-addbutton">
-       <a class="btn btn-default" ng-click="exportTenantsData()"><i class="fa fa-download"></i> Export</a>
+<div ng-show="page.view == 'search'" >
+	<div class="row ut-pageheader">
+    <div class="ut-lead col-lg-10 col-md-10 ">Search Tenants</div>
+    <div class="col-lg-2 col-md-2 pull-right">
+      <a class="btn btn-primary" ng-click="createTenant()"><i class="fa fa-building"></i> New</a>
+      <a class="btn btn-default" ng-click="exportTenantsData()"><i class="fa fa-download"></i> Export</a>
     </div>
-  </header>  
+  </div>  
   <form name="searchForm">
     <section class="row">      
       <div class="col-md-6 form-group">
         <label class="col-md-3 control-label">Name</label>
         <div class="col-md-5">
-            <input class="form-control" type="text" ng-model="srch.name">
+            <input class="form-control" type="text" name="srchname" ng-model="srch.name">
         </div>                  
       </div>
       <div class="col-md-6 form-group">
         <label for="" class="col-md-3 control-label">Description</label>
         <div class="col-md-5">
-            <input class="form-control" placeholder="" type="text" ng-model="srch.description">
+            <input class="form-control" placeholder="" name="srchdesc" type="text" ng-model="srch.description">
         </div>
       </div>
     </section>
@@ -49,8 +50,9 @@
             <td>{{tenant.name}}</td>
             <td>{{tenant.description}}</td>
             <td>
-              <button type="button" class="btn btn-primary btn-md" ng-click="getTenant(tenant._id)">
-                <span class="fa fa-edit"></span> Edit</button>
+              <button type="button" class="btn btn-primary btn-md" ng-click="getTenant(tenant._id);page.view = 'edit'">
+                <span class="fa fa-edit"></span> Edit
+              </button>
                 <button type="button" class="btn btn-default btn-md" ng-click="getTenantUsersOfTenant(tenant._id)">
                 <span class="fa fa-users"></span> Users</button>
             </td>

@@ -27,24 +27,31 @@ app.controller('mainCtrl', ['$scope', '$location', '$rootScope', '$http', '$moda
             growl.addErrorMessage('Session has expired');
 	      }
 
-	      $scope.confirmationModal = function(isUser) {
-            var modalInstance = $modal.open({
-                templateUrl: 'confirmationModalContent.html',
-                controller: 'confirmationModalInstanceCtrl',
-                resolve: {
-					        detail: function () {
-					          return isUser;
-					        }
-					      }
-            });
-            modalInstance.result.then(function(tenant) {
-            }, function() {
-                $log.info('Modal dismissed at: ' + new Date());
+	       //Tenant Search by name
+        $scope.searchTenantByName = function($viewValue){
+            var temp = [];
+            var obj = {};
+            obj['name'] = $viewValue;
+            // obj['value'] = $viewValue;
+            temp.push(obj);
+            return $http.post('/searchTenant', obj).
+            then(function(data){
+              var tenantList = [];
+              angular.forEach(data.data, function(item){   
+                if(item.description != undefined){
+                    tenantList.push({ "name": item.name, "_id": item._id, 
+                    "desc":item.description, "comma": ', ' });
+                } else {
+                    tenantList.push({ "name": item.name, "_id": item._id });
+                }
+              });
+              return tenantList;
+            }).catch(function(error){
+                growl.addErrorMessage('oops! Something went wrong');
             });
         }
 
         
-
 
 	      _scope.init();
 }]);

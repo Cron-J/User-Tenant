@@ -88,8 +88,8 @@ var app = angular.module('app', [
           }) 
           .state('tenants', {
             url: "/tenants",
-              templateUrl: "app/views/tenant/home.html",
-              controller: "adminCtrl",
+              templateUrl: "app/views/tenant/tenantHome.html",
+              controller: "tenantCtrl",
               data: {
                   authorizedRoles: [USER_ROLES.admin]
               }

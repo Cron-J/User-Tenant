@@ -2,12 +2,12 @@
 
 app.controller('tenantCtrl', ['$scope', '$rootScope', '$http', '$location', 
     'AuthServ', 'growl', '$filter', '$stateParams', 'userInfo', 'countryList',
+    '$modal',
     function ($scope, $rootScope, $http, $location, AuthServ, growl, $filter, 
-        $stateParams, userInfo, countryList) {
+        $stateParams, userInfo, countryList, $modal) {
         var _scope = {};
         _scope.init = function() {
-            $scope.isUser = true;
-            if($location.path() == '/tenantHome') {
+            if($location.path() == '/home') {
                 userInfo.async().then(function(response) {
                     $scope.current_usr.firstName = response.data.firstName;
                     $scope.current_usr.lastName = response.data.lastName;
@@ -16,18 +16,24 @@ app.controller('tenantCtrl', ['$scope', '$rootScope', '$http', '$location',
                 $scope.inActiveUsers = false;
                 $scope.getTenantUsers();
             }
-            if($stateParams.tenantId) {
-                $scope.view = 'edit';
-                $scope.getTenant();
+            // if($stateParams.tenantId) {
+            //     $scope.view = 'edit';
+            //     $scope.getTenant();
+            // }
+            // if($location.path() == '/addUser'){
+            //     $scope.inActiveUsers = true;
+            //     inActiveUsersList();
+            // }
+            // if($location.path() == '/tenantusersOfSelectedTenant/'+$stateParams.selectedId) {
+            //     allusers();
+            //     $scope.getTenant();
+            // }
+
+            $scope.page ={
+                view: 'search',
+                role: 'admin'
             }
-            if($location.path() == '/addUser'){
-                $scope.inActiveUsers = true;
-                inActiveUsersList();
-            }
-            if($location.path() == '/tenantusersOfSelectedTenant/'+$stateParams.selectedId) {
-                allusers();
-                $scope.getTenant();
-            }
+            console.log($scope.page);
         }
        
         // $scope.user = {};
@@ -39,11 +45,11 @@ app.controller('tenantCtrl', ['$scope', '$rootScope', '$http', '$location',
         }
 
         //Get Tenant Details
-        $scope.getTenant = function () {
-            var id;
+        $scope.getTenant = function (id) {
+            if(!id) var id;
             if($stateParams.tenantId)
                 id = $stateParams.tenantId;
-            else
+            if($stateParams.selectedId)
                 id = $stateParams.selectedId;
             $http.get('/tenant/'+ id, {
                 headers: AuthServ.getAuthHeader()
@@ -64,12 +70,12 @@ app.controller('tenantCtrl', ['$scope', '$rootScope', '$http', '$location',
         //Tenant account creation
         $scope.createTenantAccount = function (account_info, valid) {
             if(valid){
-                $http.post('/tenant', account_info, {
+                $http.post('/tenantCreation', account_info, {
                     headers: AuthServ.getAuthHeader()
                 })
                 .success(function (data, status) {
+                    $scope.page.view = 'search';
                     growl.addSuccessMessage('Tenant has been created successfully');
-                    $location.path('tenants');
                 })
                 .error(function (data, status) {
                     if(data.message == 'Invalid token') 
@@ -80,6 +86,11 @@ app.controller('tenantCtrl', ['$scope', '$rootScope', '$http', '$location',
             }
         }
 
+        $scope.createTenant = function () {
+            $scope.account = {};
+            $scope.page.view = 'create';
+        }
+
         //Update tenant account
         $scope.updateTenantAccount = function (account_info, valid) {
             if(valid){
@@ -87,14 +98,14 @@ app.controller('tenantCtrl', ['$scope', '$rootScope', '$http', '$location',
                 delete account_info._id, delete account_info.__v, 
                 delete account_info.createdAt, delete account_info.createdBy, delete account_info.updatedAt,
                 delete account_info.updatedBy;
-                $http.put('/tenant/'+$stateParams.tenantId, account_info, {
+                $http.put('/tenant/'+dataDump._id, account_info, {
                     headers: AuthServ.getAuthHeader()
                 })
                 .success(function (data, status) {
-                    // AuthServ.setUserToken(data, $scope.loginForm.remember);
                     growl.addSuccessMessage('Tenant account has been updated successfully');
-                    $scope.getTenant();
-                    $scope.view = 'view';
+                    $scope.getTenant(dataDump._id);
+                    $scope.page.view = 'view';
+                    console.log($scope.page.view);
                 })
                 .error(function (data, status) {
                     if(data.message == 'Invalid token') 
@@ -102,7 +113,6 @@ app.controller('tenantCtrl', ['$scope', '$rootScope', '$http', '$location',
                     else
                         growl.addErrorMessage(data.message);
                 });        
-               $scope.account.tenantId = dataDump.tenantId;
             }
         }
 
@@ -228,6 +238,117 @@ app.controller('tenantCtrl', ['$scope', '$rootScope', '$http', '$location',
                     growl.addErrorMessage(data.message);
             });
         }
+
+        $scope.confirmationModal = function(isUser) {
+            var modalInstance = $modal.open({
+                templateUrl: 'confirmationModalContent.html',
+                controller: 'confirmationModalInstanceCtrl',
+                resolve: {
+                    detail: function () {
+                      return isUser;
+                    }
+                  }
+            });
+            modalInstance.result.then(function(view) {
+                $scope.page.view = view;
+
+            }, function() {
+                $log.info('Modal dismissed at: ' + new Date());
+            });
+        }
+
+        //Search Tenant
+        $scope.searchTenant = function(searchObj){
+            if(!searchObj) searchObj = {};
+            $http.post('/searchTenant', searchObj,  {
+                headers: AuthServ.getAuthHeader()
+            })
+            .success(function (data, status) {
+                $scope.showResult = true;
+                $scope.resultList = data;
+                $scope.currentPage = 0;
+                $scope.groupToPages();     
+            })
+            .error(function (data, status) {
+                if(data.message == 'Invalid token') 
+                    $scope.sessionExpire();
+                else
+                    growl.addErrorMessage(data.message);
+            });
+        }
+
+        //Pagination
+        $scope.pagedItems = [];
+        $scope.currentPage = 0;
+        $scope.filteredItems = [];
+        $scope.itemsPerPage = 5;
+        $scope.min = 0;
+        $scope.max =5;
+        // $scope.groupToPages();
+
+         $scope.range = function (start, end) {
+            var ret = [];
+            if (!end) {
+                end = start;
+                start = 0;
+            }
+            for (var i = start; i < end; i++) {
+                ret.push(i);
+            }
+            return ret;
+        };
+
+        $scope.prevPage = function () {
+            if ($scope.currentPage > 0) {
+                $scope.currentPage--;
+            }
+            if($scope.min > 0){ 
+                $scope.min--;
+            }
+            if($scope.max > 5){ 
+                $scope.max--;
+            }
+        };
+        
+        $scope.nextPage = function () {
+            if ($scope.currentPage < $scope.pagedItems.length - 1) {
+                $scope.currentPage++;
+            }
+            $scope.limit = $scope.pagedItems.length;
+            if($scope.min < $scope.limit && $scope.min <= $scope.limit - 6) {
+                $scope.min++;
+            }
+            if($scope.max < $scope.limit && $scope.min <= $scope.limit) {
+                $scope.max++;
+            }
+        };
+
+        
+        $scope.setPage = function () {
+            $scope.currentPage = this.n;
+        };
+      
+        $scope.groupToPages = function () {
+          $scope.pagedItems = [];
+          $scope.filteredItems = $scope.resultList;
+          $scope.filtered();
+        };
+
+        $scope.filtered = function () {
+          if($scope.filteredItems){
+            for (var i = 0; i < $scope.filteredItems.length; i++) {
+                if (i % $scope.itemsPerPage === 0) {
+                    $scope.pagedItems[Math.floor(i / $scope.itemsPerPage)] = [ $scope.filteredItems[i] ];
+                } else {
+                    $scope.pagedItems[Math.floor(i / $scope.itemsPerPage)].push($scope.filteredItems[i]);
+                }
+            }
+          }   
+        }
+     
+        $scope.groupToPages();
+
+        _scope.init();
 
 }]);
 

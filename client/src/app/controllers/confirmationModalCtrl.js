@@ -4,22 +4,14 @@ app.controller('confirmationModalInstanceCtrl', ['$scope', '$rootScope', '$http'
     '$location', '$modalInstance', 'detail',
     function ($scope, $rootScope, $http, $location, $modalInstance, detail) {
 
-    var isUser = detail;
+    var view;
     //confirmation dialog box actions
     $scope.isRedirectConformed = function () {
-        $modalInstance.close();
-            if($rootScope.user) {
-                if($rootScope.user.scope == 'Admin') {
-                    if(isUser) $location.path('/users');
-                    else $location.path('/tenants');
-                }
-                else if($rootScope.user.scope == 'Tenant-Admin') 
-                    $location.path('/tenantHome');
-                else if($rootScope.user.scope == 'User') 
-                    $location.path('/home');
-            }
-            else 
-                $location.path('/login');
+        if($location.path == '/editProfile') 
+            $location.path('/home');
+        else 
+                view = 'search';
+        $modalInstance.close(view);
     };
 
     $scope.cancel = function () {

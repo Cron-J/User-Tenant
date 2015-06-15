@@ -44,6 +44,20 @@ exports.createTenantSelfRegistration = {
     }
 };
 
+exports.createTenantByAdmin = {
+    handler: function(request, reply) {
+        Tenant.saveTenant( request.payload, function( err, tenant ) {
+            if (!err) {
+                return reply( "tenant successfully created" );
+            } else {
+                if ( constants.kDuplicateKeyError === err.code || constants.kDuplicateKeyErrorForMongoDBv2_1_1 === err.code ) {
+                    reply(Boom.forbidden( "tenant name already exist" ));
+                } else reply( Boom.forbidden( err ) ); // HTTP 403
+            }
+        });
+    }
+};
+
 exports.searchTenant = {
      handler: function(request, reply) {
         var query = {};
