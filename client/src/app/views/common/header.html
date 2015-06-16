@@ -15,7 +15,7 @@
           </a>
           <ul class="dropdown-menu">
             <li><a ui-sref="editProfile" class="ut-pointer"><i class="fa fa-fw fa-user"></i> Profile</a></li>
-            <li><a ui-sref="tenantHome" class="ut-pointer" ng-show="user.scope == 'Tenant-Admin'"><i class="fa fa-fw fa-users"></i> Users</a></li>
+            <!-- <li><a ui-sref="tenantHome" class="ut-pointer" ng-show="user.scope == 'Tenant-Admin'"><i class="fa fa-fw fa-users"></i> Users</a></li> -->
             <li><a ng-click="logOut()" class="ut-pointer"><i class="fa fa-fw fa-sign-out"></i> Log Off</a></li>
             <!-- <li class="divider"></li>
             <li class="dropdown-header">Language</li>
@@ -23,13 +23,13 @@
             <!-- <li><a href="#">Deutsch</a></li> -->
           </ul>
         </li> 
-        <li class="dropdown" ng-show="user.scope == 'Admin'">
+        <li class="dropdown" ng-show="user.scope == 'Admin' || user.scope == 'Tenant-Admin'">
           <a class="icon-nav-item dropdown-toggle" data-toggle="dropdown"><span class="fa fa-cogs fa-1x"></span>  <b class="caret"></b></a>
           <ul class="dropdown-menu">
             <li class="dropdown-header"><b>Roles</b></li>
             <li class="divider"></li>
             <li><a class="ut-pointer" ui-sref="users">User</a></li>
-            <li><a class="ut-pointer" ui-sref="tenants">Tenant</a></li>
+            <li><a class="ut-pointer" ui-sref="tenants" ng-show="user.scope == 'Admin'">Tenant</a></li>
           </ul>
         </li> 
       </ul>

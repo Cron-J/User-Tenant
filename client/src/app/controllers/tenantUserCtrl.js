@@ -7,32 +7,53 @@ app.controller('tenantUserCtrl', ['$scope', '$rootScope', '$http', '$location',
 
         var _scope = {};
         _scope.init = function() {
-            if($location.path() == '/home') {
+            if($location.path() == '/users') {
                 userInfo.async().then(function(response) {
                     $scope.current_usr.firstName = response.data.firstName;
                     $scope.current_usr.lastName = response.data.lastName;
-                    // $scope.current_usr.tenantName = response.data.tenantId.name;
+                    if(response.data.tenantId) {
+                        $scope.current_usr.tenantId = response.data.tenantId._id;
+                        $scope.current_usr.tenantName = response.data.tenantId.name;
+                    }
                 });
             }
-
-            // if($stateParams.tenantUserId) {
-            //     $scope.view = 'view';
-            //     getUserAccountDetails();
-            // }
-            // if($stateParams.tUserId) {
-            //     $scope.viewByTenant = 'edit';
-            //     getTenantUserbyTenant();
-            // }
-
+            
             $scope.page ={
                 view: 'search',
                 role: 'admin'
             }
-
+            if($scope.user.scope == 'Tenant-Admin')
+                $scope.page.role = 'tenant-admin';
+            if($stateParams.selectedId)
+                $scope.tenantInfo = true;
         }
         
         // $scope.user = {};
         $scope.authError = null;
+
+        //Open tenant search modal
+        $scope.searchModal = function(size) {
+            var modalInstance = $modal.open({
+                templateUrl: 'myModalContent.html',
+                controller: 'searchModalInstanceCtrl',
+                size: size
+            });
+
+            modalInstance.result.then(function(tenant) {
+                if($scope.page.view == 'search') {
+                    if(!$scope.srch) $scope.srch = {};
+                    $scope.srch.tenantId = tenant._id;
+                    $scope.srch.tenantName = tenant.name;
+                } else {
+                    if(!$scope.account) $scope.account = {};
+                    $scope.account.tenantId = tenant._id;
+                    $scope.account.tenantName = tenant.name;
+                }
+            }, function() {
+                $log.info('Modal dismissed at: ' + new Date());
+            });
+        }
+
 
         //Get Tenant-User account details by Admin
         $scope.getUserAccountDetails = function (id) {
@@ -53,8 +74,8 @@ app.controller('tenantUserCtrl', ['$scope', '$rootScope', '$http', '$location',
         }
 
         //Get Tenant-User account details by Tenant-Admin
-        var getTenantUserbyTenant = function () {
-            $http.get('/userByTenant/'+ $stateParams.tUserId, {
+        $scope.getTenantUserbyTenant = function (id) {
+            $http.get('/userByTenant/'+ id, {
                 headers: AuthServ.getAuthHeader()
             })
             .success(function (data, status) {
@@ -68,6 +89,57 @@ app.controller('tenantUserCtrl', ['$scope', '$rootScope', '$http', '$location',
                 else
                   growl.addErrorMessage(data.message);
             });
+        }
+
+  
+        //Tenant-User account creation by Admin
+        $scope.createTenantUserAccount = function (account_info, valid) {
+            if(valid){
+                $http.post('/tenantUser', account_info, {
+                    headers: AuthServ.getAuthHeader()
+                })
+                .success(function (data, status) {
+                    growl.addSuccessMessage('User account has been created successfully');
+                    $scope.page.view = 'search';
+                    $scope.searchTenantUser($scope.srch);
+                })
+                .error(function (data, status) {
+                    if(data.message == 'Invalid token') 
+                        $scope.sessionExpire();
+                    else
+                      growl.addErrorMessage(data.message);
+                });
+            }
+        }
+
+        //Tenant-User account creation by Tenant-Admin
+        $scope.createTenantUserAccountbyTenant = function (account_info, valid) {
+            if(valid){
+                account_info.tenantId = $scope.user.tenantId;
+                $http.post('/tenantUserCreation', account_info, {
+                    headers: AuthServ.getAuthHeader()
+                })
+                .success(function (data, status) {
+                    growl.addSuccessMessage('User account has been created successfully');
+                    $scope.page.view = 'search';
+                    $scope.searchTenantUser($scope.srch);
+                })
+                .error(function (data, status) {
+                    if(data.message == 'Invalid token') 
+                        $scope.sessionExpire();
+                    else
+                      growl.addErrorMessage(data.message);
+                    // account_info.address.country = dataDump.address.country;
+                });
+            }
+        }
+
+
+        //get CreateUSer form
+        $scope.createUser = function (form) {
+            $scope.page.view = 'create';
+            $scope.account = {};
+            $scope.isChanged = false;
         }
 
         //Update Tenant-User account details by Admin
@@ -95,75 +167,22 @@ app.controller('tenantUserCtrl', ['$scope', '$rootScope', '$http', '$location',
             }
         }
 
-
-        //Open tenant search modal
-        $scope.searchModal = function(size) {
-            var modalInstance = $modal.open({
-                templateUrl: 'myModalContent.html',
-                controller: 'searchModalInstanceCtrl',
-                size: size
-            });
-
-            modalInstance.result.then(function(tenant) {
-                if($scope.page.view == 'search') {
-                    if(!$scope.srch) $scope.srch = {};
-                    $scope.srch.tenantId = tenant._id;
-                    $scope.srch.tenantName = tenant.name;
-                } else {
-                    if(!$scope.account) $scope.account = {};
-                    $scope.account.tenantId = tenant._id;
-                    $scope.account.tenantName = tenant.name;
-                }
-            }, function() {
-                $log.info('Modal dismissed at: ' + new Date());
-            });
-        }
-
-        //Tenant-User account creation
-        $scope.createTenantUserAccount = function (account_info, valid) {
-            if(valid){
-                // var dataDump = angular.copy(account_info);
-                // account_info.address.country = account_info.address.country[0].code;
-                $http.post('/tenantUser', account_info, {
-                    headers: AuthServ.getAuthHeader()
-                })
-                .success(function (data, status) {
-                    // AuthServ.setUserToken(data, $scope.loginForm.remember);
-                    growl.addSuccessMessage('User has been created successfully');
-                        $scope.page.view = 'search'
-                    
-                })
-                .error(function (data, status) {
-                    if(data.message == 'Invalid token') 
-                        $scope.sessionExpire();
-                    else
-                      growl.addErrorMessage(data.message);
-                    // account_info.address.country = dataDump.address.country;
-                });
-            }
-        }
-
-        //get CreateUSer form
-        $scope.createUser = function (form) {
-            $scope.page.view = 'create';
-            $scope.account = {};
-            $scope.isChanged = false;
-        }
         
-        //Update Tenant-User account details by Tenant
+        //Update Tenant-User account details by Tenant-Admin
         $scope.updatetenantUserAccountByTenant = function (account_info, valid) {
             if(valid){
+                var dump = angular.copy(account_info);
                 delete account_info._id, delete account_info.createdAt, 
                 delete account_info.createdBy, delete account_info.updatedAt,
                 delete account_info.updatedBy;
                 account_info.tenantId = account_info.tenantId._id;
-                $http.put('/user/'+$stateParams.tUserId, account_info, {
+                $http.put('/user/'+ dump._id, account_info, {
                     headers: AuthServ.getAuthHeader()
                 })
                 .success(function (data, status) {
                     growl.addSuccessMessage('Tenant-User account has been updated successfully');
-                    getTenantUserbyTenant();
-                    $scope.viewByTenant = 'view';
+                    $scope.getTenantUserbyTenant(dump._id);
+                    $scope.page.view = 'view';
                 })
                 .error(function (data, status) {
                     if(data.message == 'Invalid token') 
@@ -182,6 +201,10 @@ app.controller('tenantUserCtrl', ['$scope', '$rootScope', '$http', '$location',
                 if(searchObj.tenantName._id)
                         searchObj.tenantId = searchObj.tenantName._id;
             }
+            if($stateParams.selectedId)
+                searchObj.tenantId = $stateParams.selectedId;
+            if($scope.user.scope == 'Tenant-Admin') 
+                searchObj.tenantId = $scope.user.tenantId;
             $http.post('/searchUser', searchObj,  {
                 headers: AuthServ.getAuthHeader()
             })
@@ -216,6 +239,52 @@ app.controller('tenantUserCtrl', ['$scope', '$rootScope', '$http', '$location',
                 $log.info('Modal dismissed at: ' + new Date());
             });
         }
+
+        //Activate Tenant-User
+        
+        $scope.activateTenantUser = function(id, tenantId, srch){
+            var obj = {
+                "id": id,
+                "tenantId": tenantId
+            }
+            $http.post('/activateUser', obj,  {
+                headers: AuthServ.getAuthHeader()
+            })
+            .success(function (data, status) {
+                $scope.searchTenantUser(srch);
+                growl.addSuccessMessage('User account has been activated successfully');
+
+            })
+            .error(function (data, status) {
+                if(data.message == 'Invalid token') 
+                    $scope.sessionExpire();
+                else if(data.message != "no user for tenant exist")
+                    growl.addErrorMessage(data.message);
+            });
+        }
+
+        //Deactivate Tenant-User
+         $scope.deactivateTenantUser = function(id, tenantId, srch){
+            console.log(srch);
+            var obj = {
+                "id": id,
+                "tenantId": tenantId
+            }
+            $http.post('/deActivateUser', obj,  {
+                headers: AuthServ.getAuthHeader()
+            })
+            .success(function (data, status) {
+                $scope.searchTenantUser(srch);
+                growl.addSuccessMessage('User account has been deactivated successfully');
+            })
+            .error(function (data, status) {
+                if(data.message == 'Invalid token') 
+                    $scope.sessionExpire();
+                else if(data.message != "no user for tenant exist")
+                    growl.addErrorMessage(data.message);
+            });
+        }
+
 
         //Pagination
         $scope.pagedItems = [];
@@ -287,7 +356,6 @@ app.controller('tenantUserCtrl', ['$scope', '$rootScope', '$http', '$location',
         $scope.groupToPages();
 
         _scope.init();
-        
-        _scope.init();
+
 }]);
 

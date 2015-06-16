@@ -2,21 +2,22 @@
   <div class="row ut-pageheader">
     <div class="ut-lead col-lg-10 col-md-10 ">Search Users</div>
     <div class="col-lg-2 col-md-2 pull-right">
-      <a class="btn btn-primary" ng-click="createUser()"><i class="fa fa-user"></i> New</a>
-      <a class="btn btn-default" ng-click="exportUserData()"><i class="fa fa-download"></i> Export</a>
+      <a class="btn btn-primary" ng-hide="tenantInfo" ng-click="createUser()"><i class="fa fa-user"></i> New</a>
+      <a class="btn btn-default" ng-hide="tenantInfo" ng-click="exportUserData()"><i class="fa fa-download"></i> Export</a>
+      <a class="btn btn-info pull-right" ng-show="tenantInfo" ui-sref="tenants"><i class="fa fa-arrow-left"></i> Back</a>
     </div>
-  </div>  
+  </div>
   <div class="ut-container">
     <form name="searchForm">
       <div class="row"> 
         <div class="col-md-6 form-group">
-          <label class="col-md-3 control-label">First Name</label>
+          <label for="firstName" class="col-md-3 control-label">First Name</label>
             <div class="col-md-5">
                 <input class="form-control" type="text" name="srchfn" ng-model="srch.firstName">           
             </div>                    
         </div>
         <div class="col-md-6 form-group">
-          <label class="col-md-3 control-label">Last Name</label>
+          <label for="lastName" class="col-md-3 control-label">Last Name</label>
           <div class="col-md-5">
               <input class="form-control" type="text" name="srchln" ng-model="srch.lastName">
           </div>                  
@@ -24,13 +25,13 @@
       </div>
             <div class="row">
         <div class="col-md-6 form-group">
-          <label for="" class="col-md-3 control-label">Email</label>
+          <label for="email" class="col-md-3 control-label">Email</label>
           <div class="col-md-5">
               <input class="form-control" placeholder="" name="srchmail" type="text" ng-model="srch.email">
           </div>
         </div>
         <div class="col-md-6 form-group">
-          <label for="" class="col-md-3 control-label">User Role</label>
+          <label for="scope" class="col-md-3 control-label">User Role</label>
           <div class="col-md-5">
               <select class="form-control" placeholder="" name="srchrole" type="text" ng-model="srch.scope">
                   <option value="">Select role</option>
@@ -40,19 +41,29 @@
           </div>
         </div>
       </div>
-      <div class="row">
-        <div class="col-md-6 form-group">
-          <label for="" class="col-md-3 control-label">Tenant Id</label>
+      <div class="row" >
+        <div class="col-md-6 form-group" ng-hide="user.scope != 'Admin' || tenantInfo">
+          <label for="tenantName" class="col-md-3 control-label">Tenant Id</label>
           <div class="col-md-5">
             <input class="form-control" placeholder="" type="text" ng-model="srch.tenantName" typeahead="res as res.name+ res.comma + (res.desc | limitTo:10) for res in searchTenantByName($viewValue)" typeahead-wait-ms="1000" />
           </div>
           <button class="btn btn-primary btn-sm" ng-click="searchModal()"><i class="fa fa-search"></i></button>
           <div ng-include="'app/views/tenant/search_tenants.html'"></div>
         </div>
+        <div class="col-md-6 form-group">
+          <label for="isActive" class="col-md-3 control-label">Status</label>
+          <div class="col-md-5">
+              <select class="form-control" placeholder="" name="srchstatus" type="text" ng-model="srch.isActive">
+                  <option value="">Select status</option>
+                  <option value="true">True</option>
+                  <option value="false">False</option>
+              </select> 
+          </div>
+        </div>
       </div>
       <div class="pull-right">
         <button class="btn btn-primary" type="submit" ng-click="searchTenantUser(srch)">Search</button>
-        <button type="button" value="Reset" class="btn btn-primary" ng-click="reset()">Reset</button>
+        <button class="btn btn-primary" ng-click="srch = {};">Reset</button>
       </div>
     </form>
 
@@ -80,16 +91,42 @@
               </tr>
             </thead>
             <tbody>
-                <tr class="ut-pointer" ng-repeat="user in pagedItems[currentPage]" ng-click="getUserAccountDetails(user._id);page.view = 'edit'">
-                  <td>{{user.username}}</td>
-                  <td>{{user.firstName}}</td>
-                  <td>{{user.lastName}}</td>
-                  <td>{{user.email}}</td>
-                  <td>{{user.scope}}</td>
-                  <td>{{user.isActive}}</td>
+                <tr class="ut-pointer" ng-repeat="usr in pagedItems[currentPage]" >
+                  <td>{{usr.username}}</td>
+                  <td>{{usr.firstName}}</td>
+                  <td>{{usr.lastName}}</td>
+                  <td>{{usr.email}}</td>
+                  <td>{{usr.scope}}</td>
+                  <td>{{usr.isActive}}</td>
                   <td>
-                    <button type="button" ng-click="rem_tenant(user._id,$index)" class="btn btn-default btn-md">
+                    <button type="button" ng-show="user.scope == 'Admin' && tenantInfo" 
+                    class="btn btn-default btn-md" 
+                    ng-click="getUserAccountDetails(usr._id);
+                    page.view = 'view'">
+                      <span class="fa fa-eye"></span> View
+                    </button>
+                    <button type="button" 
+                    ng-hide="user.scope == 'Tenant-Admin' || tenantInfo"
+                   class="btn btn-primary btn-md" 
+                    ng-click="getUserAccountDetails(usr._id);
+                    page.view = 'edit'">
                       <span class="fa fa-edit"></span> Edit
+                    </button>
+                    <button type="button" ng-hide="user.scope == 'Admin' || tenantInfo" 
+                    class="btn btn-primary btn-md" ng-hide="tenantInfo"
+                    ng-click="getTenantUserbyTenant(usr._id);
+                    page.view = 'edit'">
+                      <span class="fa fa-edit"></span> Edit
+                    </button>
+                    <button type="button" ng-show="usr.isActive == true && !tenantInfo" 
+                    ng-click="deactivateTenantUser(usr._id, usr.tenantId, srch)" 
+                    class="btn btn-default btn-md">
+                      <span class="fa fa-user-times"></span> Deactivate
+                    </button>
+                    <button type="button" ng-show="usr.isActive == false && !tenantInfo" 
+                    ng-click="activateTenantUser(usr._id, usr.tenantId, srch)" 
+                    class="btn btn-default btn-md" >
+                      <span class="fa fa-user-plus"></span> Activate
                     </button>
                   </td>
               </tr>  

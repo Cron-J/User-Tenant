@@ -102,5 +102,7 @@ exports.endpoints = [
     { method: 'GET', path: '/tenantUser/{id}', config: User.getAllTenantUserByTenant},
     { method: 'GET', path: '/tenantDeactiveUser/{id}', config: User.getAllDeactiveTenantUserByTenant},
     { method: 'POST', path: '/tenantUser', config: User.createTenantUser},
-    { method: 'POST', path: '/tenantCreation', config: Tenant.createTenantByAdmin}
+    { method: 'POST', path: '/tenantCreation', config: Tenant.createTenantByAdmin},
+    { method: 'POST', path: '/tenantUserCreation', config: User.createTenantUserbyTenant}
+    
 ];

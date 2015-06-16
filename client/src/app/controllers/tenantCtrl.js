@@ -2,9 +2,9 @@
 
 app.controller('tenantCtrl', ['$scope', '$rootScope', '$http', '$location', 
     'AuthServ', 'growl', '$filter', '$stateParams', 'userInfo', 'countryList',
-    '$modal',
+    '$modal', '$log',
     function ($scope, $rootScope, $http, $location, AuthServ, growl, $filter, 
-        $stateParams, userInfo, countryList, $modal) {
+        $stateParams, userInfo, countryList, $modal, $log) {
         var _scope = {};
         _scope.init = function() {
             if($location.path() == '/home') {
@@ -16,18 +16,6 @@ app.controller('tenantCtrl', ['$scope', '$rootScope', '$http', '$location',
                 $scope.inActiveUsers = false;
                 $scope.getTenantUsers();
             }
-            // if($stateParams.tenantId) {
-            //     $scope.view = 'edit';
-            //     $scope.getTenant();
-            // }
-            // if($location.path() == '/addUser'){
-            //     $scope.inActiveUsers = true;
-            //     inActiveUsersList();
-            // }
-            // if($location.path() == '/tenantusersOfSelectedTenant/'+$stateParams.selectedId) {
-            //     allusers();
-            //     $scope.getTenant();
-            // }
 
             $scope.page ={
                 view: 'search',
@@ -39,9 +27,9 @@ app.controller('tenantCtrl', ['$scope', '$rootScope', '$http', '$location',
         // $scope.user = {};
         $scope.authError = null;
 
-        //getInfo 
-        var loadInfo = function () {
-
+        //Get TenantUsers List for Particular Tenant
+        $scope.getTenantUsersOfTenant = function (id) {
+            $location.path('/users/'+id);
         }
 
         //Get Tenant Details
@@ -159,48 +147,7 @@ app.controller('tenantCtrl', ['$scope', '$rootScope', '$http', '$location',
             });
         }
 
-        //Activate Tenant-User
         
-        $scope.activateTenantUser = function(id){
-            var obj = {
-                "id": id
-            }
-            $http.post('/activateUser', obj,  {
-                headers: AuthServ.getAuthHeader()
-            })
-            .success(function (data, status) {
-                inActiveUsersList();
-                growl.addSuccessMessage('User account has been activated successfully');
-
-            })
-            .error(function (data, status) {
-                if(data.message == 'Invalid token') 
-                    $scope.sessionExpire();
-                else if(data.message != "no user for tenant exist")
-                    growl.addErrorMessage(data.message);
-            });
-        }
-
-        //Deactivate Tenant-User
-         $scope.deactivateTenantUser = function(id){
-            var obj = {
-                "id": id
-            }
-            $http.post('/deActivateUser', obj,  {
-                headers: AuthServ.getAuthHeader()
-            })
-            .success(function (data, status) {
-                $scope.getTenantUsers();
-                growl.addSuccessMessage('User account has been deactivated successfully');
-            })
-            .error(function (data, status) {
-                if(data.message == 'Invalid token') 
-                    $scope.sessionExpire();
-                else if(data.message != "no user for tenant exist")
-                    growl.addErrorMessage(data.message);
-            });
-        }
-
         //Inactive Users list 
         var inActiveUsersList = function () {
             $http.get('/tenantDeactiveUser/'+ $scope.current_usr._id, {

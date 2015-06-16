@@ -88,11 +88,6 @@ app.controller('adminCtrl', ['$scope', '$rootScope', '$http', '$location',
         $scope.getTenant = function (id) {
              $location.path('/tenant/'+id);
         }
-
-        //Get TenantUsers List for Particular Tenant
-        $scope.getTenantUsersOfTenant = function (id) {
-             $location.path('/tenantusersOfSelectedTenant/'+id);
-        }
     
         //Open tenant search modal
         $scope.searchModal = function(size) {

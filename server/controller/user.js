@@ -111,6 +111,32 @@ exports.createTenantUser = {
     }
 };
 
+
+exports.createTenantUserbyTenant = {
+    handler: function(request, reply) {
+        if( !request.payload.tenantId ){
+            return reply(Boom.forbidden("tenant is not assigned"));
+        }
+        else {   
+                request.payload.password = Crypto.encrypt(Math.random().toString(8).substring(2));
+                request.payload.createdBy = "Tenant-Admin";
+                request.payload.updatedBy = "Tenant-Admin";
+                request.payload.isActive = true;
+                
+                User.saveUser( request.payload, function(err, user) {
+                    if (!err) {
+                        EmailServices.sentMailUserCreation(user.username, user.password);
+                        return reply( "Tenant user successfully created" );
+                    } else {
+                        if ( constants.kDuplicateKeyError === err.code || constants.kDuplicateKeyErrorForMongoDBv2_1_1 === err.code ) {
+                            return reply(Boom.forbidden("user email already registered"));
+                        } else return reply( Boom.forbidden(err) ); // HTTP 403
+                    }
+                });
+            }
+    }
+};
+
 /**
    POST: /activateUser
    SCOPE: 'Admin', 'Tenant-Admin'
@@ -125,12 +151,15 @@ exports.activateTenantUser = {
        Jwt.verify(request.headers.authorization.split(' ')[1], Config.key.privateKey, function(err, decoded) { 
             var tenantId;
             if(decoded.scope === 'Admin'){
-                tenantId = decoded.tenantId;
-            }
-            else{
                 tenantId = request.payload.tenantId;
             }
+            else{
+                tenantId = decoded.tenantId;
+            }
+            console.log(request.payload);
+            console.log('**********************');
             User.activateUser(request.payload.id, tenantId, function(err, user) {
+                console.log(err);
                 if(err){
                     return reply(Boom.badImplementation("unable to activate user"));
                 }
@@ -162,14 +191,15 @@ exports.deActivateTenantUser = {
        Jwt.verify(request.headers.authorization.split(' ')[1], Config.key.privateKey, function(err, decoded) {     
             var tenantId;
             if(decoded.scope === 'Admin'){
-                tenantId = decoded.tenantId;
-            }
-            else{
                 tenantId = request.payload.tenantId;
             }
+            else{
+                tenantId = decoded.tenantId;
+            }
+
             User.deActivateUser(request.payload.id, tenantId, function(err, user) {
                 if(err){
-                    return reply(Boom.badImplementation("unable to activate user"));
+                    return reply(Boom.badImplementation("unable to deactivate user"));
                 }
                 else{
                     if(user){
@@ -201,6 +231,7 @@ exports.searchUser = {
         if (request.payload.lastName) query['lastName'] = new RegExp(request.payload.lastName, "i");
         if (request.payload.email) query['email'] = new RegExp(request.payload.email, "i");
         if (request.payload.tenantId) query['tenantId'] = request.payload.tenantId;
+        if (request.payload.isActive) query['isActive'] = request.payload.isActive;
         if (request.payload.scope) {
             query['scope'] = request.payload.scope;   
         }
@@ -401,7 +432,7 @@ exports.getUserByTenant = {
                 else{
                     if(user){
                         user.password = undefined;
-                        user.scope = undefined;
+                        // user.scope = undefined;
                         return reply(user);    
                     }
                     return reply(Boom.forbidden("no user exist"));
@@ -536,7 +567,7 @@ exports.updateTenantUser = {
             if(request.payload.firstLogin) delete request.payload.firstLogin;
             if(request.payload.lastLogin) delete request.payload.lastLogin;
             if(request.payload.createdBy) delete request.payload.createdBy;
-            if(request.payload.scope) delete request.payload.scope;
+            // if(request.payload.scope) delete request.payload.scope;
             if(request.payload.password) request.payload.password = Crypto.encrypt(request.payload.password);
 
             request.payload.updatedBy = decoded.scope;

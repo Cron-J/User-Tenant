@@ -1,16 +1,17 @@
 <div ng-hide="page.view == 'search'">
-    <header>view: {{page.view}}
-        <p ng-show="page.view == 'create'" class="ut-lead">Create Company</p>
-        <p ng-show="page.view == 'view'" class="ut-lead">Company Details</p>
-        <p ng-show="page.view == 'edit'" class="ut-lead">Edit Company Details</p>
+    <header>
+        <p ng-show="page.view == 'create'" class="ut-lead">Create Tenant</p>
+        <p ng-show="page.view == 'view'" class="ut-lead">Tenant Details</p>
+        <p ng-show="page.view == 'edit'" class="ut-lead">Edit Tenant Details</p>
     </header>
     <div class="col-lg-8 col-md-8 ut-container">
-        <form id="tenantForm" class="form-horizontal ut-form form-validation" role="form" name="tenantForm" >
+        <form id="tenantForm" class="form-horizontal ut-form form-validation" role="form" name="tenantForm" novalidate>
             <div class="row">
                 <div class="form-group">
-                    <label class="col-sm-3 control-label">Company Name</label>
+                    <label class="col-sm-3 control-label">Tenant Name</label>
                     <div class="col-sm-5">
-                        <input placeholder="jCatalog" class="form-control" 
+                        <input class="form-control" name="tname"
+                        placeholder="jCatalog"
                         ng-model="account.name" 
                         ng-pattern="/^[a-zA-Z0-9]{2,30}$/" 
                         ng-disabled="page.view == 'view'" 
@@ -23,7 +24,7 @@
                     <label class="col-sm-3 control-label">Description</label>
                     <div class="col-sm-5">
                         <textarea type="text" class="form-control" 
-                        ng-model="account.description"
+                        ng-model="account.description" name="tdesc"
                         placeholder="Description about company"  
                         ng-disabled="page.view == 'view'"
                         ng-pattern="/^[a-zA-Z_ ]{2,30}$/" 

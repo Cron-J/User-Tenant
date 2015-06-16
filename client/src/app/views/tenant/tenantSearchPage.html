@@ -2,7 +2,7 @@
 	<div class="row ut-pageheader">
     <div class="ut-lead col-lg-10 col-md-10 ">Search Tenants</div>
     <div class="col-lg-2 col-md-2 pull-right">
-      <a class="btn btn-primary" ng-click="createTenant()"><i class="fa fa-building"></i> New</a>
+      <a class="btn btn-primary" ng-click="createTenant(tenantForm)"><i class="fa fa-building"></i> New</a>
       <a class="btn btn-default" ng-click="exportTenantsData()"><i class="fa fa-download"></i> Export</a>
     </div>
   </div>  
@@ -23,7 +23,7 @@
     </section>
     <div class="pull-right">
       <button value="Search" class="btn btn-primary" type="submit" ng-click="searchTenant(srch)">Search</button>
-      <button type="button" value="Reset" class="btn btn-primary" ng-click="reset()">Reset</button>
+      <button class="btn btn-primary" ng-click="srch = {};">Reset</button>
     </div>
   </form>
   <div ng-show="showResult == true" >

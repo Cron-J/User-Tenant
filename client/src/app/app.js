@@ -105,7 +105,7 @@ var app = angular.module('app', [
 
           })
           .state('tenantUsersOfTenant', {
-            url: "/tenantusersOfSelectedTenant/:selectedId",
+            url: "/tenantusersOfSelectedTenant/:selectedTenId",
               templateUrl: "app/views/tenant/tenant_users_for_particular_tenant.html",
               controller: "tenantCtrl",
               data: {
@@ -120,7 +120,14 @@ var app = angular.module('app', [
               data: {
                   authorizedRoles: [USER_ROLES.admin, USER_ROLES.tenantadmin]
               }
-
+          })
+          .state('usersOfTenant', {
+            url: "/users/:selectedId",
+              templateUrl: "app/views/tenant_user/userHome.html",
+              controller: "tenantUserCtrl",
+              data: {
+                  authorizedRoles: [USER_ROLES.admin]
+              }
           })
           .state('user', {
             url: "/user/:tenantUserId",

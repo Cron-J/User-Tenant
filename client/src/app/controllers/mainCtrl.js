@@ -51,7 +51,5 @@ app.controller('mainCtrl', ['$scope', '$location', '$rootScope', '$http', '$moda
             });
         }
 
-        
-
 	      _scope.init();
 }]);
