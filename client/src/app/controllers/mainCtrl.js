@@ -7,11 +7,11 @@ app.controller('mainCtrl', ['$scope', '$location', '$rootScope', '$http', '$moda
         var _scope = {};
         _scope.init = function () {
         	$scope.current_usr = {};
-	        	if($rootScope.user) {
-			        userInfo.async().then(function(response) {
-			          $scope.current_usr = response.data;
-			        });
-			      }
+        	if($rootScope.user) {
+		        userInfo.async().then(function(response) {
+		          $scope.current_usr = response.data;
+		        });
+		     }
         }
 
 	      $scope.clearCountrySelection = function () {

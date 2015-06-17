@@ -1,9 +1,10 @@
 'use strict';
 
 app.controller('accountCtrl', ['$scope', '$rootScope', '$http', '$location', 
-    'AuthServ', 'growl', '$filter', 'userInfo','countryList', '$modal', '$log',
+    'AuthServ', 'growl', '$filter', 'userInfo','countryList', '$modal', '$log', 
+    '$stateParams',
     function ($scope, $rootScope, $http, $location, AuthServ, growl, $filter, 
-        userInfo, countryList, $modal, $log) {
+        userInfo, countryList, $modal, $log, $stateParams) {
         var _scope = {};
         _scope.init = function() {
             $scope.loginForm = {
@@ -19,6 +20,9 @@ app.controller('accountCtrl', ['$scope', '$rootScope', '$http', '$location',
                 getAccountDetails();
             }
             $scope.setPassword = false;
+            if($stateParams.email && $stateParams.pwd) {
+                verifyMail();
+            }
         }
 
         //User login
@@ -52,6 +56,17 @@ app.controller('accountCtrl', ['$scope', '$rootScope', '$http', '$location',
                 .success(function (data, status) {
                     growl.addSuccessMessage('Password has been successfully to registered email with your username');
                     $location.path('/login');
+                })
+                .error(function (data, status) {
+                    growl.addErrorMessage(data.message);
+                })
+        }
+
+        var verifyMail = function () {
+            $http.put('/emailVerification', $stateParams)
+                .success(function (data, status) {
+                    // growl.addSuccessMessage('Password has been successfully to registered email with your username');
+                    // $location.path('/login');
                 })
                 .error(function (data, status) {
                     growl.addErrorMessage(data.message);

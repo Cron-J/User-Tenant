@@ -48,6 +48,7 @@ var User = new Schema({
     */
     email: {
         type: String,
+        unique: true,
         lowercase: true,
         trim: true,
         required: true,
@@ -105,6 +106,10 @@ var User = new Schema({
         ref: 'Tenant'
     },
     isActive: {
+        type: Boolean,
+        default: false
+    },
+    isEmailVerified: {
         type: Boolean,
         default: false
     },

@@ -48,7 +48,59 @@ exports.createAdmin = {
          });
     }
 };
+//
+exports.emailVerification = {
+    handler: function(request, reply) {
+        var email = Crypto.decrypt(request.payload.email);
+        User.findUser(email, function(err, user) {
+            if (!err) {
+                if (user === null) return reply(Boom.forbidden("invalid username or password"));
+                if (request.payload.password === Crypto.decrypt(user.password)) {
+                    if(!user.isActive){
+                        reply(Boom.forbidden("User not verified"));
+                    }
+                    else{
+                        var  loginSummary = {};
+                        if( user.firstLogin === undefined ) {
+                            loginSummary['firstLogin'] = Date();
+                        }
+                        loginSummary['lastLogin'] = Date();
 
+                            User.updateUser(user._id, loginSummary, function(err, result){
+                                if(err) {
+                                    reply(Boom.forbidden("Oops something went wrong!"));
+                                }
+                                else{
+                                    var tokenData = {
+                                        username: user.username,
+                                        scope: user.scope,
+                                        tenantId : user.tenantId,
+                                        id: user._id
+                                    },
+                                    res = {
+                                        username: user.username,
+                                        scope: user.scope,
+                                        tenantId: user.tenantId,
+                                        token: Jwt.sign(tokenData, privateKey)
+                                    };
+
+                                    reply(res);
+                                }
+                            });
+
+                    }
+                } else reply(Boom.forbidden("invalid username or password"));
+            } else {
+                if ( constants.kDuplicateKeyError === err.code || constants.kDuplicateKeyErrorForMongoDBv2_1_1 === err.code ) {
+                    reply(Boom.forbidden("please provide another user name"));
+                } else {
+                        console.error(err);
+                        return reply(Boom.badImplementation(err));
+                } 
+            }
+        });
+    }
+};
 exports.createUser = {
     handler: function(request, reply) {
             if( !request.payload.tenantId ){
@@ -63,6 +115,9 @@ exports.createUser = {
                         request.payload.updatedBy = "Self";
                         User.saveUser( request.payload, function(err, user) {
                             if (!err) {
+                                console.log(user);
+                                console.log('**************************');
+                                EmailServices.sentVerificationEmail(user, user.password);
                                 return reply( "Tenant user successfully created" );
                             } else {
                                 if ( constants.kDuplicateKeyError === err.code || constants.kDuplicateKeyErrorForMongoDBv2_1_1 === err.code ) {

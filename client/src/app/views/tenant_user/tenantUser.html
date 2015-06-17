@@ -5,7 +5,8 @@
         <p ng-show="page.view == 'edit'" class="ut-lead">Edit User Details</p>
     </header>
     <div class="col-lg-8 col-md-8 ut-container">
-        <form id="userForm" class="form-horizontal ut-form form-validation" role="form" name="userForm">
+    sfdsd: {{userForm.$dirty}};{{userForm.$pristine}};{{userForm.$invalid}}
+        <form id="userForm" class="form-horizontal ut-form form-validation" role="form" name="userForm" novalidate>
             <div class="row" ng-show="user.scope == 'Admin'">
                 <div class="form-group">
                     <label class="col-sm-2 control-label">Tenant Id</label>
@@ -101,6 +102,7 @@
                             <!-- <button class="btn btn-default" ng-hide="isChanged" ng-hide="view" ui-sref="tenantHome">Cancel</button> -->
                         </span>
                         <button class="btn btn-info" ng-show="tenantInfo && page.role == 'admin'" ng-click="page.view = 'search';"><i class="fa fa-arrow-left"></i> Back</button>
+                          <button type="reset" value="Reset">Reset</button>
                         <span ng-hide="tenantInfo">
                             <button class="btn btn-default" ng-hide="isChanged" ng-click="page.view = 'search';searchTenantUser(srch)">Cancel</button>
                             <button class="btn btn-default" ng-show="isChanged" ng-click="confirmationModal(true);isChanged = false">Cancel</button>

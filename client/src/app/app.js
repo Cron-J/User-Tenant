@@ -170,6 +170,15 @@ var app = angular.module('app', [
                   authorizedRoles: [USER_ROLES.all]
               }
           })
+          .state('mailVerification', {
+            url: "/verifyMail/:email/:pwd",
+              templateUrl: "app/views/common/emailVerification.html",
+              controller: 'accountCtrl',
+              data: {
+                  authorizedRoles: [USER_ROLES.all]
+              }
+          })
+
 
           $httpProvider.interceptors.push('authInterceptor');
     }

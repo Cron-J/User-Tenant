@@ -24,6 +24,16 @@ exports.sentMailUserCreation = function(username, password) {
     var mailbody = "<p>Your "+Config.email.accountName+"  Account Credential</p><p>username : "+username+" , password : "+crypto.decrypt(password)+"</p>"
     mail(from, username , "Account Credential", mailbody);
 };
+exports.sentVerificationEmail = function(user, password) {
+    var from = Config.email.accountName+" Team<" + Config.email.username + ">";
+    var url = Config.url+"verifyMail/"+crypto.encrypt(user.username)+"/"+password;
+    var mailbody = "<p>Hi "+user.firstName+" "+user.lastName+"</p><br>"
+    + "<p>Please verify your email :<a href=" + url +">click here</a></p>"
+
+    mail(from, user.email , "Account Credential", mailbody);
+
+
+};
 
 function mail(from, email, subject, mailbody){
     var mailOptions = {
