@@ -2,9 +2,9 @@
 
 app.controller('accountCtrl', ['$scope', '$rootScope', '$http', '$location', 
     'AuthServ', 'growl', '$filter', 'userInfo','countryList', '$modal', '$log', 
-    '$stateParams',
+    '$stateParams', '$state',
     function ($scope, $rootScope, $http, $location, AuthServ, growl, $filter, 
-        userInfo, countryList, $modal, $log, $stateParams) {
+        userInfo, countryList, $modal, $log, $stateParams, $state) {
         var _scope = {};
         _scope.init = function() {
             $scope.loginForm = {
@@ -15,13 +15,22 @@ app.controller('accountCtrl', ['$scope', '$rootScope', '$http', '$location',
             if($location.path() == '/tenantSignup' || $location.path() =='/userSignup') {
                 $scope.account = {};
             }
+
             if($location.path() == '/editProfile') {
                 $scope.profileView = 'edit';
                 getAccountDetails();
             }
+
             $scope.setPassword = false;
-            if($stateParams.email && $stateParams.pwd) {
-                verifyMail();
+            if($location.url().split('?')[1]) {
+                $scope.verificationId = $location.url().substring($location.url().lastIndexOf("?")+1,$location.url().lastIndexOf("&"));;
+                if($location.path() != '/login') {
+                    if($scope.current_usr.isEmailVerified == false)
+                        
+                        verifyMail();
+                    else
+                        $location.url('/home');
+                }
             }
         }
 
@@ -35,7 +44,8 @@ app.controller('accountCtrl', ['$scope', '$rootScope', '$http', '$location',
                     if($rootScope.user.scope == 'Admin' || 
                         $rootScope.user.scope == 'Tenant-Admin' || 
                         $rootScope.user.scope == 'User')
-                                $location.path('/home');
+                        $location.path('/home');
+                    getAccountDetails();
                 })
                 .error(function (data, status) {
                     growl.addErrorMessage(data.message);
@@ -63,10 +73,42 @@ app.controller('accountCtrl', ['$scope', '$rootScope', '$http', '$location',
         }
 
         var verifyMail = function () {
-            $http.put('/emailVerification', $stateParams)
+            var params = {};
+            params.username = angular.copy($scope.verificationId);
+            console.log('**************', params.username);
+            if($scope.verificationId) {
+                $http.put('/emailVerification', params , {
+                headers: AuthServ.getAuthHeader()
+                })
                 .success(function (data, status) {
-                    // growl.addSuccessMessage('Password has been successfully to registered email with your username');
-                    // $location.path('/login');
+                                         $scope.verificationId = undefined;   
+                    console.log('-----------', $location.path());
+
+                        $location.url('/home');  
+                    userInfo.async().then(function(response) {
+                        $scope.current_usr = response.data;
+                        $scope.current_usr.isEmailVerified = true;;
+                        console.log('cvcvv',$scope.verificationId);
+                        $scope.isVerified = true;
+                                     
+                    });
+
+                })
+                .error(function (data, status) {
+                    growl.addErrorMessage(data.message);
+                })
+            }
+        }
+
+        //resendEmail Verification
+        $scope.resendVerificationEmail = function (username) {
+            var params = {};
+            params.username = username;
+            $http.post('/resendVerificationMail', params , {
+                headers: AuthServ.getAuthHeader()
+                })
+                .success(function (data, status) {
+                    growl.addSuccessMessage('Verification Email has been successfully sent');             
                 })
                 .error(function (data, status) {
                     growl.addErrorMessage(data.message);
@@ -152,6 +194,7 @@ app.controller('accountCtrl', ['$scope', '$rootScope', '$http', '$location',
                 $scope.account = response.data;
                 $scope.current_usr.firstName = response.data.firstName;
                 $scope.current_usr.lastName = response.data.lastName;
+                $scope.current_usr.isEmailVerified = response.data.isEmailVerified;
             });
         }
 

@@ -4,7 +4,7 @@ app.controller('tenantUserCtrl', ['$scope', '$rootScope', '$http', '$location',
     'countryList',
     function ($scope, $rootScope, $http, $location, AuthServ, growl, $filter, 
         $stateParams, $modal, $log, userInfo, countryList) {
-
+        $scope.testclass = 'testclass';
         var _scope = {};
         _scope.init = function() {
             if($location.path() == '/users') {
@@ -138,13 +138,11 @@ app.controller('tenantUserCtrl', ['$scope', '$rootScope', '$http', '$location',
         //get CreateUSer form
         $scope.createUser = function () {
             $scope.page.view = 'create';
+            $scope.userForm = {};
+            $scope.userForm.$dirty = false;
+            $scope.userForm.$pristine = true;
             $scope.account = {};
             $scope.isChanged = false;
-            // userForm.$valid = false;
-            // userForm.$dirty = false;
-            // // $scope.userForm.$setPristine();
-            // userForm.$pristine= true;
-            // // $scope.userForm.$touched  = false;
 
         }
 

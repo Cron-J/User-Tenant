@@ -93,6 +93,8 @@ exports.endpoints = [
         Description: Email will be send to user email.
     */
     { method: 'POST', path: '/forgotPassword', config: User.forgotPassword},
+    { method: 'PUT', path: '/emailVerification', config: User.emailVerification},
+    { method: 'POST', path: '/resendVerificationMail', config: User.resendVerificationMail},
     { method: 'POST', path: '/tenantSelfRegistration', config: Tenant.createTenantSelfRegistration}, 
     { method: 'POST', path: '/searchTenant', config: Tenant.searchTenant},
     { method: 'GET', path: '/exportTenant', config: Tenant.exportTenant},

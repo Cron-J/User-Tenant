@@ -18,7 +18,8 @@
                         typeahead-wait-ms="1000" ng-click="isChanged = true"
                         ng-disabled="page.view != 'create'"
                         ng-show="user.scope == 'Admin'" 
-                        ng-required="user.scope == 'Admin'" />
+                        ng-required="user.scope == 'Admin'"
+                        ng-class="{{testclass}}" />
                     </div>
                     <a class="btn btn-primary btn-sm" ng-hide="page.role == 'tenant-admin' || page.view != 'create'"
                     ng-click="searchModal()"><i class="fa fa-search"></i></a>

@@ -133,6 +133,8 @@ User.statics.saveUser = function(requestData, callback) {
 };
 
 User.statics.updateUser = function(id, user, callback) {
+    console.log(id);
+    console.log(user);
     if (user.createdAt) {
         delete user.createdAt;
     }

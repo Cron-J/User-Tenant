@@ -19,20 +19,31 @@ exports.sentMailForgotPassword = function(email, username, password) {
     var mailbody = "<p>Your "+Config.email.accountName+"  Account Credential</p><p>username : "+username+" , password : "+crypto.decrypt(password)+"</p>"
     mail(from, email , "Forgot password", mailbody);
 };
-exports.sentMailUserCreation = function(username, password) {
+exports.sentMailUserDeactivation = function(username, password) {
     var from = Config.email.accountName+" Team<" + Config.email.username + ">";
-    var mailbody = "<p>Your "+Config.email.accountName+"  Account Credential</p><p>username : "+username+" , password : "+crypto.decrypt(password)+"</p>"
+    var mailbody = "<p>Your Account has been deactivated</p>"+
+    "<p>Please contact admin for access</p>"
     mail(from, username , "Account Credential", mailbody);
 };
-exports.sentVerificationEmail = function(user, password) {
+exports.sentMailUserActivation = function(username, password) {
     var from = Config.email.accountName+" Team<" + Config.email.username + ">";
-    var url = Config.url+"verifyMail/"+crypto.encrypt(user.username)+"/"+password;
+    var mailbody = "<p>Your Account has been activated</p>"+
+    "<p>Your "+Config.email.accountName+"  Account Credentials </p><p>username : "+username+" , password : "+crypto.decrypt(password)+"</p>"
+    mail(from, username , "Account Credential", mailbody);
+};
+exports.sentVerificationEmail = function(user, token) {
+    var from = Config.email.accountName+" Team<" + Config.email.username + ">";
+    var url = Config.url+Config.email.verifyEmailUrl+"?"+crypto.encrypt(user.username)+"&"+token;
     var mailbody = "<p>Hi "+user.firstName+" "+user.lastName+"</p><br>"
-    + "<p>Please verify your email :<a href=" + url +">click here</a></p>"
+    +"<p>Thanks for registering with us!</p>"
+    + "<p>Please verify your email by clicking on <a href=" + url +">this link</a></p>"
 
     mail(from, user.email , "Account Credential", mailbody);
-
-
+};
+exports.resentMailVerificationLink = function(user,token) {
+    var from = Config.email.accountName+" Team<" + Config.email.username + ">";
+    var mailbody = "<p>Please verify your email by clicking on the verification link below.<br/><a href='"+Config.url+Config.email.verifyEmailUrl+"?"+crypto.encrypt(user.username)+"&"+token+"'>Verification Link</a></p>"
+    mail(from, user.email , "Account Verification", mailbody);
 };
 
 function mail(from, email, subject, mailbody){

@@ -165,13 +165,13 @@ var app = angular.module('app', [
           .state('home', {
             url: "/home",
               templateUrl: "app/views/common/home.html",
-              controller: 'tenantUserCtrl',
+              controller: 'accountCtrl',
               data: {
                   authorizedRoles: [USER_ROLES.all]
               }
           })
           .state('mailVerification', {
-            url: "/verifyMail/:email/:pwd",
+            url: "/verifyMail?username",
               templateUrl: "app/views/common/emailVerification.html",
               controller: 'accountCtrl',
               data: {
@@ -184,7 +184,7 @@ var app = angular.module('app', [
     }
   ]
 )
-.run(function($rootScope, $location, AuthServ,$cookieStore, $timeout ) {
+.run(function($rootScope, $location, AuthServ,$cookieStore, $timeout, $state) {
   $rootScope.$on('$stateChangeStart', function(event, next) {
      var authorizedRoles = next.data ? next.data.authorizedRoles : null;
      var isAuthorized = AuthServ.isAuthorized(authorizedRoles);
@@ -215,7 +215,7 @@ var app = angular.module('app', [
             else if($location.path() == '/forgotPassword') {
                 $location.path() == '/forgotPassword'
             }
-            else if($location.path() == '/error'){
+            else if($location.path() == '/error') {
               $timeout(function () {
                 $location.path('/login');
               }, 30);
@@ -224,9 +224,12 @@ var app = angular.module('app', [
               $location.path('/login');
             }  
           }
-          // else if(loggedIn){
-          //       $location.path('/error');
-          // }
+          else if(loggedIn){
+                              
+            if($location.path() == '/verifyMail' ) {
+              $location.path('/home');
+            }
+          }
         });
       }
     });
