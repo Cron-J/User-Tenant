@@ -74,9 +74,6 @@ exports.resendVerificationMail = {
     handler: function(request, reply) {
 
         User.findUser(request.payload.username, function(err, user) {
-            
-            console.log('***************************');
-            console.log(user);
             if (!err) {
                 if (user === null) return reply(Boom.forbidden("invalid username or password"));
                 if (user) {

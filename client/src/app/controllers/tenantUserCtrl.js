@@ -101,7 +101,6 @@ app.controller('tenantUserCtrl', ['$scope', '$rootScope', '$http', '$location',
                 .success(function (data, status) {
                     growl.addSuccessMessage('User account has been created successfully');
                     $scope.page.view = 'search';
-                    $scope.searchTenantUser($scope.srch);
                 })
                 .error(function (data, status) {
                     if(data.message == 'Invalid token') 
@@ -122,14 +121,12 @@ app.controller('tenantUserCtrl', ['$scope', '$rootScope', '$http', '$location',
                 .success(function (data, status) {
                     growl.addSuccessMessage('User account has been created successfully');
                     $scope.page.view = 'search';
-                    $scope.searchTenantUser($scope.srch);
                 })
                 .error(function (data, status) {
                     if(data.message == 'Invalid token') 
                         $scope.sessionExpire();
                     else
                       growl.addErrorMessage(data.message);
-                    // account_info.address.country = dataDump.address.country;
                 });
             }
         }
@@ -138,12 +135,8 @@ app.controller('tenantUserCtrl', ['$scope', '$rootScope', '$http', '$location',
         //get CreateUSer form
         $scope.createUser = function () {
             $scope.page.view = 'create';
-            $scope.userForm = {};
-            $scope.userForm.$dirty = false;
-            $scope.userForm.$pristine = true;
-            $scope.account = {};
-            $scope.isChanged = false;
-
+            $scope.account = "";
+            // $scope.userForm.$setPristine();
         }
 
         //Update Tenant-User account details by Admin
@@ -287,6 +280,10 @@ app.controller('tenantUserCtrl', ['$scope', '$rootScope', '$http', '$location',
                 else if(data.message != "no user for tenant exist")
                     growl.addErrorMessage(data.message);
             });
+        }
+
+        $scope.cancelView = function () {
+            $scope.page.view = 'search';
         }
 
 

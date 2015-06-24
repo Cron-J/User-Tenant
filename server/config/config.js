@@ -14,7 +14,7 @@ module.exports = {
     email: {
         username: "anusha@cronj.com",
         password: "cronjpwd",
-        accountName: "JCatlog",
+        accountName: "jCatalog",
         verifyEmailUrl: "verifyMail"
     },
     url: "http://localhost:8001/#/"

@@ -170,6 +170,14 @@ var app = angular.module('app', [
                   authorizedRoles: [USER_ROLES.all]
               }
           })
+          .state('activateUser', {
+            url: "/userActivation/:usrId/:tId",
+              templateUrl: "app/views/tenant_user/userHome.html",
+              controller: 'accountCtrl',
+              data: {
+                  authorizedRoles: [USER_ROLES.admin, USER_ROLES.tenantadmin]
+              }
+          })
           .state('mailVerification', {
             url: "/verifyMail?username",
               templateUrl: "app/views/common/emailVerification.html",

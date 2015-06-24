@@ -31,6 +31,12 @@ exports.sentMailUserActivation = function(username, password) {
     "<p>Your "+Config.email.accountName+"  Account Credentials </p><p>username : "+username+" , password : "+crypto.decrypt(password)+"</p>"
     mail(from, username , "Account Credential", mailbody);
 };
+exports.sentUserActivationMailToAdmin = function(username, password) {
+    var from = Config.email.accountName+" Team<" + Config.email.username + ">";
+    var mailbody = "<p>Your Account has been activated</p>"+
+    "<p>Your "+Config.email.accountName+"  Account Credentials </p><p>username : "+username+" , password : "+crypto.decrypt(password)+"</p>"
+    mail(from, username , "Account Credential", mailbody);
+};
 exports.sentVerificationEmail = function(user, token) {
     var from = Config.email.accountName+" Team<" + Config.email.username + ">";
     var url = Config.url+Config.email.verifyEmailUrl+"?"+crypto.encrypt(user.username)+"&"+token;
