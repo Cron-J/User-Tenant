@@ -7,10 +7,10 @@ app.controller('confirmationModalInstanceCtrl', ['$scope', '$rootScope', '$http'
     var view;
     //confirmation dialog box actions
     $scope.isRedirectConformed = function () {
-        if($location.path == '/editProfile') 
+        if($location.path() == '/editProfile') 
             $location.path('/home');
         else 
-                view = 'search';
+            view = 'search';
         $modalInstance.close(view);
     };
 

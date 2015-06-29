@@ -135,8 +135,7 @@ app.controller('tenantUserCtrl', ['$scope', '$rootScope', '$http', '$location',
         //get CreateUSer form
         $scope.createUser = function () {
             $scope.page.view = 'create';
-            $scope.account = "";
-            // $scope.userForm.$setPristine();
+            $scope.account = {};
         }
 
         //Update Tenant-User account details by Admin

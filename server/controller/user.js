@@ -3,6 +3,7 @@
 var Boom = require('boom'),
     EmailServices = require('../Utility/emailServices'),
     Crypto = require('../Utility/cryptolib'),
+    nodemailer = require("nodemailer"),
     Config = require('../config/config'),
     json2csv = require('json2csv'),
     constants = require('../Utility/constants').constants,
@@ -96,6 +97,39 @@ exports.resendVerificationMail = {
         });
     }
 };
+
+/**
+ * Sends an email.
+ * @function
+ */
+var sendMail = function () {
+  var transporter
+    , message;
+
+  transporter = nodemailer.createTransport({
+    service: 'Mailgun',
+    auth: {
+      user: 'postmaster@sandboxf10e903026724576a2e218a65d72301d.mailgun.org', // postmaster@sandbox[base64 string].mailgain.org
+      pass: 'cronj123' // You set this.
+    }
+  });
+  message = {
+    from: 'jCatalog',
+    to: 'anusha.nilapu@gmail.com', // comma separated list
+    subject: 'Activate User',
+    text: 'Text contents.',
+    html: '<p>Hi Admin,</p><p>Please activate this user account</p>'
+  };
+  transporter.sendMail(message, function(error, info){
+    if (error) {
+      console.log(error);
+    } else {
+      console.log('Sent: ' + info.response);
+    }
+  });
+};
+
+
 exports.createUser = {
     handler: function(request, reply) {
             if( !request.payload.tenantId ){
@@ -115,6 +149,9 @@ exports.createUser = {
                                     scope: [user.scope],
                                     id: user._id
                                 };
+                                //Sending emails to admins to activate account
+                                // EmailServices.sentUserActivationMailToAdmins(getAdminEmailList(), user);
+                                //Sending verification email
                                 EmailServices.sentVerificationEmail(user,Jwt.sign(tokenData, privateKey));
                                 return reply( "Tenant user successfully created" );
                             } else {
@@ -280,6 +317,7 @@ exports.searchUser = {
     },
     handler: function(request, reply) {
         var query = {};
+        if (request.payload.firstName) query['username'] = new RegExp(request.payload.username, "i");
         if (request.payload.firstName) query['firstName'] = new RegExp(request.payload.firstName, "i");
         if (request.payload.lastName) query['lastName'] = new RegExp(request.payload.lastName, "i");
         if (request.payload.email) query['email'] = new RegExp(request.payload.email, "i");
@@ -298,7 +336,30 @@ exports.searchUser = {
                 return reply(user);
             } else reply(Boom.forbidden(err));
         });
+        
+        // EmailServices.sentUserActivationMailToAdmins();
     }
+};
+
+/**
+    GET: /admins
+    Description: Get admins list.
+*/
+var getAdminEmailList = function() {
+        var emailList,
+            query = {};
+        query['scope'] = 'Admin';
+
+        User.searchUser(query, function(err, userList) {
+            if (!err) {
+                for(var j in userList)  
+                {
+                    if(emailList) emailList+=","+userList[j].email;
+                    else emailList = userList[j].email
+                }    
+                return emailList;
+            }
+        });
 };
 
 exports.exportUser = {

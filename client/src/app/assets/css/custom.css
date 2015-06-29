@@ -68,6 +68,10 @@
 .ut-login-block {
 	padding-top: 20px;
 }
+.ut-status-btn {
+	width: 115px;
+  text-align: left;
+}
 
 /*welcome page*/
 .ut-wp-number {

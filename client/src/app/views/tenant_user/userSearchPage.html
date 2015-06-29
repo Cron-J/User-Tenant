@@ -1,4 +1,4 @@
-<div ng-show="page.view == 'search'" > 
+<div  > 
   <div class="row ut-pageheader">
     <div class="ut-lead col-lg-10 col-md-10 ">Search Users</div>
     <div class="col-lg-2 col-md-2 pull-right">
@@ -23,11 +23,11 @@
           </div>                  
         </div>
       </div>
-            <div class="row">
+      <div class="row">
         <div class="col-md-6 form-group">
-          <label for="email" class="col-md-3 control-label">Email</label>
+          <label for="email" class="col-md-3 control-label">User Name</label>
           <div class="col-md-5">
-              <input class="form-control" placeholder="" name="srchmail" type="text" ng-model="srch.email">
+              <input class="form-control" placeholder="" name="srchname" type="text" ng-model="srch.username">
           </div>
         </div>
         <div class="col-md-6 form-group">
@@ -42,16 +42,14 @@
         </div>
       </div>
       <div class="row" >
-        <div class="col-md-6 form-group" ng-hide="user.scope != 'Admin' || tenantInfo">
-          <label for="tenantName" class="col-md-3 control-label">Tenant Id</label>
+        <div class="col-md-6 form-group">
+          <label for="email" class="col-md-3 control-label">Email</label>
           <div class="col-md-5">
-            <input class="form-control" placeholder="" type="text" ng-model="srch.tenantName" typeahead="res as res.name+ res.comma + (res.desc | limitTo:10) for res in searchTenantByName($viewValue)" typeahead-wait-ms="1000" />
+              <input class="form-control" placeholder="" name="srchmail" type="text" ng-model="srch.email">
           </div>
-          <button class="btn btn-primary btn-sm" ng-click="searchModal()"><i class="fa fa-search"></i></button>
-          <div ng-include="'app/views/tenant/search_tenants.html'"></div>
         </div>
         <div class="col-md-6 form-group">
-          <label for="isActive" class="col-md-3 control-label">Status</label>
+          <label for="isActive" class="col-md-3 control-label">Active</label>
           <div class="col-md-5">
               <select class="form-control" placeholder="" name="srchstatus" type="text" ng-model="srch.isActive">
                   <option value="">Select status</option>
@@ -59,6 +57,16 @@
                   <option value="false">False</option>
               </select> 
           </div>
+        </div>
+      </div>
+      <div class="row" >
+        <div class="col-md-6 form-group" ng-hide="user.scope != 'Admin' || tenantInfo">
+          <label for="tenantName" class="col-md-3 control-label">Tenant</label>
+          <div class="col-md-5">
+            <input class="form-control" placeholder="" type="text" ng-model="srch.tenantName" typeahead="res as res.name+ res.comma + (res.desc | limitTo:10) for res in searchTenantByName($viewValue)" typeahead-wait-ms="1000" />
+          </div>
+          <button class="btn btn-primary btn-sm" ng-click="searchModal()"><i class="fa fa-search"></i></button>
+          <div ng-include="'app/views/tenant/search_tenants.html'"></div>
         </div>
       </div>
       <div class="pull-right">
@@ -120,12 +128,12 @@
                     </button>
                     <button type="button" ng-show="usr.isActive == true && !tenantInfo" 
                     ng-click="deactivateTenantUser(usr._id, usr.tenantId, srch)" 
-                    class="btn btn-default btn-md">
+                    class="btn btn-default btn-md ut-status-btn">
                       <span class="fa fa-user-times"></span> Deactivate
                     </button>
                     <button type="button" ng-show="usr.isActive == false && !tenantInfo" 
                     ng-click="activateTenantUser(usr._id, usr.tenantId, srch)" 
-                    class="btn btn-default btn-md" >
+                    class="btn btn-default btn-md ut-status-btn" >
                       <span class="fa fa-user-plus"></span> Activate
                     </button>
                   </td>

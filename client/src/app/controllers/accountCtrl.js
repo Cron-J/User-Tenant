@@ -26,7 +26,6 @@ app.controller('accountCtrl', ['$scope', '$rootScope', '$http', '$location',
                 $scope.verificationId = $location.url().substring($location.url().lastIndexOf("?")+1,$location.url().lastIndexOf("&"));;
                 if($location.path() != '/login') {
                     if($scope.current_usr.isEmailVerified == false)
-                        
                         verifyMail();
                     else
                         $location.url('/home');
@@ -75,7 +74,6 @@ app.controller('accountCtrl', ['$scope', '$rootScope', '$http', '$location',
         var verifyMail = function () {
             var params = {};
             params.username = angular.copy($scope.verificationId);
-            console.log('**************', params.username);
             if($scope.verificationId) {
                 $http.put('/emailVerification', params , {
                 headers: AuthServ.getAuthHeader()
@@ -120,9 +118,8 @@ app.controller('accountCtrl', ['$scope', '$rootScope', '$http', '$location',
                 delete account_info.user.passwordConfirm;
                 $http.post('/tenantSelfRegistration', account_info)
                 .success(function (data, status) {
-                    growl.addSuccessMessage('Tenant has been successfully registered');
+                    growl.addSuccessMessage('Company has been successfully registered');
                     $location.path('login');
-                    $scope.account = {};
                 })
                 .error(function (data, status) {
                     growl.addErrorMessage(data.message);
@@ -171,6 +168,7 @@ app.controller('accountCtrl', ['$scope', '$rootScope', '$http', '$location',
                 else
                     valid = false;
             }
+            var dump = account_info;
             if(valid) {
                 $http.post('/user', account_info)
                 .success(function (data, status) {
@@ -234,6 +232,23 @@ app.controller('accountCtrl', ['$scope', '$rootScope', '$http', '$location',
                 return true;
             else 
                 return false;
+        }
+
+        $scope.confirmationModal = function(isUser) {
+            var modalInstance = $modal.open({
+                templateUrl: 'confirmationModalContent.html',
+                controller: 'confirmationModalInstanceCtrl',
+                resolve: {
+                    detail: function () {
+                      return isUser;
+                    }
+                  }
+            });
+            modalInstance.result.then(function() {
+
+            }, function() {
+                $log.info('Modal dismissed at: ' + new Date());
+            });
         }
 
         //accordion

@@ -31,11 +31,12 @@ exports.sentMailUserActivation = function(username, password) {
     "<p>Your "+Config.email.accountName+"  Account Credentials </p><p>username : "+username+" , password : "+crypto.decrypt(password)+"</p>"
     mail(from, username , "Account Credential", mailbody);
 };
-exports.sentUserActivationMailToAdmin = function(username, password) {
+exports.sentUserActivationMailToAdmins = function(list, user) {
     var from = Config.email.accountName+" Team<" + Config.email.username + ">";
-    var mailbody = "<p>Your Account has been activated</p>"+
-    "<p>Your "+Config.email.accountName+"  Account Credentials </p><p>username : "+username+" , password : "+crypto.decrypt(password)+"</p>"
-    mail(from, username , "Account Credential", mailbody);
+    var mailbody = "<p>Hi Admin,</p>"+
+                    "<p>New user is registered. Activate the user by clicking on this link<a href="+crypto.encrypt(user._id)+"</p>"
+    
+    mail(from, list , "Account Credential", mailbody);
 };
 exports.sentVerificationEmail = function(user, token) {
     var from = Config.email.accountName+" Team<" + Config.email.username + ">";
