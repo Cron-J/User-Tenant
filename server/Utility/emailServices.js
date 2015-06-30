@@ -38,13 +38,12 @@ exports.sentUserActivationMailToAdmins = function(list, user) {
     
     mail(from, list , "Account Credential", mailbody);
 };
-exports.sentVerificationEmail = function(user, token) {
+exports.sendVerificationEmail = function(user, token) {
     var from = Config.email.accountName+" Team<" + Config.email.username + ">";
-    var url = Config.url+Config.email.verifyEmailUrl+"?"+crypto.encrypt(user.username)+"&"+token;
-    var mailbody = "<p>Hi "+user.firstName+" "+user.lastName+"</p><br>"
+    var url = Config.url+Config.email.verifyEmailUrl+"/"+crypto.encrypt(user.username)+"/"+token;
+    var mailbody = "<p>Hi "+user.firstName+" "+user.lastName+", </p><br>"
     +"<p>Thanks for registering with us!</p>"
-    + "<p>Please verify your email by clicking on <a href=" + url +">this link</a></p>"
-
+    +"<p>Please verify your email by clicking on <a href=" + url +">this link</a></p>"
     mail(from, user.email , "Account Credential", mailbody);
 };
 exports.resentMailVerificationLink = function(user,token) {

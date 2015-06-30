@@ -2,9 +2,9 @@
 
 app.controller('accountCtrl', ['$scope', '$rootScope', '$http', '$location', 
     'AuthServ', 'growl', '$filter', 'userInfo','countryList', '$modal', '$log', 
-    '$stateParams', '$state',
+    '$stateParams', '$timeout',
     function ($scope, $rootScope, $http, $location, AuthServ, growl, $filter, 
-        userInfo, countryList, $modal, $log, $stateParams, $state) {
+        userInfo, countryList, $modal, $log, $stateParams, $timeout) {
         var _scope = {};
         _scope.init = function() {
             $scope.loginForm = {
@@ -22,15 +22,20 @@ app.controller('accountCtrl', ['$scope', '$rootScope', '$http', '$location',
             }
 
             $scope.setPassword = false;
-            if($location.url().split('?')[1]) {
-                $scope.verificationId = $location.url().substring($location.url().lastIndexOf("?")+1,$location.url().lastIndexOf("&"));;
-                if($location.path() != '/login') {
-                    if($scope.current_usr.isEmailVerified == false)
-                        verifyMail();
-                    else
-                        $location.url('/home');
+            if($stateParams) {
+                if($stateParams.username) {
+                    verifyMail();
                 }
+                // $scope.verificationId = $location.url().substring($location.url().lastIndexOf("?")+1,$location.url().lastIndexOf("&"));;
+                // if($location.path() != '/login') {
+                //     if($scope.current_usr.isEmailVerified == false)
+                //         verifyMail();
+                //     else
+                //         $location.url('/home');
+                // }
             }
+
+
         }
 
         //User login
@@ -72,30 +77,17 @@ app.controller('accountCtrl', ['$scope', '$rootScope', '$http', '$location',
         }
 
         var verifyMail = function () {
-            var params = {};
-            params.username = angular.copy($scope.verificationId);
-            if($scope.verificationId) {
-                $http.put('/emailVerification', params , {
-                headers: AuthServ.getAuthHeader()
-                })
+            $http.put('/emailVerification', $stateParams)
                 .success(function (data, status) {
-                                         $scope.verificationId = undefined;   
-                    console.log('-----------', $location.path());
-
-                        $location.url('/home');  
-                    userInfo.async().then(function(response) {
-                        $scope.current_usr = response.data;
-                        $scope.current_usr.isEmailVerified = true;;
-                        console.log('cvcvv',$scope.verificationId);
-                        $scope.isVerified = true;
-                                     
-                    });
+                    if(data.message == 'User account sucessfully verified')
+                        $scope.alertMsg = 3;
+                    else
+                        $scope.alertMsg = 2;
 
                 })
                 .error(function (data, status) {
                     growl.addErrorMessage(data.message);
                 })
-            }
         }
 
         //resendEmail Verification
@@ -115,16 +107,21 @@ app.controller('accountCtrl', ['$scope', '$rootScope', '$http', '$location',
 
         //Tenant Self Registration
         $scope.tenantSelfRegistration = function (account_info) {
+                var dump = angular.copy(account_info);
                 delete account_info.user.passwordConfirm;
                 $http.post('/tenantSelfRegistration', account_info)
                 .success(function (data, status) {
-                    growl.addSuccessMessage('Company has been successfully registered');
-                    $location.path('login');
+                    $rootScope.aMsg = 1;
+                    $location.path('/login');
+                    
+                    console.log('=======', $scope.alertMsg);
+                    
                 })
                 .error(function (data, status) {
+                    account_info.user.passwordConfirm = dump.user.passwordConfirm;
                     growl.addErrorMessage(data.message);
                 });
-     
+        
         }
 
         //TenantId Search Modal
@@ -172,8 +169,8 @@ app.controller('accountCtrl', ['$scope', '$rootScope', '$http', '$location',
             if(valid) {
                 $http.post('/user', account_info)
                 .success(function (data, status) {
-                    growl.addSuccessMessage('User has been successfully registered');
-                    $location.path('login');
+                    $rootScope.aMsg = 1;
+                    $location.path('/login');
                 })
                 .error(function (data, status) {
                     account_info.passwordConfirm = dump;

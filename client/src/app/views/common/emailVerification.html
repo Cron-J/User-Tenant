@@ -1,3 +1,29 @@
+<nav class="navbar navbar-default">
+  <div class="container-fluid">
+    <!-- Brand and toggle get grouped for better mobile display -->
+    <div class="navbar-header">
+      <a ui-sref="login">
+        <img src="app/assets/img/jCatalog-header-logo.gif" style="margin-top: 0.50em;">
+      </a>
+    </div>
+  </div>
+</nav>
 <div class="container">
-	<p>Your email is verifying</p>>
+  <div class="row">
+    <div class="col-md-12">
+      <div class="alert alert-success" role="alert" ng-if="alertMsg == 2">
+        <button type="button" class="close" data-dismiss="alert" aria-label="Close"><span aria-hidden="true">×</span></button>
+        <p>Success! Email has successfully verified. You can access your account by sign in.</p>
+      </div>
+      <div class="alert alert-success" role="alert" ng-if="alertMsg == 3">
+        <button type="button" class="close" data-dismiss="alert" aria-label="Close"><span aria-hidden="true">×</span></button>
+        <p>Success! Email has successfully verified. Your Account is pending for activation. If your account is activated we will notify through an email containing the account credentials.</p>
+      </div>
+    </div>
+  </div>
+  <div class="row">
+  	<div class="col-md-12">
+  		<a class="btn btn-default" ui-sref="login">Go to Sign in</a>
+  	</div>
+  </div>
 </div>

@@ -7,7 +7,7 @@
       </a>
     </div>
 
-    <ul class="nav navbar-nav navbar-right" ng-show="user">
+    <ul class="nav navbar-nav navbar-right" >
         <li class="dropdown" ng-show="user.scope == 'Tenant-Admin' || user.scope == 'User'"><span class="ut-nohover"><i class="fa fa-building"></i> {{current_usr.tenantName | uppercase}}</span></li>
         <li class="dropdown" ng-controller="accountCtrl" >
           <a class="dropdown-toggle ut-pointer" data-toggle="dropdown" >
@@ -28,8 +28,8 @@
           <ul class="dropdown-menu">
             <li class="dropdown-header"><b>Roles</b></li>
             <li class="divider"></li>
-            <li><a class="ut-pointer" ui-sref="users">User</a></li>
-            <li><a class="ut-pointer" ui-sref="tenants" ng-show="user.scope == 'Admin'">Tenant</a></li>
+            <li><a class="ut-pointer" ui-sref="users">Users</a></li>
+            <li><a class="ut-pointer" ui-sref="tenants" ng-show="user.scope == 'Admin'">Tenants</a></li>
           </ul>
         </li> 
       </ul>

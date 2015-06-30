@@ -106,36 +106,38 @@
                   <td>{{usr.email}}</td>
                   <td>{{usr.scope}}</td>
                   <td>{{usr.isActive}}</td>
-                  <td>
-                    <button type="button" ng-show="user.scope == 'Admin' && tenantInfo" 
-                    class="btn btn-default btn-md" 
-                    ng-click="getUserAccountDetails(usr._id);
-                    page.view = 'view'">
-                      <span class="fa fa-eye"></span> View
-                    </button>
-                    <button type="button" 
-                    ng-hide="user.scope == 'Tenant-Admin' || tenantInfo"
-                   class="btn btn-primary btn-md" 
-                    ng-click="getUserAccountDetails(usr._id);
-                    page.view = 'edit'">
-                      <span class="fa fa-edit"></span> Edit
-                    </button>
-                    <button type="button" ng-hide="user.scope == 'Admin' || tenantInfo" 
-                    class="btn btn-primary btn-md" ng-hide="tenantInfo"
-                    ng-click="getTenantUserbyTenant(usr._id);
-                    page.view = 'edit'">
-                      <span class="fa fa-edit"></span> Edit
-                    </button>
-                    <button type="button" ng-show="usr.isActive == true && !tenantInfo" 
-                    ng-click="deactivateTenantUser(usr._id, usr.tenantId, srch)" 
-                    class="btn btn-default btn-md ut-status-btn">
-                      <span class="fa fa-user-times"></span> Deactivate
-                    </button>
-                    <button type="button" ng-show="usr.isActive == false && !tenantInfo" 
-                    ng-click="activateTenantUser(usr._id, usr.tenantId, srch)" 
-                    class="btn btn-default btn-md ut-status-btn" >
-                      <span class="fa fa-user-plus"></span> Activate
-                    </button>
+                  <td >
+                    <span ng-hide="usr.username == user.username">
+                      <button type="button" ng-show="user.scope == 'Admin' && tenantInfo" 
+                      class="btn btn-default btn-md" 
+                      ng-click="getUserAccountDetails(usr._id);
+                      page.view = 'view'">
+                        <span class="fa fa-eye"></span> View
+                      </button>
+                      <button type="button" 
+                      ng-hide="user.scope == 'Tenant-Admin' || tenantInfo"
+                     class="btn btn-primary btn-md" 
+                      ng-click="getUserAccountDetails(usr._id);
+                      page.view = 'edit'">
+                        <span class="fa fa-edit"></span> Edit
+                      </button>
+                      <button type="button" ng-hide="user.scope == 'Admin' || tenantInfo" 
+                      class="btn btn-primary btn-md" ng-hide="tenantInfo"
+                      ng-click="getTenantUserbyTenant(usr._id);
+                      page.view = 'edit'">
+                        <span class="fa fa-edit"></span> Edit
+                      </button>
+                      <button type="button" ng-show="usr.isActive == true && !tenantInfo" 
+                      ng-click="deactivateTenantUser(usr._id, usr.tenantId, srch)" 
+                      class="btn btn-default btn-md ut-status-btn">
+                        <span class="fa fa-user-times"></span> Deactivate
+                      </button>
+                      <button type="button" ng-show="usr.isActive == false && !tenantInfo" 
+                      ng-click="activateTenantUser(usr._id, usr.tenantId, srch)" 
+                      class="btn btn-default btn-md ut-status-btn" >
+                        <span class="fa fa-user-plus"></span> Activate
+                      </button>
+                    </span>
                   </td>
               </tr>  
             </tbody>

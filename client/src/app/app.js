@@ -167,7 +167,7 @@ var app = angular.module('app', [
               templateUrl: "app/views/common/home.html",
               controller: 'accountCtrl',
               data: {
-                  authorizedRoles: [USER_ROLES.all]
+                  authorizedRoles: [USER_ROLES.admin, USER_ROLES.tenantadmin, USER_ROLES.tenantuser]
               }
           })
           .state('activateUser', {
@@ -179,7 +179,7 @@ var app = angular.module('app', [
               }
           })
           .state('mailVerification', {
-            url: "/verifyMail?username",
+            url: "/verifyMail/:username/:token",
               templateUrl: "app/views/common/emailVerification.html",
               controller: 'accountCtrl',
               data: {
@@ -192,7 +192,7 @@ var app = angular.module('app', [
     }
   ]
 )
-.run(function($rootScope, $location, AuthServ,$cookieStore, $timeout, $state) {
+.run(function($rootScope, $location, AuthServ,$cookieStore, $timeout, $stateParams) {
   $rootScope.$on('$stateChangeStart', function(event, next) {
      var authorizedRoles = next.data ? next.data.authorizedRoles : null;
      var isAuthorized = AuthServ.isAuthorized(authorizedRoles);
@@ -213,6 +213,7 @@ var app = angular.module('app', [
       }
       else if(isAuthorized){
         AuthServ.isLoggedInAsync(function(loggedIn) {
+                      
           if (!loggedIn) {      
             if($location.path() == '/tenantSignup') {
                 $location.path('/tenantSignup');
@@ -227,17 +228,21 @@ var app = angular.module('app', [
               $timeout(function () {
                 $location.path('/login');
               }, 30);
+            }
+            else if($stateParams) {
+              console.log($stateParams);
+                console.log('your email is verifying............');
             } 
             else {
               $location.path('/login');
             }  
           }
-          else if(loggedIn){
+          // else if(loggedIn){
                               
-            if($location.path() == '/verifyMail' ) {
-              $location.path('/home');
-            }
-          }
+          //   if($location.path() == '/verifyMail' ) {
+          //     $location.path('/home');
+          //   }
+          // }
         });
       }
     });

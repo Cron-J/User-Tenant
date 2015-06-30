@@ -1,17 +1,18 @@
 'use strict';
 
 app.controller('mainCtrl', ['$scope', '$location', '$rootScope', '$http', '$modal',
-		'$log','userInfo', 'countryList', 'AuthServ', 'growl',
+		'$log','userInfo', 'countryList', 'AuthServ', 'growl', 
     function ($scope, $location, $rootScope, $http, $modal, $log, userInfo, 
     	countryList, AuthServ, growl) {
         var _scope = {};
         _scope.init = function () {
         	$scope.current_usr = {};
         	if($rootScope.user) {
-		        userInfo.async().then(function(response) {
-		          $scope.current_usr = response.data;
-		        });
-		     }
+                $scope.isHeader = true;
+    	        userInfo.async().then(function(response) {
+    	          $scope.current_usr = response.data;
+    	        });
+    	    }
         }
 
 	      $scope.clearCountrySelection = function () {

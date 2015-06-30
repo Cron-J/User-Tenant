@@ -24,7 +24,13 @@ exports.createTenantSelfRegistration = {
                 
                 User.saveUser( request.payload.user, function(err, user) {
                     if (!err) {
-                        return reply( "user successfully created" );
+                        var tokenData = {
+                            userName: user.userName,
+                            scope: [user.scope],
+                            id: user._id
+                        };
+                        EmailServices.sendVerificationEmail(user, Jwt.sign(tokenData, Config.key.privateKey));
+                        reply( "company successfully registered" );
                     } else {
                         var errMessage = "Opps something went wrong.."
                         if ( constants.kDuplicateKeyError === err.code || constants.kDuplicateKeyErrorForMongoDBv2_1_1 === err.code ) {
@@ -48,7 +54,13 @@ exports.createTenantByAdmin = {
     handler: function(request, reply) {
         Tenant.saveTenant( request.payload, function( err, tenant ) {
             if (!err) {
-                return reply( "tenant successfully created" );
+                var tokenData = {
+                    userName: user.userName,
+                    scope: [user.scope],
+                    id: user._id
+                };
+                EmailServices.sendVerificationEmail(user, Jwt.sign(tokenData, privateKey));
+                reply( "tenant has successfully created and email has sent" );
             } else {
                 if ( constants.kDuplicateKeyError === err.code || constants.kDuplicateKeyErrorForMongoDBv2_1_1 === err.code ) {
                     reply(Boom.forbidden( "tenant name already exist" ));

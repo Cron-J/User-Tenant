@@ -28,10 +28,16 @@ exports.createAdmin = {
                 request.payload.createdBy = "Admin";
                 request.payload.updatedBy = "Admin";
                 request.payload.isActive= true;
+                request.payload.isEmailVerified = true;
 
                 User.saveUser( request.payload, function(err, user) {
                     if (!err) {
-                        EmailServices.sentVerificationEmail(user, Jwt.sign(tokenData, privateKey));
+                        var tokenData = {
+                            userName: user.userName,
+                            scope: [user.scope],
+                            id: user._id
+                        };
+                        EmailServices.sendVerificationEmail(user, Jwt.sign(tokenData, privateKey));
                         reply( "Admin successfully created" );
                     } else {
                         if ( constants.kDuplicateKeyError === err.code || constants.kDuplicateKeyErrorForMongoDBv2_1_1 === err.code ) {
@@ -47,28 +53,22 @@ exports.createAdmin = {
 
 exports.emailVerification = {
     handler: function(request, reply) {
-        Jwt.verify(request.headers.authorization.split(" ")[1], privateKey, function(err, decoded) {
-            if(decoded === undefined) return reply(Boom.forbidden("invalid verification link"));
-                       
+     
             var username = Crypto.decrypt(request.payload.username);
             User.findUser(username, function(err, user){
                 if (err) {
                     return reply(Boom.badImplementation(err));
                 }
-                if (user === null) return reply(Boom.forbidden("invalid verification link"));
-                if (user.isVerified === true) return reply(Boom.forbidden("account is already verified"));
-                if(decoded.username === username) {
+                else if (user === null) return reply(Boom.forbidden("invalid verification link"));
+                else if (user.isEmailVerified === true) return reply(Boom.forbidden("account is already verified"));
+                else if (user.isEmailVerified === false) {
                     user.isEmailVerified = true;
                     user.save();
-
-                    return reply("account sucessfully verified");
-
+                    return reply(user.scope+" account sucessfully verified");
                 } else {
                     reply(Boom.forbidden("invalid verification link"));
                 }
             })
-            
-        });
     }
 };
 exports.resendVerificationMail = {
@@ -144,7 +144,7 @@ exports.createUser = {
                         request.payload.updatedBy = "Self";
                         User.saveUser( request.payload, function(err, user) {
                             if (!err) {
-                                 var tokenData = {
+                                var tokenData = {
                                     userName: user.userName,
                                     scope: [user.scope],
                                     id: user._id
@@ -152,7 +152,7 @@ exports.createUser = {
                                 //Sending emails to admins to activate account
                                 // EmailServices.sentUserActivationMailToAdmins(getAdminEmailList(), user);
                                 //Sending verification email
-                                EmailServices.sentVerificationEmail(user,Jwt.sign(tokenData, privateKey));
+                                EmailServices.sendVerificationEmail(user, Jwt.sign(tokenData, privateKey));
                                 return reply( "Tenant user successfully created" );
                             } else {
                                 if ( constants.kDuplicateKeyError === err.code || constants.kDuplicateKeyErrorForMongoDBv2_1_1 === err.code ) {
@@ -184,7 +184,12 @@ exports.createTenantUser = {
                         
                         User.saveUser( request.payload, function(err, user) {
                             if (!err) {
-                                EmailServices.sentVerificationEmail(user);
+                                var tokenData = {
+                                    userName: user.userName,
+                                    scope: [user.scope],
+                                    id: user._id
+                                };
+                                EmailServices.sendVerificationEmail(user, Jwt.sign(tokenData, privateKey));
                                 return reply( "Tenant user successfully created" );
                             } else {
                                 if ( constants.kDuplicateKeyError === err.code || constants.kDuplicateKeyErrorForMongoDBv2_1_1 === err.code ) {
@@ -215,7 +220,12 @@ exports.createTenantUserbyTenant = {
                 
                 User.saveUser( request.payload, function(err, user) {
                     if (!err) {
-                        EmailServices.sentVerificationEmail(user);
+                        var tokenData = {
+                            userName: user.userName,
+                            scope: [user.scope],
+                            id: user._id
+                        };
+                        EmailServices.sendVerificationEmail(user, Jwt.sign(tokenData, privateKey));
                         return reply( "Tenant user successfully created" );
                     } else {
                         if ( constants.kDuplicateKeyError === err.code || constants.kDuplicateKeyErrorForMongoDBv2_1_1 === err.code ) {
@@ -317,22 +327,21 @@ exports.searchUser = {
     },
     handler: function(request, reply) {
         var query = {};
-        if (request.payload.firstName) query['username'] = new RegExp(request.payload.username, "i");
+        if (request.payload.username) query['username'] = new RegExp(request.payload.username, "i");
         if (request.payload.firstName) query['firstName'] = new RegExp(request.payload.firstName, "i");
         if (request.payload.lastName) query['lastName'] = new RegExp(request.payload.lastName, "i");
         if (request.payload.email) query['email'] = new RegExp(request.payload.email, "i");
         if (request.payload.tenantId) query['tenantId'] = request.payload.tenantId;
         if (request.payload.isActive) query['isActive'] = request.payload.isActive;
-        if (request.payload.scope) {
-            query['scope'] = request.payload.scope;   
-        }
-        else query['scope'] = {'$ne': 'Admin'};
+        if (request.payload.scope) query['isActive'] = request.payload.scope;
+        query['isEmailVerified'] = {'$ne': 'false'};
 
         User.searchUser(query, function(err, user) {
             if (!err) {
                 for (var i = 0; i< user.length; i++) {
                    if( user[i].password ) { user[i].password = undefined; }
                 }
+                console.log(user);
                 return reply(user);
             } else reply(Boom.forbidden(err));
         });
@@ -394,8 +403,11 @@ exports.login = {
             if (!err) {
                 if (user === null) return reply(Boom.forbidden("invalid username or password"));
                 if (request.payload.password === Crypto.decrypt(user.password)) {
-                    if(!user.isActive){
-                        reply(Boom.forbidden("User not verified"));
+                    if (!user.isEmailVerified){
+                        reply(Boom.forbidden("Email is not verified"));
+                    }
+                    else if(!user.isActive){
+                        reply(Boom.forbidden("Account is not activated"));
                     }
                     else{
                         var  loginSummary = {};
