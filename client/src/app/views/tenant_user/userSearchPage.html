@@ -2,8 +2,8 @@
   <div class="row ut-pageheader">
     <div class="ut-lead col-lg-10 col-md-10 ">Search Users</div>
     <div class="col-lg-2 col-md-2 pull-right">
-      <a class="btn btn-primary" ng-hide="tenantInfo" ng-click="createUser()"><i class="fa fa-user"></i> New</a>
-      <a class="btn btn-default" ng-hide="tenantInfo" ng-click="exportUserData()"><i class="fa fa-download"></i> Export</a>
+      <a class="btn btn-primary" ng-class="{'pull-right': user.scope == 'Tenant-Admin'}" ng-hide="tenantInfo" ng-click="createUser(srch)"><i class="fa fa-user"></i> New</a>
+      <a class="btn btn-default" ng-hide="tenantInfo || user.scope == 'Tenant-Admin'" ng-controller="adminCtrl" ng-click="exportUserData()"><i class="fa fa-download"></i> Export</a>
       <a class="btn btn-info pull-right" ng-show="tenantInfo" ui-sref="tenants"><i class="fa fa-arrow-left"></i> Back</a>
     </div>
   </div>
@@ -99,7 +99,7 @@
               </tr>
             </thead>
             <tbody>
-                <tr class="ut-pointer" ng-repeat="usr in pagedItems[currentPage]" >
+                <tr class="ut-pointer" ng-repeat="usr in pagedItems[currentPage] | orderBy: 'username'" >
                   <td>{{usr.username}}</td>
                   <td>{{usr.firstName}}</td>
                   <td>{{usr.lastName}}</td>
@@ -117,13 +117,13 @@
                       <button type="button" 
                       ng-hide="user.scope == 'Tenant-Admin' || tenantInfo"
                      class="btn btn-primary btn-md" 
-                      ng-click="getUserAccountDetails(usr._id);
+                      ng-click="getUserAccountDetails(usr._id, srch);
                       page.view = 'edit'">
                         <span class="fa fa-edit"></span> Edit
                       </button>
                       <button type="button" ng-hide="user.scope == 'Admin' || tenantInfo" 
                       class="btn btn-primary btn-md" ng-hide="tenantInfo"
-                      ng-click="getTenantUserbyTenant(usr._id);
+                      ng-click="getTenantUserbyTenant(usr._id, srch);
                       page.view = 'edit'">
                         <span class="fa fa-edit"></span> Edit
                       </button>

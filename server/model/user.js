@@ -133,8 +133,6 @@ User.statics.saveUser = function(requestData, callback) {
 };
 
 User.statics.updateUser = function(id, user, callback) {
-    console.log(id);
-    console.log(user);
     if (user.createdAt) {
         delete user.createdAt;
     }
@@ -146,9 +144,7 @@ User.statics.updateUser = function(id, user, callback) {
 
 User.statics.activateUser = function(id, tenantId, callback) {
     this.update({
-        '_id': id,
-        'scope': 'User',
-        'tenantId': tenantId
+        '_id': id
     }, {'isActive': true}, callback);
 };
 

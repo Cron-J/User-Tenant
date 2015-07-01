@@ -54,13 +54,7 @@ exports.createTenantByAdmin = {
     handler: function(request, reply) {
         Tenant.saveTenant( request.payload, function( err, tenant ) {
             if (!err) {
-                var tokenData = {
-                    userName: user.userName,
-                    scope: [user.scope],
-                    id: user._id
-                };
-                EmailServices.sendVerificationEmail(user, Jwt.sign(tokenData, privateKey));
-                reply( "tenant has successfully created and email has sent" );
+                reply( "tenant has created" );
             } else {
                 if ( constants.kDuplicateKeyError === err.code || constants.kDuplicateKeyErrorForMongoDBv2_1_1 === err.code ) {
                     reply(Boom.forbidden( "tenant name already exist" ));
@@ -156,9 +150,17 @@ exports.exportTenant = {
                         query1['tenantId'] = tenant._id;
                             User.searchUser(query1, function(err, user) {
                                 if (!err) {
-                                    for(var i = 0; i < user.length; i++) 
-                                      dump.push(customJson(tenant, user[i]));
-                                    callback();
+                                    if(user == []) {
+                                        user = {};
+
+                                        dump.push(customJson(tenant, user));
+                                    } 
+                                    else{
+                                        for(var i = 0; i < user.length; i++) 
+                                          dump.push(customJson(tenant, user[i]));
+                                        callback();
+                                    }
+
                                 } 
                                 else reply(Boom.forbidden(err));
 
@@ -166,6 +168,7 @@ exports.exportTenant = {
                         },
                         function(err){
                             if(!err) {
+                                console.log(dump);
                                 //sorting data by tenant name
                                 dump.sort(function(a, b) {
                                     var textA = a.name.toUpperCase();
@@ -187,6 +190,9 @@ exports.exportTenant = {
     }
 };
  var customJson = function (obj, list ) {
+    console.log('------------------');
+    console.log(obj);
+     console.log('------------------');
     var result = {};
     result['name'] = obj.name;
     result['description'] = obj.description;

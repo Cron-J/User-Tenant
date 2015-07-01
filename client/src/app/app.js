@@ -171,9 +171,9 @@ var app = angular.module('app', [
               }
           })
           .state('activateUser', {
-            url: "/userActivation/:usrId/:tId",
+            url: "/userActivation?usrId&tId",
               templateUrl: "app/views/tenant_user/userHome.html",
-              controller: 'accountCtrl',
+              controller: 'tenantUserCtrl',
               data: {
                   authorizedRoles: [USER_ROLES.admin, USER_ROLES.tenantadmin]
               }
@@ -229,6 +229,9 @@ var app = angular.module('app', [
                 $location.path('/login');
               }, 30);
             }
+            else if($location.path() == '/userActivation') {
+              $location.path('/login');
+            } 
             else if($stateParams) {
               console.log($stateParams);
                 console.log('your email is verifying............');
@@ -237,12 +240,11 @@ var app = angular.module('app', [
               $location.path('/login');
             }  
           }
-          // else if(loggedIn){
-                              
-          //   if($location.path() == '/verifyMail' ) {
-          //     $location.path('/home');
-          //   }
-          // }
+          else if(loggedIn){                  
+            if($location.path() == '/userActivation') {
+              $location.path('/users');
+            }
+          }
         });
       }
     });

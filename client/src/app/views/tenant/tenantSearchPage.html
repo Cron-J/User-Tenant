@@ -2,8 +2,8 @@
 	<div class="row ut-pageheader">
     <div class="ut-lead col-lg-10 col-md-10 ">Search Tenants</div>
     <div class="col-lg-2 col-md-2 pull-right">
-      <a class="btn btn-primary" ng-click="createTenant(tenantForm)"><i class="fa fa-building"></i> New</a>
-      <a class="btn btn-default" ng-click="exportTenantsData()"><i class="fa fa-download"></i> Export</a>
+      <a class="btn btn-primary" ng-click="createTenant(srch)"><i class="fa fa-building"></i> New</a>
+      <a class="btn btn-default" ng-click="exportTenantsData()" ng-controller="adminCtrl"><i class="fa fa-download"></i> Export</a>
     </div>
   </div>  
   <form name="searchForm">
@@ -46,11 +46,11 @@
           </tr>
         </thead>
         <tbody>
-          <tr class="ut-pointer" ng-repeat="tenant in pagedItems[currentPage]" >
+          <tr class="ut-pointer" ng-repeat="tenant in pagedItems[currentPage] | orderBy: 'name'" >
             <td>{{tenant.name}}</td>
             <td>{{tenant.description}}</td>
             <td>
-              <button type="button" class="btn btn-primary btn-md" ng-click="getTenant(tenant._id);page.view = 'edit'">
+              <button type="button" class="btn btn-primary btn-md" ng-click="getTenant(tenant._id, srch);page.view = 'edit'">
                 <span class="fa fa-edit"></span> Edit
               </button>
                 <button type="button" class="btn btn-default btn-md" ng-click="getTenantUsersOfTenant(tenant._id)">

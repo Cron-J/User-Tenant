@@ -56,6 +56,7 @@ exports.emailVerification = {
      
             var username = Crypto.decrypt(request.payload.username);
             User.findUser(username, function(err, user){
+                console.log(user);
                 if (err) {
                     return reply(Boom.badImplementation(err));
                 }
@@ -64,7 +65,8 @@ exports.emailVerification = {
                 else if (user.isEmailVerified === false) {
                     user.isEmailVerified = true;
                     user.save();
-                    return reply(user.scope+" account sucessfully verified");
+                    delete user.password;
+                    return reply(user);
                 } else {
                     reply(Boom.forbidden("invalid verification link"));
                 }
@@ -98,36 +100,6 @@ exports.resendVerificationMail = {
     }
 };
 
-/**
- * Sends an email.
- * @function
- */
-var sendMail = function () {
-  var transporter
-    , message;
-
-  transporter = nodemailer.createTransport({
-    service: 'Mailgun',
-    auth: {
-      user: 'postmaster@sandboxf10e903026724576a2e218a65d72301d.mailgun.org', // postmaster@sandbox[base64 string].mailgain.org
-      pass: 'cronj123' // You set this.
-    }
-  });
-  message = {
-    from: 'jCatalog',
-    to: 'anusha.nilapu@gmail.com', // comma separated list
-    subject: 'Activate User',
-    text: 'Text contents.',
-    html: '<p>Hi Admin,</p><p>Please activate this user account</p>'
-  };
-  transporter.sendMail(message, function(error, info){
-    if (error) {
-      console.log(error);
-    } else {
-      console.log('Sent: ' + info.response);
-    }
-  });
-};
 
 
 exports.createUser = {
@@ -189,7 +161,7 @@ exports.createTenantUser = {
                                     scope: [user.scope],
                                     id: user._id
                                 };
-                                EmailServices.sendVerificationEmail(user, Jwt.sign(tokenData, privateKey));
+                                EmailServices.sendAccountCreationMail(user, Jwt.sign(tokenData, privateKey));
                                 return reply( "Tenant user successfully created" );
                             } else {
                                 if ( constants.kDuplicateKeyError === err.code || constants.kDuplicateKeyErrorForMongoDBv2_1_1 === err.code ) {
@@ -225,7 +197,7 @@ exports.createTenantUserbyTenant = {
                             scope: [user.scope],
                             id: user._id
                         };
-                        EmailServices.sendVerificationEmail(user, Jwt.sign(tokenData, privateKey));
+                        EmailServices.sendAccountCreationMail(user, Jwt.sign(tokenData, privateKey));
                         return reply( "Tenant user successfully created" );
                     } else {
                         if ( constants.kDuplicateKeyError === err.code || constants.kDuplicateKeyErrorForMongoDBv2_1_1 === err.code ) {
@@ -256,22 +228,21 @@ exports.activateTenantUser = {
             else{
                 tenantId = decoded.tenantId;
             }
-            User.activateUser(request.payload.id, tenantId, function(err, user) {
-                console.log(err);
-                if(err){
-                    return reply(Boom.badImplementation("unable to activate user"));
-                }
-                else{
-                    if(user){
-                        EmailServices.sentMailUserActivation(user.name, user.password);
-                        user.password = undefined;
-                        user.scope = undefined;
-                        return reply(user);    
-                    }
-                    return reply(Boom.forbidden("no user exist"));
-                }
-            });
 
+            User.findUserById(request.payload.id, function(err, user) {
+                User.updateUser(request.payload.id, {"updatedBy": decoded.scope,"isActive" : true}, function(err) {
+                    if(err){
+                        return reply(Boom.badImplementation("unable to activate user"));
+                    }
+                    else{
+                        if(user){
+                            EmailServices.sendUserActivationMail(user);
+                            return reply('Activation email has sent');    
+                        }
+                        return reply(Boom.forbidden("no user exist"));
+                    }
+                });
+            });
        });
     }
 };
@@ -316,6 +287,18 @@ exports.deActivateTenantUser = {
 };
 
 /**
+   POST: /sendCredentials
+   SCOPE: 'Admin', 'Tenant-Admin'
+   Description: deActivate tenant User.
+*/
+exports.sendCredentials = {
+    handler: function(request, reply) {
+        EmailServices.sendAccountCredentialsToUser(request.payload.user);
+        return reply('account credentials email has sent');    
+    }
+};
+
+/**
     POST: /searchUser
     SCOPE: 'Admin'
     Description: Search User based on certain field/criteria (firstName, lastName, email, tenantId).
@@ -341,7 +324,6 @@ exports.searchUser = {
                 for (var i = 0; i< user.length; i++) {
                    if( user[i].password ) { user[i].password = undefined; }
                 }
-                console.log(user);
                 return reply(user);
             } else reply(Boom.forbidden(err));
         });
@@ -351,10 +333,21 @@ exports.searchUser = {
 };
 
 /**
+    GET: /sendEmailToAdmins
+    Description: Get admins list.
+*/
+exports.sendActivationEmail = {
+    handler: function(request, reply) {
+            // sendEmailToAdminEmailList(request.payload.user);
+            sendEmailToTenantAdminEmailList(request.payload.user);            
+            return reply('Emails have sent');
+    }
+}
+/**
     GET: /admins
     Description: Get admins list.
 */
-var getAdminEmailList = function() {
+var sendEmailToAdminEmailList = function(user) {
         var emailList,
             query = {};
         query['scope'] = 'Admin';
@@ -365,8 +358,29 @@ var getAdminEmailList = function() {
                 {
                     if(emailList) emailList+=","+userList[j].email;
                     else emailList = userList[j].email
-                }    
-                return emailList;
+                }   
+                EmailServices.sentUserActivationMailToAdmins(emailList, user);
+            }
+        });
+};
+/**
+    GET: /tenantAdmins
+    Description: Get admins list.
+*/
+var sendEmailToTenantAdminEmailList = function(user) {
+        var emailList,
+            query = {};
+        query['tenantId'] = user.tenantId;
+        query['scope'] = 'Tenant-Admin';
+
+        User.searchUser(query, function(err, userList) {
+            if (!err) {
+                for(var j in userList)  
+                {
+                    if(emailList) emailList+=","+userList[j].email;
+                    else emailList = userList[j].email
+                }  
+                EmailServices.sentUserActivationMailToTenantAdmins(emailList, user);
             }
         });
 };
@@ -378,12 +392,14 @@ exports.exportUser = {
     },
     handler: function(request, reply) {
         var query = {};
-            query['scope'] = {'$ne': 'Admin'};
-
+            query['isEmailVerified'] = {'$ne': 'false'};
+        var fieldsArray = ['username', 'firstName', 'lastName', 'email', 'scope', 'isActive'];
+        var fieldNamesArray = ['User Name', 'First Name', 'Last Name', 'Email', 'User Role', 'Active'];
         User.searchUser(query, function(err, user) {
             if (!err) {
-                json2csv({data: user,  fields: ['username', 'firstName', 'lastName', 'email', 'scope', 'isActive'], fieldNames: ['User name', 'First Name', 'Last Name', 'Email', 'Userrole', 'Active']}, function(err, csv) {
+                json2csv({data: user, fields: fieldsArray, fieldNames: fieldNamesArray}, function(err, csv) {
                   if (err) console.log(err);
+                  console.log(csv);
                   return reply(csv).header('Content-Type', 'application/octet-stream').header('content-disposition', 'attachment; filename=user.csv;');
                 });
             } else reply(Boom.forbidden(err));

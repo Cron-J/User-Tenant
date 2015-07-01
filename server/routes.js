@@ -105,6 +105,9 @@ exports.endpoints = [
     { method: 'GET', path: '/tenantDeactiveUser/{id}', config: User.getAllDeactiveTenantUserByTenant},
     { method: 'POST', path: '/tenantUser', config: User.createTenantUser},
     { method: 'POST', path: '/tenantCreation', config: Tenant.createTenantByAdmin},
-    { method: 'POST', path: '/tenantUserCreation', config: User.createTenantUserbyTenant}
+    { method: 'POST', path: '/tenantUserCreation', config: User.createTenantUserbyTenant},
+    { method: 'POST', path: '/sendActivationEmail', config: User.sendActivationEmail},
+    { method: 'POST', path: '/sendCredentials', config: User.sendCredentials}
+
     
 ];

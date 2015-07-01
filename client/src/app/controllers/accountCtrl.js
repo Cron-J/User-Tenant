@@ -26,15 +26,14 @@ app.controller('accountCtrl', ['$scope', '$rootScope', '$http', '$location',
                 if($stateParams.username) {
                     verifyMail();
                 }
-                // $scope.verificationId = $location.url().substring($location.url().lastIndexOf("?")+1,$location.url().lastIndexOf("&"));;
-                // if($location.path() != '/login') {
-                //     if($scope.current_usr.isEmailVerified == false)
-                //         verifyMail();
-                //     else
-                //         $location.url('/home');
-                // }
+            }
+            if($location.url().split('?')[1]){
+                $location.path('/users');
             }
 
+            if($location.url() == '/login') {
+                if($rootScope.user) $scope.logOut();
+            }
 
         }
 
@@ -79,10 +78,42 @@ app.controller('accountCtrl', ['$scope', '$rootScope', '$http', '$location',
         var verifyMail = function () {
             $http.put('/emailVerification', $stateParams)
                 .success(function (data, status) {
-                    if(data.message == 'User account sucessfully verified')
-                        $scope.alertMsg = 3;
+                    if(data.scope == 'User') {
+                        if(data.isActive == false) {
+                            sendEmailToAdmins(data);
+                            $scope.alertMsg = 3;
+                        }
+                        if(data.createdBy == 'Admin' || data.createdBy == 'Tenant-Admin') {
+                            sendAccountCredentails(data);
+                            $scope.alertMsg = 5;
+                        }
+                    }
                     else
                         $scope.alertMsg = 2;
+
+                })
+                .error(function (data, status) {
+                    growl.addErrorMessage(data.message);
+                })
+        }
+
+        var sendEmailToAdmins = function(user) {
+            var params = {"user": user};
+            $http.post('/sendActivationEmail', params)
+                .success(function (data, status) {
+                    console.log('hurrey');
+
+                })
+                .error(function (data, status) {
+                    growl.addErrorMessage(data.message);
+                })
+        }
+
+        var sendAccountCredentails = function(user) {
+            var params = {"user": user};
+            $http.post('/sendCredentials', params)
+                .success(function (data, status) {
+                    console.log('hurrey');
 
                 })
                 .error(function (data, status) {
@@ -112,10 +143,7 @@ app.controller('accountCtrl', ['$scope', '$rootScope', '$http', '$location',
                 $http.post('/tenantSelfRegistration', account_info)
                 .success(function (data, status) {
                     $rootScope.aMsg = 1;
-                    $location.path('/login');
-                    
-                    console.log('=======', $scope.alertMsg);
-                    
+                    $location.path('/login');                    
                 })
                 .error(function (data, status) {
                     account_info.user.passwordConfirm = dump.user.passwordConfirm;
@@ -229,6 +257,10 @@ app.controller('accountCtrl', ['$scope', '$rootScope', '$http', '$location',
                 return true;
             else 
                 return false;
+        }
+
+        $scope.deleteMsg = function () {
+            delete $rootScope.aMsg;
         }
 
         $scope.confirmationModal = function(isUser) {

@@ -8,10 +8,10 @@
         <form id="userForm" class="form-horizontal ut-form form-validation" role="form" name="userForm" novalidate>
             <div class="row" ng-show="user.scope == 'Admin'">
                 <div class="form-group">
-                    <label class="col-sm-2 control-label">Tenant Id</label>
+                    <label class="col-sm-2 control-label">Tenant</label>
                     <div class="col-sm-5">
                         <input type="text" class="form-control"  
-                        placeholder="jCatalog" name="tenantId"
+                        placeholder="Siemens" name="tenantId"
                         ng-model="account.tenantName" 
                         typeahead="res as res.name+ res.comma + (res.desc | limitTo:10) for res in searchTenantByName($viewValue)" 
                         typeahead-wait-ms="1000" ng-click="isChanged = true"
@@ -104,7 +104,7 @@
                         </span>
                         <button class="btn btn-info" ng-show="tenantInfo && page.role == 'admin'" ng-click="page.view = 'search';"><i class="fa fa-arrow-left"></i> Back</button>
                         <span ng-hide="tenantInfo">
-                            <button class="btn btn-default" ng-hide="isChanged" ng-click="page.view = 'search';">Cancel</button>
+                            <button class="btn btn-default" ng-hide="isChanged" ng-click="goBack()"><i class="fa fa-arrow-left"></i> Back</button>
                             <button class="btn btn-default" ng-show="isChanged" ng-click="confirmationModal(true);">Cancel</button>
                             </span>
                         <div ng-include="'app/views/common/confirmationDailogBox.html'"></div>
