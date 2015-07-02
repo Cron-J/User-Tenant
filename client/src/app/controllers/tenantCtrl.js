@@ -22,7 +22,6 @@ app.controller('tenantCtrl', ['$scope', '$rootScope', '$http', '$location',
                 view: 'search',
                 role: 'admin'
             }
-            console.log($scope.page);
         }
        
         // $scope.user = {};
@@ -101,7 +100,6 @@ app.controller('tenantCtrl', ['$scope', '$rootScope', '$http', '$location',
                     growl.addSuccessMessage('Tenant account has been updated successfully');
                     $scope.getTenant(dataDump._id);
                     $scope.page.view = 'view';
-                    console.log($scope.page.view);
                 })
                 .error(function (data, status) {
                     if(data.message == 'Invalid token') 

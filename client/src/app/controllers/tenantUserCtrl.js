@@ -230,7 +230,6 @@ app.controller('tenantUserCtrl', ['$scope', '$rootScope', '$http', '$location',
 
         //Go users page
         $scope.goBack = function () {
-            console.log('===========', $scope.srchInfo);
             var srch = $scope.srchInfo;
             $scope.srch = srch;
             $scope.page.view = 'search';
@@ -308,7 +307,6 @@ app.controller('tenantUserCtrl', ['$scope', '$rootScope', '$http', '$location',
 
         //Deactivate Tenant-User
          $scope.deactivateTenantUser = function(id, tenantId, srch){
-            console.log(srch);
             var obj = {
                 "id": id,
                 "tenantId": tenantId

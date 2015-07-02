@@ -53,10 +53,8 @@ exports.createAdmin = {
 
 exports.emailVerification = {
     handler: function(request, reply) {
-     
             var username = Crypto.decrypt(request.payload.username);
             User.findUser(username, function(err, user){
-                console.log(user);
                 if (err) {
                     return reply(Boom.badImplementation(err));
                 }
@@ -183,7 +181,6 @@ exports.createTenantUser = {
 exports.createTenantUserbyTenant = {
     handler: function(request, reply) {
         Jwt.verify(request.headers.authorization.split(' ')[1], Config.key.privateKey, function(err, decoded) { 
-            console.log(decoded);
             if( !request.payload.tenantId ){
                 return reply(Boom.forbidden("tenant is not assigned"));
             }
@@ -449,7 +446,6 @@ exports.exportUser = {
             if (!err) {
                 json2csv({data: user, fields: fieldsArray, fieldNames: fieldNamesArray}, function(err, csv) {
                   if (err) console.log(err);
-                  console.log(csv);
                   return reply(csv).header('Content-Type', 'application/octet-stream').header('content-disposition', 'attachment; filename=user.csv;');
                 });
             } else reply(Boom.forbidden(err));

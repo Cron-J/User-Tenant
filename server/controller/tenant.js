@@ -165,7 +165,6 @@ exports.exportTenant = {
                         },
                         function(err){
                             if(!err) {
-                                console.log(dump);
                                 //sorting data by tenant name
                                 dump.sort(function(a, b) {
                                     var textA = a.name.toUpperCase();

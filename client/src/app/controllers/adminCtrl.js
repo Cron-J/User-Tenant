@@ -44,7 +44,6 @@ app.controller('adminCtrl', ['$scope', '$rootScope', '$http', '$location',
                 headers: AuthServ.getAuthHeader()
             })
             .success(function(data, status) {
-                console.log(data);
                 var element = angular.element('<a/>');
                 element.attr({
                    href: 'data:attachment/csv;charset=utf-8,' + encodeURI(data),
@@ -68,7 +67,6 @@ app.controller('adminCtrl', ['$scope', '$rootScope', '$http', '$location',
                 headers: AuthServ.getAuthHeader()
             })
             .success(function(data, status) {
-                console.log('===============',data);
                 var element = angular.element('<a/>');
                 element.attr({
                    href: 'data:attachment/csv;charset=utf-8,' + encodeURI(data),

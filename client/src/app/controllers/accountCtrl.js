@@ -134,7 +134,7 @@ app.controller('accountCtrl', ['$scope', '$rootScope', '$http', '$location',
             var params = {"user": user};
             $http.post('/sendActivationEmail', params)
                 .success(function (data, status) {
-                    console.log('hurrey');
+                   
 
                 })
                 .error(function (data, status) {
@@ -146,8 +146,7 @@ app.controller('accountCtrl', ['$scope', '$rootScope', '$http', '$location',
             var params = {"user": user};
             $http.post('/sendCredentials', params)
                 .success(function (data, status) {
-                    console.log('hurrey');
-
+                   
                 })
                 .error(function (data, status) {
                     growl.addErrorMessage(data.message);

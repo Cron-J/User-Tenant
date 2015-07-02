@@ -241,7 +241,6 @@ var app = angular.module('app', [
               $location.path('/login');
             } 
             else if($stateParams) {
-              console.log($stateParams);
                 console.log('your email is verifying............');
             } 
             else {
