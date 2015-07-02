@@ -11,7 +11,22 @@ app.controller('accountCtrl', ['$scope', '$rootScope', '$http', '$location',
                 remember: true
             };
             $scope.authError = null;
- 
+            if($location.path() == '/home') {
+                userInfo.async().then(function(response) {
+                    $scope.current_usr.firstName = response.data.firstName;
+                    $scope.current_usr.lastName = response.data.lastName;
+                    if(response.data.tenantId)
+                        $scope.current_usr.tenantName = response.data.tenantId.name;
+                    if($scope.current_usr.firstLogin == $scope.current_usr.lastLogin) {
+                        if(!$rootScope.user.isPasswordChanged) {
+                            $rootScope.user.isPasswordChanged = true;
+                            $location.path('/changePassword');
+                        }
+                        
+                    }
+                });
+            }
+            
             if($location.path() == '/tenantSignup' || $location.path() =='/userSignup') {
                 $scope.account = {};
             }
@@ -75,6 +90,24 @@ app.controller('accountCtrl', ['$scope', '$rootScope', '$http', '$location',
                 })
         }
 
+        //change password
+        $scope.changePassword = function (details) {
+            var obj = {
+                oldpass:details.password,
+                newpass:details.newpassword
+            }
+            $http.post('/changePassword', obj, {
+                headers: AuthServ.getAuthHeader()
+                })
+                .success(function (data, status) {
+                    growl.addSuccessMessage('Password has successfully changed');
+                    $location.path('/home');
+                })
+                .error(function (data, status) {
+                    growl.addErrorMessage(data.message);
+                })
+        }
+
         var verifyMail = function () {
             $http.put('/emailVerification', $stateParams)
                 .success(function (data, status) {
@@ -83,10 +116,10 @@ app.controller('accountCtrl', ['$scope', '$rootScope', '$http', '$location',
                             sendEmailToAdmins(data);
                             $scope.alertMsg = 3;
                         }
-                        if(data.createdBy == 'Admin' || data.createdBy == 'Tenant-Admin') {
-                            sendAccountCredentails(data);
-                            $scope.alertMsg = 5;
-                        }
+                        // if(data.createdBy == 'Admin' || data.createdBy == 'Tenant-Admin') {
+                        //     sendAccountCredentails(data);
+                        //     $scope.alertMsg = 2;
+                        // }
                     }
                     else
                         $scope.alertMsg = 2;

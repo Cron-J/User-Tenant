@@ -149,10 +149,11 @@ exports.createTenantUser = {
             else {
                 Tenant.findTenantById( request.payload.tenantId, function( err, tenant ) {
                     if( tenant ){
-                        request.payload.password = Crypto.encrypt(Math.random().toString(8).substring(2));
+                        request.payload.password = Crypto.encrypt(Math.random().toString(36).slice(3));
                         request.payload.createdBy = "Admin";
                         request.payload.updatedBy = "Admin";
                         request.payload.isActive = true;
+                        request.payload.isEmailVerified = true;
                         
                         User.saveUser( request.payload, function(err, user) {
                             if (!err) {
@@ -161,7 +162,7 @@ exports.createTenantUser = {
                                     scope: [user.scope],
                                     id: user._id
                                 };
-                                EmailServices.sendAccountCreationMail(user, Jwt.sign(tokenData, privateKey));
+                                EmailServices.sendAccountCreationMail(user, tenant);
                                 return reply( "Tenant user successfully created" );
                             } else {
                                 if ( constants.kDuplicateKeyError === err.code || constants.kDuplicateKeyErrorForMongoDBv2_1_1 === err.code ) {
@@ -181,31 +182,45 @@ exports.createTenantUser = {
 
 exports.createTenantUserbyTenant = {
     handler: function(request, reply) {
-        if( !request.payload.tenantId ){
-            return reply(Boom.forbidden("tenant is not assigned"));
-        }
-        else {   
-                request.payload.password = Crypto.encrypt(Math.random().toString(8).substring(2));
-                request.payload.createdBy = "Tenant-Admin";
-                request.payload.updatedBy = "Tenant-Admin";
-                request.payload.isActive = true;
-                
-                User.saveUser( request.payload, function(err, user) {
-                    if (!err) {
-                        var tokenData = {
-                            userName: user.userName,
-                            scope: [user.scope],
-                            id: user._id
-                        };
-                        EmailServices.sendAccountCreationMail(user, Jwt.sign(tokenData, privateKey));
-                        return reply( "Tenant user successfully created" );
-                    } else {
-                        if ( constants.kDuplicateKeyError === err.code || constants.kDuplicateKeyErrorForMongoDBv2_1_1 === err.code ) {
-                            return reply(Boom.forbidden("user email already registered"));
-                        } else return reply( Boom.forbidden(err) ); // HTTP 403
-                    }
-                });
+        Jwt.verify(request.headers.authorization.split(' ')[1], Config.key.privateKey, function(err, decoded) { 
+            console.log(decoded);
+            if( !request.payload.tenantId ){
+                return reply(Boom.forbidden("tenant is not assigned"));
             }
+            else {   
+                    request.payload.password = Crypto.encrypt(Math.random().toString(36).slice(3));
+                    request.payload.createdBy = "Tenant-Admin";
+                    request.payload.updatedBy = "Tenant-Admin";
+                    request.payload.isActive = true;
+                    request.payload.isEmailVerified = true;
+                    
+                    User.saveUser( request.payload, function(err, user) {
+                        if (!err) {
+                            var tokenData = {
+                                userName: user.userName,
+                                scope: [user.scope],
+                                id: user._id
+                            };
+                            Tenant.findTenantById(decoded.tenantId, function(err, tenant) {
+                                if(!err) {
+                                    if(tenant)
+                                        EmailServices.sendAccountCreationMail(user, tenant);
+                                    else
+                                        return reply( 'no tenant with id ');
+                                }
+                                else {
+                                    return reply( Boom.forbidden(err) );
+                                }
+                            });
+                            return reply( "Tenant user successfully created" );
+                        } else {
+                            if ( constants.kDuplicateKeyError === err.code || constants.kDuplicateKeyErrorForMongoDBv2_1_1 === err.code ) {
+                                return reply(Boom.forbidden("user email already registered"));
+                            } else return reply( Boom.forbidden(err) ); // HTTP 403
+                        }
+                    });
+                }
+        });
     }
 };
 
@@ -285,6 +300,41 @@ exports.deActivateTenantUser = {
        });
     }
 };
+
+/**
+   POST: /activateUser
+   SCOPE: 'Admin', 'Tenant-Admin'
+   Description: Activate tenant User.
+*/
+exports.changePasswordRequest = {
+    auth: {
+        strategy: 'token',
+        scope: ['Tenant-Admin', 'Admin', 'User']
+    },
+    handler: function(request, reply) {
+       Jwt.verify(request.headers.authorization.split(' ')[1], Config.key.privateKey, function(err, decoded) { 
+            User.findUserById(decoded.id, function(err, user) {
+
+                if(Crypto.decrypt(user.password) == request.payload.oldpass) {
+                    User.updateUser(decoded.id, {"password": Crypto.encrypt(request.payload.newpass)}, function(err) {
+                        if(err){
+                            return reply(Boom.badImplementation("unable to change password"));
+                        }
+                        else{
+                            if(user){
+                                return reply('password has changed successfully');    
+                            }
+                            return reply(Boom.forbidden("no user exist"));
+                        }
+                    });
+                }
+                else
+                    return reply(Boom.forbidden("incorrect password"));
+            });
+       });
+    }
+};
+
 
 /**
    POST: /sendCredentials

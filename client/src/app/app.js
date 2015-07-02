@@ -186,6 +186,14 @@ var app = angular.module('app', [
                   authorizedRoles: [USER_ROLES.all]
               }
           })
+          .state('changePassword', {
+            url: "/changePassword",
+              templateUrl: "app/views/common/change_password.html",
+              controller: 'accountCtrl',
+              data: {
+                  authorizedRoles: [USER_ROLES.all]
+              }
+          })
 
 
           $httpProvider.interceptors.push('authInterceptor');

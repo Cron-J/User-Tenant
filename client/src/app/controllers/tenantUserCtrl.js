@@ -130,6 +130,7 @@ app.controller('tenantUserCtrl', ['$scope', '$rootScope', '$http', '$location',
                         $scope.srch = srch;
                         $scope.searchTenantUser(srch);
                     } 
+                    $scope.searchTenantUser();
                 })
                 .error(function (data, status) {
                     if(data.message == 'Invalid token') 
@@ -156,6 +157,7 @@ app.controller('tenantUserCtrl', ['$scope', '$rootScope', '$http', '$location',
                         $scope.srch = srch;
                         $scope.searchTenantUser(srch);
                     } 
+                    $scope.searchTenantUser();
                 })
                 .error(function (data, status) {
                     if(data.message == 'Invalid token') 

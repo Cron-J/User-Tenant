@@ -32,12 +32,15 @@ exports.sendUserActivationMail = function(user) {
     +"<p>Your account credentials are</p><p><b>username :</b> "+user.username+", <b>password :</b> "+crypto.decrypt(user.password)+"</p>"
     mail(from, user.email , "jCatalog Account is activated", mailbody);
 };
-exports.sendAccountCreationMail = function(user, token) {
+exports.sendAccountCreationMail = function(user, tenant) {
+    console.log(tenant);
     var from = Config.email.accountName+" Team<" + Config.email.username + ">";
-    var url = Config.url+Config.email.verifyEmailUrl+"/"+crypto.encrypt(user.username)+"/"+token;
     var mailbody = "<p>Hi "+user.firstName+" "+user.lastName+", </p><br>"
-    +"<p>"+Config.email.accountName+" account has been created for you by "+Config.email.accountName+" Team</p>"
-    +"<p>Please verify your email by clicking on <a href=" + url +">this link</a></p>"
+    +"<p>Your "+Config.email.accountName+" account has created.</p>"
+    +"<p>As <b>"+user.scope+"</b> for the company <b>"+tenant.name+"</b> you are invited to join.</p>"
+    +"<p>Here is your login details.</p>"
+    +"<p><b>User Name : </b>"+user.username+" <b>Password : </b>"+crypto.decrypt(user.password)+"</p>"
+    +"<p>Please login <a href="+Config.url+"login>here</a></p>"
     mail(from, user.email , "jCatalog Account is created", mailbody);
 };
 exports.sendAccountCredentialsToUser = function(user) {

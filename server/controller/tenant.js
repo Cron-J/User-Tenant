@@ -145,22 +145,19 @@ exports.exportTenant = {
         Tenant.searchTenant(query, function(err, tenants) {
             if (!err) {
                     var query1 = {};
-                    async.each(tenants,
-                      function(tenant, callback){
+                    async.each(tenants, function(tenant, callback){
                         query1['tenantId'] = tenant._id;
                             User.searchUser(query1, function(err, user) {
                                 if (!err) {
-                                    if(user == []) {
-                                        user = {};
-
-                                        dump.push(customJson(tenant, user));
+                                    if(user.length == 0) {
+                                        dump.push(customJson(tenant));
                                     } 
                                     else{
                                         for(var i = 0; i < user.length; i++) 
                                           dump.push(customJson(tenant, user[i]));
-                                        callback();
+                                        
                                     }
-
+                                    callback();
                                 } 
                                 else reply(Boom.forbidden(err));
 
@@ -176,7 +173,7 @@ exports.exportTenant = {
                                     return (textA < textB) ? -1 : (textA > textB) ? 1 : 0;
                                 });
                                 //writing data into csv file
-                                json2csv({data: dump,  fields: ['name', 'description', 'username', 'firstName', 'lastName', 'email', 'role', 'isActive'], fieldNames: ['Tenant Name', 'Tenant Description', 'User name', 'First Name', 'Last Name', 'Email', 'User Role', 'Active']}, function(err, csv1) {
+                                json2csv({data: dump,  fields: ['name', 'description', 'username', 'firstName', 'lastName', 'email', 'role', 'isActive'], fieldNames: ['Tenant Name', 'Tenant Description', 'User name', 'First Name', 'Last Name', 'Email', 'User Role', 'Active'] }, function(err, csv1) {
                                   if (err) console.log(err);
                                     return reply(csv1).header('Content-Type', 'application/octet-stream').header('content-disposition', 'attachment; filename=user.csv;');
                                 });
@@ -190,18 +187,28 @@ exports.exportTenant = {
     }
 };
  var customJson = function (obj, list ) {
-    console.log('------------------');
-    console.log(obj);
-     console.log('------------------');
     var result = {};
     result['name'] = obj.name;
-    result['description'] = obj.description;
-    result['username'] = list.username;
-    result['firstName'] = list.firstName;
-    result['lastName'] = list.lastName;
-    result['email'] = list.email;
-    result['role'] = list.scope;
-    result['isActive'] = list.isActive;
+    if(obj.description)
+        result['description'] = obj.description;
+    else
+        result['description'] = "-";
+    if(list){
+        result['username'] = list.username;
+        result['firstName'] = list.firstName;
+        result['lastName'] = list.lastName;
+        result['email'] = list.email;
+        result['role'] = list.scope;
+        result['isActive'] = list.isActive;
+    } else {
+        result['username'] = "-";
+        result['firstName'] = "-";
+        result['lastName'] = "-";
+        result['email'] = "-";
+        result['role'] = "-";
+        result['isActive'] = "-";
+    }
+
 
     return result;
  }
