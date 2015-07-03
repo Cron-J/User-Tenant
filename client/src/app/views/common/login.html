@@ -4,9 +4,13 @@
   </a>
   <div class="row">
     <div class="col-md-12">
-      <div class="alert alert-success" role="alert" ng-if="aMsg == 1">
+      <div class="alert alert-success" role="alert" ng-if="aMsg.id == 1">
         <button type="button" class="close" data-dismiss="alert" aria-label="Close"><span aria-hidden="true">×</span></button>
-        <p>Success! Company has successfully registered. An email has sent to your registered email address containing the instructions to verify your account. </p>
+        <p>Success! {{aMsg.name}} has successfully registered. An email has sent to your registered email address containing the instructions to verify your account. </p>
+      </div>
+      <div class="alert alert-success" role="alert" ng-if="aMsg.id == 2">
+        <button type="button" class="close" data-dismiss="alert" aria-label="Close"><span aria-hidden="true">×</span></button>
+        <p>Success! An email has sent to your registered email address. </p>
       </div>
     </div>
   </div>

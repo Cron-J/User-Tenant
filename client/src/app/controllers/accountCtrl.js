@@ -11,19 +11,12 @@ app.controller('accountCtrl', ['$scope', '$rootScope', '$http', '$location',
                 remember: true
             };
             $scope.authError = null;
-            if($location.path() == '/home') {
+            if($location.path() == '/home' || $location.path() == '/changePassword') {
                 userInfo.async().then(function(response) {
                     $scope.current_usr.firstName = response.data.firstName;
                     $scope.current_usr.lastName = response.data.lastName;
                     if(response.data.tenantId)
                         $scope.current_usr.tenantName = response.data.tenantId.name;
-                    if($scope.current_usr.firstLogin == $scope.current_usr.lastLogin) {
-                        if(!$rootScope.user.isPasswordChanged) {
-                            $rootScope.user.isPasswordChanged = true;
-                            $location.path('/changePassword');
-                        }
-                        
-                    }
                 });
             }
             
@@ -42,11 +35,15 @@ app.controller('accountCtrl', ['$scope', '$rootScope', '$http', '$location',
                     verifyMail();
                 }
             }
-            if($location.url().split('?')[1]){
-                $location.path('/users');
+
+            if($location.search()){
+                var url = $location.search();
+                if(url.userId)
+                    $location.path('/users');
             }
 
-            if($location.url() == '/login') {
+            if($location.url() == '/login' || $location.url() == '/forgotPassword' || 
+                $location.url() == '/tenantSignup' || $location.url() == '/userSignup') {
                 if($rootScope.user) $scope.logOut();
             }
 
@@ -61,8 +58,16 @@ app.controller('accountCtrl', ['$scope', '$rootScope', '$http', '$location',
                     $rootScope.user =  data;
                     if($rootScope.user.scope == 'Admin' || 
                         $rootScope.user.scope == 'Tenant-Admin' || 
-                        $rootScope.user.scope == 'User')
-                        $location.path('/home');
+                        $rootScope.user.scope == 'User') {
+                        userInfo.async().then(function(response) {
+                            $scope.current_usr = response.data;
+                            if($scope.current_usr.firstLogin === $scope.current_usr.lastLogin) 
+                                $location.path('/changePassword');
+                            else
+                                $location.path('/home');
+                        });
+                    }
+                        
                     getAccountDetails();
                 })
                 .error(function (data, status) {
@@ -82,7 +87,7 @@ app.controller('accountCtrl', ['$scope', '$rootScope', '$http', '$location',
         $scope.forgotPassword = function (username) {
             $http.post('/forgotPassword', {username:username})
                 .success(function (data, status) {
-                    growl.addSuccessMessage('Password has been successfully to registered email with your username');
+                    $rootScope.aMsg = {id:2};
                     $location.path('/login');
                 })
                 .error(function (data, status) {
@@ -116,10 +121,6 @@ app.controller('accountCtrl', ['$scope', '$rootScope', '$http', '$location',
                             sendEmailToAdmins(data);
                             $scope.alertMsg = 3;
                         }
-                        // if(data.createdBy == 'Admin' || data.createdBy == 'Tenant-Admin') {
-                        //     sendAccountCredentails(data);
-                        //     $scope.alertMsg = 2;
-                        // }
                     }
                     else
                         $scope.alertMsg = 2;
@@ -174,7 +175,7 @@ app.controller('accountCtrl', ['$scope', '$rootScope', '$http', '$location',
                 delete account_info.user.passwordConfirm;
                 $http.post('/tenantSelfRegistration', account_info)
                 .success(function (data, status) {
-                    $rootScope.aMsg = 1;
+                    $rootScope.aMsg = {id:1, name:'Company'};
                     $location.path('/login');                    
                 })
                 .error(function (data, status) {
@@ -229,7 +230,7 @@ app.controller('accountCtrl', ['$scope', '$rootScope', '$http', '$location',
             if(valid) {
                 $http.post('/user', account_info)
                 .success(function (data, status) {
-                    $rootScope.aMsg = 1;
+                    $rootScope.aMsg = {id:1, name:'User'};
                     $location.path('/login');
                 })
                 .error(function (data, status) {

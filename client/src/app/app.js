@@ -59,7 +59,7 @@ var app = angular.module('app', [
             url: "/error",
               templateUrl: "app/views/common/error.html",
               data: {
-                  authorizedRoles: [USER_ROLES.all]
+                  authorizedRoles: [USER_ROLES.admin, USER_ROLES.tenantadmin, USER_ROLES.tenantuser]
               }
           })
           .state('editProfile', {
@@ -67,7 +67,7 @@ var app = angular.module('app', [
               templateUrl: "app/views/common/profile.html",
               controller: "accountCtrl",
               data: {
-                  authorizedRoles: [USER_ROLES.all]
+                  authorizedRoles: [USER_ROLES.admin, USER_ROLES.tenantadmin, USER_ROLES.tenantuser]
               }
           })
           .state('createTenant', {
@@ -171,8 +171,8 @@ var app = angular.module('app', [
               }
           })
           .state('activateUser', {
-            url: "/userActivation?usrId&tId",
-              templateUrl: "app/views/tenant_user/userHome.html",
+            url: "/userActivation?userId&tId",
+              // templateUrl: "app/views/tenant_user/userHome.html",
               controller: 'tenantUserCtrl',
               data: {
                   authorizedRoles: [USER_ROLES.admin, USER_ROLES.tenantadmin]
@@ -191,7 +191,7 @@ var app = angular.module('app', [
               templateUrl: "app/views/common/change_password.html",
               controller: 'accountCtrl',
               data: {
-                  authorizedRoles: [USER_ROLES.all]
+                  authorizedRoles: [USER_ROLES.admin, USER_ROLES.tenantadmin, USER_ROLES.tenantuser]
               }
           })
 

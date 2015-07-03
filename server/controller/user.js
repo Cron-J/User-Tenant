@@ -243,17 +243,21 @@ exports.activateTenantUser = {
 
             User.findUserById(request.payload.id, function(err, user) {
                 User.updateUser(request.payload.id, {"updatedBy": decoded.scope,"isActive" : true}, function(err) {
-                    if(err){
-                        return reply(Boom.badImplementation("unable to activate user"));
+                    if(!err){
+                        if(user){
+                            if(user.isActive == false) {
+                                EmailServices.sendUserActivationMail(user);
+                                return reply('Activation email has sent');   
+                            }
+                            else 
+                                return reply(Boom.forbidden("User is already activated"));
+                        }
                     }
                     else{
-                        if(user){
-                            EmailServices.sendUserActivationMail(user);
-                            return reply('Activation email has sent');    
-                        }
-                        return reply(Boom.forbidden("no user exist"));
+                        return reply(Boom.forbidden("Unable to activate user"));
                     }
                 });
+               
             });
        });
     }
@@ -285,7 +289,7 @@ exports.deActivateTenantUser = {
                 }
                 else{
                     if(user){
-                        EmailServices.sentMailUserDeactivation(user.name, user.password);
+                        EmailServices.sentMailUserDeactivation(user);
                         user.password = undefined;
                         user.scope = undefined;
                         return reply(user);    
@@ -531,7 +535,7 @@ exports.forgotPassword = {
                         return reply(Boom.badImplementation("Error in sending password"));
                     }
                     else{
-                        EmailServices.sentMailForgotPassword(user.email, user.username, password);
+                        EmailServices.sentMailForgotPassword(user);
                         reply("password is send to registered email id");
                     }
                 });

@@ -29,17 +29,21 @@ app.controller('tenantUserCtrl', ['$scope', '$rootScope', '$http', '$location',
                 $scope.tenantInfo = true;
                 $scope.searchTenantUser();
             }
-            if($location.url().split('?')[1]){
-                if($location.url().split('&')[1]) {
-                    var userId = $location.url().substring($location.url().lastIndexOf("?")+1,$location.url().lastIndexOf("&"));
-                    var tenantId = $location.url().split('&')[1];
-                    $scope.activateTenantUser(userId, tenantId);
+            if($location.search()){
+                var url = $location.search();
+                if(url.userId) {
+                    if($location.url().split('&')[1]) {
+                        var userId = $location.url().substring($location.url().lastIndexOf("=")+1,$location.url().lastIndexOf("&"));
+                        var tenantId = $location.url().split('&')[1];
+                        $scope.activateTenantUser(userId, tenantId);
+                    }
+                    else {
+                        console.log($location.url().split('=')[1]);
+                        var userId = $location.url().split('=')[1];
+                        $scope.activateTenantUser(userId);
+                    }
+                    $location.url('/users');
                 }
-                else {
-                    var userId = $location.url().split('?')[1];
-                    $scope.activateTenantUser(userId);
-                }
-                $location.url('/users');
             }
         }
         

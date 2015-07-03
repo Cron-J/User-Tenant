@@ -14,22 +14,28 @@ var smtpTransport = nodemailer.createTransport("SMTP", {
     }
 });
 
-exports.sentMailForgotPassword = function(email, username, password) {
+exports.sentMailForgotPassword = function(user) {
     var from = Config.email.accountName+" Team<" + Config.email.username + ">";
-    var mailbody = "<p>Your "+Config.email.accountName+"  Account Credential</p><p>username : "+username+" , password : "+crypto.decrypt(password)+"</p>"
-    mail(from, email , "Forgot password", mailbody);
+    var mailbody = "<p>Hi "+user.firstName+" "+user.lastName+", </p><br>"
+    +"<p>You have requested for "+Config.email.accountName+" account password.</p>"
+    +"<p>Here is your account  credentials</p>"
+    +"<p><b>User Name :</b> "+user.username+" ,<b>Password :</b> "+crypto.decrypt(user.password)+"</p>"
+    +"<p>You can login <a href="+Config.url+"login>here</a></p>"
+    mail(from, user.email , "Forgot password", mailbody);
 };
-exports.sentMailUserDeactivation = function(username, password) {
+exports.sentMailUserDeactivation = function(user, password) {
     var from = Config.email.accountName+" Team<" + Config.email.username + ">";
-    var mailbody = "<p>Your Account has been deactivated</p>"+
-    "<p>Please contact admin for access</p>"
-    mail(from, username , "jCatalog Account is deactivated", mailbody);
+    var mailbody = "<p>Hi "+user.firstName+" "+user.lastName+", </p><br>"
+    +"<p>Your Account has deactivated</p>"
+    +"<p>Please contact admin for any queries. </p>"
+    mail(from, user.email , "jCatalog Account is deactivated", mailbody);
 };
 exports.sendUserActivationMail = function(user) {
     var from = Config.email.accountName+" Team<" + Config.email.username + ">";
     var mailbody = "<p>Hi "+user.firstName+" "+user.lastName+", </p><br>"
-    +"<p>Your "+Config.email.accountName+" Account has been activated</p>"
+    +"<p>Your "+Config.email.accountName+" Account has activated</p>"
     +"<p>Your account credentials are</p><p><b>username :</b> "+user.username+", <b>password :</b> "+crypto.decrypt(user.password)+"</p>"
+    +"<p>You can login <a href="+Config.url+"login>here</a></p>"
     mail(from, user.email , "jCatalog Account is activated", mailbody);
 };
 exports.sendAccountCreationMail = function(user, tenant) {
@@ -46,7 +52,7 @@ exports.sendAccountCreationMail = function(user, tenant) {
 exports.sendAccountCredentialsToUser = function(user) {
     var from = Config.email.accountName+" Team<" + Config.email.username + ">";
     var mailbody = "<p>Hi "+user.firstName+" "+user.lastName+", </p><br>"
-                    +"<p>Your "+Config.email.accountName+" Account credentials are</p><p><b>username :</b> "+user.username+", <b>password :</b> "+crypto.decrypt(user.password)+"</p>"
+                    +"<p>Your "+Config.email.accountName+" account credentials are</p><p><b>username :</b> "+user.username+", <b>password :</b> "+crypto.decrypt(user.password)+"</p>"
     
     mail(from, user.email , "jCatalog Account Credential", mailbody);
 };
@@ -60,7 +66,7 @@ exports.sentUserActivationMailToAdmins = function(list, user) {
 };
 exports.sentUserActivationMailToTenantAdmins = function(list, user) {
     var from = Config.email.accountName+" Team<" + Config.email.username + ">";
-    var url = Config.url+"userActivation"+"?"+user._id+"&"+user.tenantId;
+    var url = Config.url+"userActivation"+"?userId="+user._id+"&"+user.tenantId;
     var mailbody = "<p>Hi,</p>"+
                     "<p>New user is registered. Activate the user by clicking on this <a href="+url+">link</a></p>"
     
