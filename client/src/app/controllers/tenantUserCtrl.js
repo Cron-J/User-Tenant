@@ -16,7 +16,6 @@ app.controller('tenantUserCtrl', ['$scope', '$rootScope', '$http', '$location',
                         $scope.current_usr.tenantName = response.data.tenantId.name;
                     }
                 });
-                $scope.searchTenantUser();
             }
             
             $scope.page ={
@@ -134,7 +133,6 @@ app.controller('tenantUserCtrl', ['$scope', '$rootScope', '$http', '$location',
                         $scope.srch = srch;
                         $scope.searchTenantUser(srch);
                     } 
-                    $scope.searchTenantUser();
                 })
                 .error(function (data, status) {
                     if(data.message == 'Invalid token') 
@@ -161,7 +159,6 @@ app.controller('tenantUserCtrl', ['$scope', '$rootScope', '$http', '$location',
                         $scope.srch = srch;
                         $scope.searchTenantUser(srch);
                     } 
-                    $scope.searchTenantUser();
                 })
                 .error(function (data, status) {
                     if(data.message == 'Invalid token') 
@@ -234,10 +231,12 @@ app.controller('tenantUserCtrl', ['$scope', '$rootScope', '$http', '$location',
 
         //Go users page
         $scope.goBack = function () {
-            var srch = $scope.srchInfo;
-            $scope.srch = srch;
             $scope.page.view = 'search';
-            $scope.searchTenantUser(srch);
+            if($scope.srchInfo) {
+                var srch = $scope.srchInfo;
+                $scope.srch = srch;
+                $scope.searchTenantUser(srch);
+            }           
         }
 
         //Search Tenant-User

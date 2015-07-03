@@ -242,22 +242,26 @@ exports.activateTenantUser = {
             }
 
             User.findUserById(request.payload.id, function(err, user) {
-                User.updateUser(request.payload.id, {"updatedBy": decoded.scope,"isActive" : true}, function(err) {
-                    if(!err){
-                        if(user){
-                            if(user.isActive == false) {
-                                EmailServices.sendUserActivationMail(user);
-                                return reply('Activation email has sent');   
+                if(tenantId === user.tenantId) {
+                    User.updateUser(request.payload.id, {"updatedBy": decoded.scope,"isActive" : true}, function(err) {
+                        if(!err){
+                            if(user){
+                                if(user.isActive == false) {
+                                    EmailServices.sendUserActivationMail(user);
+                                    return reply('Activation email has sent');   
+                                }
+                                else 
+                                    return reply(Boom.forbidden("User is already activated"));
                             }
-                            else 
-                                return reply(Boom.forbidden("User is already activated"));
                         }
-                    }
-                    else{
-                        return reply(Boom.forbidden("Unable to activate user"));
-                    }
-                });
-               
+                        else{
+                            return reply(Boom.forbidden("Unable to activate user"));
+                        }
+                    });
+                }
+                else {
+                    return reply(Boom.forbidden("Your have no permission to activate this user"));
+                }
             });
        });
     }

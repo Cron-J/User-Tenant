@@ -153,8 +153,10 @@ exports.exportTenant = {
                                         dump.push(customJson(tenant));
                                     } 
                                     else{
-                                        for(var i = 0; i < user.length; i++) 
-                                          dump.push(customJson(tenant, user[i]));
+                                        for(var i = 0; i < user.length; i++) {
+                                            if(user[i].isEmailVerified)
+                                                dump.push(customJson(tenant, user[i]));
+                                        }
                                         
                                     }
                                     callback();

@@ -16,8 +16,6 @@ app.controller('tenantCtrl', ['$scope', '$rootScope', '$http', '$location',
                 $scope.inActiveUsers = false;
                 $scope.getTenantUsers();
             }
-            if($location.path() == '/tenants') 
-                $scope.searchTenant();
             $scope.page ={
                 view: 'search',
                 role: 'admin'
@@ -68,7 +66,6 @@ app.controller('tenantCtrl', ['$scope', '$rootScope', '$http', '$location',
                         $scope.srch = $scope.srchInfo;
                         $scope.searchTenant(srch);
                     }
-                    $scope.searchTenant();
                     growl.addSuccessMessage('Tenant has been created successfully');
                 })
                 .error(function (data, status) {
@@ -135,13 +132,12 @@ app.controller('tenantCtrl', ['$scope', '$rootScope', '$http', '$location',
 
         //Go users page
         $scope.goBack = function () {
+            $scope.page.view = 'search';
             if($scope.srchInfo) {
                 var srch = $scope.srchInfo;
                 $scope.srch = srch;
+                $scope.searchTenant(srch);
             }
-            $scope.srch = srch;
-            $scope.page.view = 'search';
-            $scope.searchTenant(srch);
         } 
 
         //Get all Tenant-Users of a particular tenant
