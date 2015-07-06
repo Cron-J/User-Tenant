@@ -569,7 +569,6 @@ exports.getUser = {
                 else{
                     if(user){
                         user.password = undefined;
-                        user.scope = undefined;
                         return reply(user);    
                     }
                     return reply(Boom.forbidden("no user exist"));
@@ -581,11 +580,38 @@ exports.getUser = {
 };
 
 /**
+    GET: /user/{username}
+    @param id : username of User whose info is to be get
+    Description: Get User's information.
+*/
+exports.getUserByName = {
+    auth: {
+        strategy: 'token',
+        scope: ['Admin']
+    },
+    handler: function(request, reply) {
+            User.findUserByName(request.params.name, function(err, user) {
+                if(err){
+                    return reply(Boom.badImplementation("unable to get user detail"));
+                }
+                else{
+                    if(user){
+                        user.password = undefined;
+                        // user.scope = undefined;
+                        return reply(user);    
+                    }
+                    return reply(Boom.forbidden("no user exist"));
+                }
+            });
+    }
+};
+
+
+/**
     GET: /user/{id}
     @param id : user id of Tenant User whose info is to be get
     Description: Get User own information.
 */
-
 exports.getUserByAdmin = {
     auth: {
         strategy: 'token',

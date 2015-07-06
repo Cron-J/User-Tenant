@@ -15,7 +15,7 @@
 
                             <div class="col-sm-9">
                                 <input type="text" class="form-control"
-                                       ng-model="account.tenant.name" ng-pattern="/^[a-zA-Z_ ]{2,30}$/"  required name="tenantName" placeholder="Siemens" >
+                                       ng-model="account.tenant.name" ng-pattern="/^[a-zA-Z_ ]{2,30}$/"  required name="tenantName" placeholder="Company Name" >
                             </div>
                         </div>
                         <div class="form-group">
@@ -23,15 +23,23 @@
 
                             <div class="col-sm-9">
                                 <textarea class="form-control" 
-                                placeholder="Description about company" ng-model="account.tenant.description" ng-pattern="/^[a-zA-Z_ ]{2,30}$/" name="tenantDesc"></textarea>
+                                placeholder="Description" ng-model="account.tenant.description" ng-pattern="/^[a-zA-Z_ ]{2,30}$/" name="tenantDesc"></textarea>
                             </div>
                         </div>
                         <hr>
                         <div class="form-group">
+                            <label class="col-sm-3 control-label">Email</label>
+
+                            <div class="col-sm-9">
+                                <input type="email" placeholder="Email" class="form-control" ng-model="account.user.email" ng-minlength="5" maxlength="50"
+                                required>
+                            </div>
+                        </div>
+                        <div class="form-group">
                             <label class="col-sm-3 control-label">User Name</label>
 
                             <div class="col-sm-9">
-                                <input placeholder="jhon" class="form-control" ng-model="account.user.username"
+                                <input placeholder="User Name" class="form-control" ng-model="account.user.username"
                                        ng-pattern="/^[a-zA-Z0-9]{3,20}$/" required>
                             </div>
                         </div>
@@ -39,7 +47,7 @@
                             <label class="col-sm-3 control-label">First Name</label>
 
                             <div class="col-sm-9">
-                                <input placeholder="Jhon" type="text" class="form-control"
+                                <input placeholder="First Name" type="text" class="form-control"
                                        ng-model="account.user.firstName"
                                        ng-pattern="/^[a-zA-Z]{3,20}$/" required>
                             </div>
@@ -48,16 +56,8 @@
                             <label class="col-sm-3 control-label">Last Name</label>
 
                             <div class="col-sm-9">
-                                <input placeholder="Michael" type="text" class="form-control" ng-model="account.user.lastName"
+                                <input placeholder="Last Name" type="text" class="form-control" ng-model="account.user.lastName"
                                        ng-pattern="/^[a-zA-Z]{3,20}$/" required>
-                            </div>
-                        </div>
-                        <div class="form-group">
-                            <label class="col-sm-3 control-label">Email</label>
-
-                            <div class="col-sm-9">
-                                <input type="email" placeholder="jhon@example.com" class="form-control" ng-model="account.user.email" ng-minlength="5" maxlength="50"
-                                required>
                             </div>
                         </div>
                         <div class="form-group">
@@ -65,7 +65,7 @@
 
                             <div class="col-sm-9">
                                 <input type="password" class="form-control"
-                                       ng-model="account.user.password" ng-minlength="5" maxlength="50" placeholder="******" required
+                                       ng-model="account.user.password" ng-minlength="5" maxlength="50" required
                                        data-ng-class="{'ng-invalid':signUpForm.confirmPassword.$error.match}">
                             </div>
                         </div>
@@ -74,7 +74,7 @@
 
                             <div class="col-sm-9">
                                 <input type="password" class="form-control"
-                                       ng-model="account.user.passwordConfirm" required  placeholder="******" data-match="account.user.password"
+                                       ng-model="account.user.passwordConfirm" required  data-match="account.user.password"
                                        name="confirmPassword">
                             </div>
                         </div>
@@ -82,8 +82,7 @@
                         <div class="form-group">
                             <div class="col-sm-6 col-sm-offset-3 checkbox m-b-md m-t-none">
                                 <label class="i-checks">
-                                    <input type="checkbox" ng-model="agree" required><i></i> Agree the terms and
-                                    policy</a>
+                                    <input type="checkbox" ng-model="agree" required /><span> Agree the <a>terms and
                                 </label>
                             </div>
                         </div>

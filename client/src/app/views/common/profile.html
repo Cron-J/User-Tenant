@@ -7,6 +7,17 @@
         <form id="profileForm" class="form-horizontal ut-form form-validation" role="form" name="profileForm">
             <div class="row">
                 <div class="form-group">
+                    <label class="col-sm-3 control-label">Email</label>
+                    <div class="col-sm-5">
+                        <input type="email" placeholder="jhon@example.com" class="form-control" ng-model="account.email" ng-minlength="5" maxlength="50"
+                        style="width: 299px;"
+                        ng-click="isChanged = true"
+                        ng-disabled="profileView == 'view'" required>
+                    </div>     
+                </div>
+            </div>
+            <div class="row">
+                <div class="form-group">
                     <label class="col-sm-3 control-label">User Name</label>
                     <div class="col-sm-5">
                         <input placeholder="jhon" class="form-control" ng-model="account.username" ng-pattern="/^[a-zA-Z0-9]{3,20}$/" required disabled>
@@ -39,24 +50,15 @@
             </div>
             <div class="row">
                 <div class="form-group">
-                    <label class="col-sm-3 control-label">Email</label>
-                    <div class="col-md-9">
-                        <div class="row">
-                            <div class="col-sm-7">
-                                <input type="email" placeholder="jhon@example.com" class="form-control" ng-model="account.email" ng-minlength="5" maxlength="50" 
-                                style="width: 299px;"
-                                ng-click="isChanged = true"
-                                ng-disabled="profileView == 'view'" required>
-                            </div>
-                            <div class="col-md-5 ut-pointer" ng-show="profileView == 'edit'">
-                                <a ng-hide="setPassword" ng-click="setPassword = true">Change password?</a>
-                                <a ng-show="setPassword" ng-click="setPassword = false">Cancel</a>
-                            </div>
-                        </div>
+                    <label class="col-sm-3 control-label">Role</label>
+                    <div class="col-sm-5">
+                        <input type="text" class="form-control" 
+                        ng-model="account.scope" ng-click="isChanged = true"
+                        ng-pattern="/^[a-zA-Z]{3,20}$/" disabled required>
                     </div>
                 </div>
             </div>
-            <div class="row">
+            <!-- <div class="row">
                 <div ng-show="profileView == 'edit' && setPassword == true">
                     <div class="form-group">
                         <label class="col-sm-3 control-label">Password</label>
@@ -81,7 +83,7 @@
                         </div>
                     </div>
                 </div>
-            </div>
+            </div> -->
             <div class="row ut-login-block">
                 <div class="ut-acc-form-group ">
                     <div class="col-lg-6 col-md-6">

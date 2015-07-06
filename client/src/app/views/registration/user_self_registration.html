@@ -16,7 +16,7 @@
                                 <div class="row">
                                     <div class="col-lg-11 col-md-11 ">
                                         <input type="text" class="form-control"
-                                       ng-model="account.tenantName" placeholder="Siemens" required name="tenantId" typeahead="result as result.name+ result.comma + (result.desc | limitTo:10) for result in searchTenantByName($viewValue)" typeahead-wait-ms="1000">
+                                       ng-model="account.tenantName" placeholder="Company" required name="tenantId" typeahead="result as result.name+ result.comma + (result.desc | limitTo:10) for result in searchTenantByName($viewValue)" typeahead-wait-ms="1000">
                                     </div>
                                     <div class="">
                                         <a class="btn btn-primary btn-sm" ng-click="tenantSearchModal()"><span class="fa fa-search"></span></a>
@@ -26,10 +26,18 @@
                             </div>
                         </div>
                         <div class="form-group">
+                            <label class="col-sm-3 control-label">Email</label>
+
+                            <div class="col-sm-9">
+                                <input type="email" placeholder="Email" class="form-control" ng-model="account.email"
+                                    ng-minlength="5" maxlength="50" required>
+                            </div>
+                        </div>
+                        <div class="form-group">
                             <label class="col-sm-3 control-label">User Name</label>
 
                             <div class="col-sm-9">
-                                <input placeholder="jhon" class="form-control" ng-model="account.username"
+                                <input placeholder="User Name" class="form-control" ng-model="account.username"
                                        ng-pattern="/^[a-zA-Z0-9]{3,20}$/" required>
                             </div>
                         </div>
@@ -37,7 +45,7 @@
                             <label class="col-sm-3 control-label">First Name</label>
 
                             <div class="col-sm-9">
-                                <input placeholder="Jhon" type="text" class="form-control"
+                                <input placeholder="First Name" type="text" class="form-control"
                                        ng-model="account.firstName"
                                        ng-pattern="/^[a-zA-Z]{3,20}$/" required>
                             </div>
@@ -46,16 +54,8 @@
                             <label class="col-sm-3 control-label">Last Name</label>
 
                             <div class="col-sm-9">
-                                <input placeholder="Michael" type="text" class="form-control" ng-model="account.lastName"
+                                <input placeholder="Last Name" type="text" class="form-control" ng-model="account.lastName"
                                        ng-pattern="/^[a-zA-Z]{3,20}$/" required>
-                            </div>
-                        </div>
-                        <div class="form-group">
-                            <label class="col-sm-3 control-label">Email</label>
-
-                            <div class="col-sm-9">
-                                <input type="email" placeholder="jhon@example.com" class="form-control" ng-model="account.email"
-                                    ng-minlength="5" maxlength="50" required>
                             </div>
                         </div>
                         <div class="form-group">
@@ -63,7 +63,7 @@
 
                             <div class="col-sm-9">
                                 <input type="password" class="form-control"
-                                       ng-model="account.password" ng-minlength="5" maxlength="50" placeholder="******" required
+                                       ng-model="account.password" ng-minlength="5" maxlength="50" required
                                        data-ng-class="{'ng-invalid':signUpForm.confirmPassword.$error.match}">
                             </div>
                         </div>
@@ -73,7 +73,6 @@
                             <div class="col-sm-9">
                                 <input type="password" class="form-control"
                                        ng-model="account.passwordConfirm" 
-                                       placeholder="******"
                                        required data-match="account.password"
                                        name="confirmPassword">
                             </div>
@@ -81,8 +80,8 @@
                         <div class="form-group">
                             <div class="col-sm-6 col-sm-offset-3 checkbox m-b-md m-t-none">
                                 <label class="i-checks">
-                                    <input type="checkbox" ng-model="agree" required><i></i> Agree the terms and
-                                    policy</a>
+                                    <input type="checkbox" ng-model="agree" required /><span> Agree the <a>terms and
+                                    policy</a></span>
                                 </label>
                             </div>
                         </div>

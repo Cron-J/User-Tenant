@@ -48,7 +48,6 @@ var User = new Schema({
     */
     email: {
         type: String,
-        unique: true,
         lowercase: true,
         trim: true,
         required: true,
@@ -187,6 +186,12 @@ User.statics.findUserById = function(id, callback) {
     }).populate('tenantId').exec(callback);
 };
 
+User.statics.findUserByName = function(name, callback) {
+    this.findOne({
+        'username': username
+    }).populate('tenantId').exec(callback);
+};
+
 User.statics.findUserByIdTenantId = function(id, tenantId, callback) {
     this.findOne({
         '_id': id,
@@ -210,6 +215,12 @@ User.statics.findAdmin = function(callback) {
 
 User.statics.searchUser = function(query, callback) {
     this.find(query, callback);
+};
+
+User.statics.remove = function(id, callback) {
+    this.find({
+        '_id': id
+    }).remove(callback);
 };
 
 var user = mongoose.model('User', User);

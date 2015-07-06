@@ -78,6 +78,13 @@ exports.endpoints = [
         @param id : user id of Tenant User whose info is to be get
         Description: Get Tenant User information.
     */
+    { method: 'GET', path: '/userByName/{username}', config: User.getUserByName},
+
+    /**
+        GET: /user/{id}
+        @param id : user id of Tenant User whose info is to be get
+        Description: Get Tenant User information.
+    */
     { method: 'GET', path: '/userByTenant/{id}', config: User.getUserByTenant},
 
     /**

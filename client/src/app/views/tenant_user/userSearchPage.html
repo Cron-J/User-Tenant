@@ -118,24 +118,31 @@
                       ng-hide="user.scope == 'Tenant-Admin' || tenantInfo"
                      class="btn btn-primary btn-md" 
                       ng-click="getUserAccountDetails(usr._id, srch);
-                      page.view = 'edit'">
-                        <span class="fa fa-edit"></span> Edit
+                      page.view = 'edit'" data-toggle="tooltip" data-placement="top" title="Modify user information">
+                        <span class="fa fa-edit"></span>
                       </button>
                       <button type="button" ng-hide="user.scope == 'Admin' || tenantInfo" 
-                      class="btn btn-primary btn-md" ng-hide="tenantInfo"
+                      class="btn btn-primary btn-md" ng-hide="tenantInfo" 
                       ng-click="getTenantUserbyTenant(usr._id, srch);
-                      page.view = 'edit'">
+                      page.view = 'edit'" data-toggle="tooltip" data-placement="top" title="Modify user information">
                         <span class="fa fa-edit"></span> Edit
                       </button>
                       <button type="button" ng-show="usr.isActive == true && !tenantInfo" 
                       ng-click="deactivateTenantUser(usr._id, usr.tenantId, srch)" 
-                      class="btn btn-default btn-md ut-status-btn">
-                        <span class="fa fa-user-times"></span> Deactivate
+                      class="btn btn-warning btn-md" data-toggle="tooltip" data-placement="top" title="Deactivate user account">
+                        <span class="fa fa-user-times"></span>
                       </button>
-                      <button type="button" ng-show="usr.isActive == false && !tenantInfo" 
+                      <button type="button" 
+                      ng-show="usr.isActive == false && !tenantInfo" 
                       ng-click="activateTenantUser(usr._id, usr.tenantId, srch)" 
-                      class="btn btn-default btn-md ut-status-btn" >
-                        <span class="fa fa-user-plus"></span> Activate
+                      class="btn btn-warning btn-md" data-toggle="tooltip" data-placement="top" title="Activate user account">
+                        <span class="fa fa-user-plus"></span>
+                      </button>
+                      <button type="button" 
+                      
+                      ng-click="activateTenantUser(usr._id, usr.tenantId, srch)" 
+                      class="btn btn-danger btn-md" data-toggle="tooltip" data-placement="top" title="Delete user account">
+                        <span class="fa fa-archive"></span>
                       </button>
                     </span>
                   </td>

@@ -61,7 +61,8 @@ app.controller('accountCtrl', ['$scope', '$rootScope', '$http', '$location',
                         $rootScope.user.scope == 'User') {
                         userInfo.async().then(function(response) {
                             $scope.current_usr = response.data;
-                            if($scope.current_usr.firstLogin === $scope.current_usr.lastLogin) 
+                            if($scope.current_usr.firstLogin === $scope.current_usr.lastLogin && 
+                                $scope.current_usr.createdBy != 'Self') 
                                 $location.path('/changePassword');
                             else
                                 $location.path('/home');
@@ -258,8 +259,8 @@ app.controller('accountCtrl', ['$scope', '$rootScope', '$http', '$location',
         $scope.updateProfile = function (account_info, valid) {
             if(valid){
                 var id = angular.copy(account_info._id);
-                delete account_info._id, delete account_info.createdAt, 
-                delete account_info.createdBy, delete account_info.updatedAt,
+                delete account_info._id, delete account_info.scope, 
+                delete account_info.createdAt, delete account_info.createdBy, delete account_info.updatedAt,
                 delete account_info.updatedBy;
                 $http.put('/user', account_info, {
                     headers: AuthServ.getAuthHeader()

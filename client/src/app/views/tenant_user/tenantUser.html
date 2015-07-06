@@ -1,4 +1,4 @@
-<div  >
+   <div  >
     <header>
         <p ng-show="page.view == 'create'" class="ut-lead">Add User</p>
         <p ng-show="page.view == 'view'" class="ut-lead">User Details</p>
@@ -11,7 +11,7 @@
                     <label class="col-sm-2 control-label">Tenant</label>
                     <div class="col-sm-5">
                         <input type="text" class="form-control"  
-                        placeholder="Siemens" name="tenantId"
+                        placeholder="Tenant" name="tenantId"
                         ng-model="account.tenantName" 
                         typeahead="res as res.name+ res.comma + (res.desc | limitTo:10) for res in searchTenantByName($viewValue)" 
                         typeahead-wait-ms="1000" ng-click="isChanged = true"
@@ -27,9 +27,21 @@
             </div>
             <div class="row">
                 <div class="form-group">
+                    <label class="col-sm-2 control-label">Email</label>
+                    <div class="col-sm-5">
+                        <input name="email" type="email" placeholder="Email" 
+                        class="form-control" ng-model="account.email"
+                        ng-minlength="5" maxlength="50" 
+                        ng-click="isChanged = true"
+                        ng-disabled="page.view == 'view'" required>
+                    </div>
+                </div>
+            </div>  
+            <div class="row">
+                <div class="form-group">
                     <label class="col-sm-2 control-label">User Name</label>
                     <div class="col-sm-5">
-                        <input name="username" placeholder="jhon" class="form-control" 
+                        <input name="username" placeholder="User Name" class="form-control" 
                         ng-model="account.username" ng-pattern="/^[a-zA-Z0-9]{3,20}$/"  ng-click="isChanged = true" ng-disabled="page.view == 'view'" required>
                     </div>
                 </div>
@@ -38,7 +50,7 @@
                 <div class="form-group">
                     <label class="col-sm-2 control-label">First Name</label>
                     <div class="col-sm-5">
-                        <input name="firstName" placeholder="Jhon" type="text" 
+                        <input name="firstName" placeholder="First Name" type="text" 
                         class="form-control" ng-model="account.firstName"
                         ng-pattern="/^[a-zA-Z]{3,20}$/" 
                         ng-click="isChanged = true"
@@ -51,7 +63,7 @@
                     <label class="col-sm-2 control-label">Last Name</label>
 
                     <div class="col-sm-5">
-                        <input name="lastName" placeholder="Michael" type="text" 
+                        <input name="lastName" placeholder="Last Name" type="text" 
                         class="form-control" ng-model="account.lastName" 
                         ng-pattern="/^[a-zA-Z]{3,20}$/" 
                         ng-click="isChanged = true"
@@ -59,18 +71,6 @@
                     </div>
                 </div>
             </div>
-            <div class="row">
-                <div class="form-group">
-                    <label class="col-sm-2 control-label">Email</label>
-                    <div class="col-sm-5">
-                        <input name="email" type="email" placeholder="jhon@example.com" 
-                        class="form-control" ng-model="account.email"
-                        ng-minlength="5" maxlength="50" 
-                        ng-click="isChanged = true"
-                        ng-disabled="page.view == 'view'" required>
-                    </div>
-                </div>
-            </div>  
             <div class="row">
                 <div class="form-group">
                     <label class="col-sm-2 control-label">User Role</label>
