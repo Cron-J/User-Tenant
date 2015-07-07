@@ -202,6 +202,13 @@ var app = angular.module('app', [
                   authorizedRoles: [USER_ROLES.admin, USER_ROLES.tenantadmin, USER_ROLES.tenantuser]
               }
           })
+          .state('tremsAndConditions', {
+            url: "/terms-and-conditions",
+              templateUrl: "app/views/common/terms_and_conditions.html",
+              data: {
+                  authorizedRoles: [USER_ROLES.all]
+              }
+          })
 
 
           $httpProvider.interceptors.push('authInterceptor');
