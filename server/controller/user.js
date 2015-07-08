@@ -440,6 +440,58 @@ var sendEmailToTenantAdminEmailList = function(user) {
         });
 };
 
+exports.usernameSuggestions = {
+    handler: function(request, reply) {
+
+        var suggestions = [];
+            var possible = request.payload.email.split('@')[0];
+            if (possible.indexOf('.') > -1) {
+                suggestions = possible.split('.');
+                suggestions.push(suggestions[1]+Math.floor(Math.random() * possible.length)+1  );   
+            }
+            else if (possible.indexOf('_') > -1)  {
+                suggestions = possible.split('_');
+                suggestions.push(suggestions[1]+Math.floor(Math.random() * possible.length)+1  );   
+            }       
+            else {
+                suggestions.push(possible);
+            }
+            suggestions.push(suggestions[0]+Math.floor(Math.random() * possible.length)+1  );  
+            
+            //pushing records with random number
+            for (var i = 0; i < 3; i++) {
+                var name = possible.split('.')[0]+Math.floor(Math.random() * 1000);  
+                if(isDuplicated(suggestions, name) === false) 
+                    suggestions.push(name); 
+            };
+            //checking record is in db or not
+            for (var i = 0; i < suggestions.length; i++) {
+                if(isNameExisted(suggestions[i]) === true)
+                    suggestions.splice(i,1);
+            };
+            
+            reply(suggestions);
+    }
+};
+
+var isDuplicated = function (array, name) {
+    var count = 0;
+    for (var i = 0; i < array.length; i++) {
+        if(array[i] === name) count++;
+    };
+    if(count > 0) return true;
+    else return false;
+}
+
+var isNameExisted = function (name) {
+    User.findUserByName({username: name}, function(err, user) {
+        if (!err) {
+            if(user === null) return false;
+            else return true;
+        } 
+    });
+}
+
 exports.exportUser = {
     auth: {
         strategy: 'token',

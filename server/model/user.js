@@ -188,7 +188,7 @@ User.statics.findUserById = function(id, callback) {
 
 User.statics.findUserByName = function(name, callback) {
     this.findOne({
-        'username': username
+        'username': name
     }).populate('tenantId').exec(callback);
 };
 

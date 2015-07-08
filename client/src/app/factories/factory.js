@@ -93,24 +93,33 @@ angular.module('app.factory', [])
   };
   return myService;
 })
-.factory('countryList', function ($http, AuthServ, growl) {
+.factory('suggestionsList', function ($http, AuthServ, growl) {
    var promise;
-   var list = {
-    async: function() {
+   var myService = {
+    async: function(email) {
 
         // $http returns a promise, which has a then function, which also returns a promise
-        promise = $http.get('/countryList')
+        var obj = {'email': email}
+        console.log(obj);
+        promise = $http.post('/getSuggestions', obj)
         .success(function (data, status) {
-            return data;
+          data = ['hello', 'pollo']
+          return data;   
         })
         .error(function (data, status) {
-            growl.addErrorMessage(data.message);
+            if(data.message == 'Invalid token') {
+                delete $rootScope.user;
+                growl.addErrorMessage('Session has expired');
+            } 
+            else
+              growl.addErrorMessage(data.message);
         });
+
       // Return the promise to the controller
       return promise;
     }
   };
-  return list;
+  return myService;
 
 });
 

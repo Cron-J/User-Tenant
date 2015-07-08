@@ -2,9 +2,9 @@
 
 app.controller('adminCtrl', ['$scope', '$rootScope', '$http', '$location', 
     'AuthServ', 'growl', '$filter','$cookieStore', '$stateParams', '$modal', 
-    '$log', 'userInfo', 'countryList',
+    '$log', 'userInfo', 
     function ($scope, $rootScope, $http, $location, AuthServ, growl, $filter, 
-        $cookieStore, $stateParams, $modal, $log, userInfo, countryList) {
+        $cookieStore, $stateParams, $modal, $log, userInfo) {
         var _scope = {};
         _scope.init = function() {
             $scope.view = 'create';

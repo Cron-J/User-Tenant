@@ -1,10 +1,10 @@
 'use strict';
 
 app.controller('accountCtrl', ['$scope', '$rootScope', '$http', '$location', 
-    'AuthServ', 'growl', '$filter', 'userInfo','countryList', '$modal', '$log', 
+    'AuthServ', 'growl', '$filter', 'userInfo', 'suggestionsList','$modal', '$log', 
     '$stateParams', '$timeout',
     function ($scope, $rootScope, $http, $location, AuthServ, growl, $filter, 
-        userInfo, countryList, $modal, $log, $stateParams, $timeout) {
+        userInfo, suggestionsList, $modal, $log, $stateParams, $timeout) {
         var _scope = {};
         _scope.init = function() {
             $scope.loginForm = {
@@ -243,6 +243,13 @@ app.controller('accountCtrl', ['$scope', '$rootScope', '$http', '$location',
                 growl.addErrorMessage('Please select tenant');
             }
  
+        }
+
+
+        $scope.generateRandomUserNames = function (email) {
+            suggestionsList.async(email).then(function(response) {
+                    $scope.suggestions = response.data;
+                });
         }
 
         //Get Personal Account Details

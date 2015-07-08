@@ -1,10 +1,11 @@
 
 app.controller('tenantUserCtrl', ['$scope', '$rootScope', '$http', '$location', 
     'AuthServ', 'growl', '$filter', '$stateParams', '$modal', '$log', 'userInfo',
-    'countryList',
+    'suggestionsList',
     function ($scope, $rootScope, $http, $location, AuthServ, growl, $filter, 
-        $stateParams, $modal, $log, userInfo, countryList) {
+        $stateParams, $modal, $log, userInfo, suggestionsList) {
         $scope.testclass = 'testclass';
+        console.log('$stateParams',$stateParams);
         var _scope = {};
         _scope.init = function() {
             if($location.path() == '/users') {
@@ -28,6 +29,10 @@ app.controller('tenantUserCtrl', ['$scope', '$rootScope', '$http', '$location',
                 $scope.tenantInfo = true;
                 $scope.searchTenantUser();
             }
+            if($stateParams.uname){
+                $scope.page.view = 'edit';
+                // $scope.getUserAccountDetails($stateParams.uname);
+            }
             if($location.search()){
                 var url = $location.search();
                 if(url.userId) {
@@ -45,8 +50,7 @@ app.controller('tenantUserCtrl', ['$scope', '$rootScope', '$http', '$location',
                 }
             }
         }
-        
-        // $scope.user = {};
+    
         $scope.authError = null;
 
         //Open tenant search modal
@@ -111,6 +115,12 @@ app.controller('tenantUserCtrl', ['$scope', '$rootScope', '$http', '$location',
             });
         }
 
+        //Generate Random Usernames
+        $scope.generateRandomUserNames = function (email) {
+            suggestionsList.async(email).then(function(response) {
+                    $scope.suggestions = response.data;
+                });
+        }
   
         //Tenant-User account creation by Admin
         $scope.createTenantUserAccount = function (account_info, valid) {
