@@ -91,8 +91,7 @@ exports.getTenant = {
             if(decoded.scope === 'Tenant-Admin'){
                 request.params.id = decoded.tenantId;
             }
-
-            Tenant.findTenantById( request.params.id, function( err, tenant ) {
+            Tenant.findTenantByName( request.params.name, function( err, tenant ) {
                 if (!err) {
                     return reply(tenant);
                 } else {

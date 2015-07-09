@@ -1,9 +1,10 @@
 
 app.controller('tenantUserCtrl', ['$scope', '$rootScope', '$http', '$location', 
     'AuthServ', 'growl', '$filter', '$stateParams', '$modal', '$log', 'userInfo',
-    'suggestionsList',
+    'suggestionsList', 'localStorageService', '$previousState',
     function ($scope, $rootScope, $http, $location, AuthServ, growl, $filter, 
-        $stateParams, $modal, $log, userInfo, suggestionsList) {
+        $stateParams, $modal, $log, userInfo, suggestionsList, localStorageService,
+        $previousState) {
         $scope.testclass = 'testclass';
         console.log('$stateParams',$stateParams);
         var _scope = {};
@@ -18,21 +19,35 @@ app.controller('tenantUserCtrl', ['$scope', '$rootScope', '$http', '$location',
                     }
                 });
             }
-            
+
             $scope.page ={
-                view: 'search',
+                view: 'edit',
                 role: 'admin'
             }
             if($scope.user.scope == 'Tenant-Admin')
                 $scope.page.role = 'tenant-admin';
-            if($stateParams.selectedId) {
-                $scope.tenantInfo = true;
-                $scope.searchTenantUser();
+            var previous = $previousState.get();
+            var lsKeys = localStorageService.keys();
+            if(previous) {
+                if(previous.state.name == 'userEdit' || previous.state.name == 'userOfTenant') {
+                    if(lsKeys.indexOf('usersList') != -1){
+                        $scope.showUserResult = true;
+                        if(lsKeys.indexOf('userSearchObj' != -1))
+                            $scope.srch = localStorageService.get('userSearchObj');
+                        $scope.resultList = localStorageService.get('usersList');
+                        $scope.groupToPages();
+                    }
+                } 
             }
-            if($stateParams.uname){
-                $scope.page.view = 'edit';
-                // $scope.getUserAccountDetails($stateParams.uname);
+            if(previous == null) {
+                localStorageService.remove('userSearchObj');
             }
+            console.log(localStorageService.keys());
+            if($stateParams.uname || $stateParams.selectedId){
+                if($stateParams.selectedId) $scope.page.view = 'view';
+                $scope.getUserAccountDetails();
+            }
+            
             if($location.search()){
                 var url = $location.search();
                 if(url.userId) {
@@ -48,6 +63,29 @@ app.controller('tenantUserCtrl', ['$scope', '$rootScope', '$http', '$location',
                     }
                     $location.url('/users');
                 }
+            }
+
+            if($stateParams.tenantName || $stateParams.tenant) {
+                var name;
+                if($stateParams.tenantName) name = angular.copy($stateParams.tenantName);
+                if($stateParams.tenant) name = angular.copy($stateParams.tenant);
+                $scope.tenantInfo = name
+            }
+
+            if($stateParams.tenantName) {
+                $http.get('/tenant/'+ $stateParams.tenantName, {
+                    headers: AuthServ.getAuthHeader()
+                })
+                .success(function (data, status) {
+                    $scope.tenantId = data._id;
+                    console.log(data);
+                })
+                .error(function (data, status) {
+                    if(data.message == 'Invalid token') 
+                        $scope.sessionExpire();
+                    else
+                        growl.addErrorMessage(data.message);
+                });
             }
         }
     
@@ -78,22 +116,26 @@ app.controller('tenantUserCtrl', ['$scope', '$rootScope', '$http', '$location',
 
 
         //Get Tenant-User account details by Admin
-        $scope.getUserAccountDetails = function (id, srch) {
-            if(srch)  $scope.srchInfo = srch;
-            $http.get('/user/'+id, {
-                headers: AuthServ.getAuthHeader()
-            })
-            .success(function (data, status) {
-                $scope.account = data;
-                $scope.account.tenantName = data.tenantId.name;
-                $scope.account.tenantId = data.tenantId._id;
-            })
-            .error(function (data, status) {
-                if(data.message == 'Invalid token') 
-                    $scope.sessionExpire();
-                else
-                    growl.addErrorMessage(data.message);
-            });
+        $scope.getUserAccountDetails = function () {
+            var id;
+            if($stateParams.uname) id = $stateParams.uname;
+            if($stateParams.selectedId) id = $stateParams.selectedId;
+            if(id) {
+                $http.get('/userByName/'+id, {
+                    headers: AuthServ.getAuthHeader()
+                })
+                .success(function (data, status) {
+                    $scope.account = data;
+                    $scope.account.tenantName = data.tenantId.name;
+                    $scope.account.tenantId = data.tenantId._id;
+                })
+                .error(function (data, status) {
+                    if(data.message == 'Invalid token') 
+                        $scope.sessionExpire();
+                    else
+                        growl.addErrorMessage(data.message);
+                });
+            }
         }
 
         //Get Tenant-User account details by Tenant-Admin
@@ -138,11 +180,7 @@ app.controller('tenantUserCtrl', ['$scope', '$rootScope', '$http', '$location',
                 .success(function (data, status) {
                     growl.addSuccessMessage('User account has been created successfully');
                     $scope.page.view = 'search';
-                    if($scope.srchInfo){
-                        var srch = $scope.srchInfo;
-                        $scope.srch = srch;
-                        $scope.searchTenantUser(srch);
-                    } 
+                    
                 })
                 .error(function (data, status) {
                     if(data.message == 'Invalid token') 
@@ -201,6 +239,7 @@ app.controller('tenantUserCtrl', ['$scope', '$rootScope', '$http', '$location',
                     growl.addSuccessMessage('User account has been updated successfully');
                     $scope.getUserAccountDetails(dump._id);
                     $scope.page.view = 'view';
+                    $scope.searchTenantUser(localStorageService.get('userSearchObj'));
                 })
                 .error(function (data, status) {
                     if(data.message == 'Invalid token') 
@@ -239,25 +278,20 @@ app.controller('tenantUserCtrl', ['$scope', '$rootScope', '$http', '$location',
             }
         }
 
-        //Go users page
-        $scope.goBack = function () {
-            $scope.page.view = 'search';
-            if($scope.srchInfo) {
-                var srch = $scope.srchInfo;
-                $scope.srch = srch;
-                $scope.searchTenantUser(srch);
-            }           
-        }
 
         //Search Tenant-User
         $scope.searchTenantUser = function(searchObj){
+            if(searchObj){
+                localStorageService.set('userSearchObj', searchObj);
+            }
             if(!searchObj) searchObj = {};
+
             if(searchObj.tenantName != undefined) {
                 if(searchObj.tenantName._id)
                         searchObj.tenantId = searchObj.tenantName._id;
             }
-            if($stateParams.selectedId)
-                searchObj.tenantId = $stateParams.selectedId;
+            if($stateParams.tenantName)
+                searchObj.tenantId = $scope.tenantId;
             if($scope.user.scope == 'Tenant-Admin') 
                 searchObj.tenantId = $scope.user.tenantId;
             $http.post('/searchUser', searchObj,  {
@@ -266,6 +300,7 @@ app.controller('tenantUserCtrl', ['$scope', '$rootScope', '$http', '$location',
             .success(function (data, status) {
                 $scope.showUserResult = true;
                 $scope.resultList = data;
+                localStorageService.set('usersList', $scope.resultList);
                 $scope.currentPage = 0;
                 $scope.groupToPages();
             })
@@ -306,7 +341,6 @@ app.controller('tenantUserCtrl', ['$scope', '$rootScope', '$http', '$location',
                 headers: AuthServ.getAuthHeader()
             })
             .success(function (data, status) {
-                $scope.searchTenantUser();
                 growl.addSuccessMessage('User account has been activated successfully');
 
             })
@@ -394,6 +428,7 @@ app.controller('tenantUserCtrl', ['$scope', '$rootScope', '$http', '$location',
         };
       
         $scope.groupToPages = function () {
+            console.log('it came');
           $scope.pagedItems = [];
           $scope.filteredItems = $scope.resultList;
           $scope.filtered();

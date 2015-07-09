@@ -7,6 +7,8 @@ var app = angular.module('app', [
     'ngSanitize',
     'angular-growl',
     'ui.router',
+    'ct.ui.router.extras',
+    'LocalStorageModule',
     'ngRoute',
     'ui.bootstrap',
     'angularUtils.directives.dirPagination',
@@ -18,7 +20,7 @@ var app = angular.module('app', [
 
 .config(
   ['$stateProvider', '$urlRouterProvider', 'growlProvider', '$httpProvider', 'USER_ROLES',
-    function ($stateProvider,   $urlRouterProvider,   growlProvider, $httpProvider, USER_ROLES) {       
+    function ($stateProvider, $urlRouterProvider, growlProvider, $httpProvider, USER_ROLES) {       
         growlProvider.globalTimeToLive(3000);
         growlProvider.globalEnableHtml(true);
         $urlRouterProvider.otherwise("/error");   
@@ -81,62 +83,61 @@ var app = angular.module('app', [
           .state('createTenantUser', {
             url: "/tenantUserCreation",
               templateUrl: "app/views/tenant_user/tenant_user.html",
-              controller: 'tenantUserCtrl',
+              controller: 'tenantCtrl',
               data: {
                   authorizedRoles: [USER_ROLES.admin, USER_ROLES.tenantadmin]
               }
           }) 
           .state('tenants', {
             url: "/tenants",
-              templateUrl: "app/views/tenant/tenantHome.html",
+              templateUrl: "app/views/tenant/tenantSearchPage.html",
               controller: "tenantCtrl",
               data: {
                   authorizedRoles: [USER_ROLES.admin]
               }
 
           })
-          .state('tenant', {
-            url: "/tenant/:tenantId",
+          .state('tenantInfo', {
+            url: "/tenants/:tname",
               templateUrl: "app/views/tenant/tenant.html",
               controller: "tenantCtrl",
               data: {
                   authorizedRoles: [USER_ROLES.admin]
               }
-
           })
-          .state('tenantUsersOfTenant', {
-            url: "/tenantusersOfSelectedTenant/:selectedTenId",
-              templateUrl: "app/views/tenant/tenant_users_for_particular_tenant.html",
-              controller: "tenantCtrl",
+          .state('usersOfTenant', {
+            url: "/:tenantName/users",
+              templateUrl: "app/views/tenant_user/userSearchPage.html",
+              controller: "tenantUserCtrl",
               data: {
                   authorizedRoles: [USER_ROLES.admin]
               }
-
+          })
+          .state('userOfTenant', {
+            url: "/:tenant/users/:selectedId",
+              templateUrl: "app/views/tenant_user/tenantUser.html",
+              controller: "tenantUserCtrl",
+              data: {
+                  authorizedRoles: [USER_ROLES.admin]
+              }
           })
           .state('users', {
             url: "/users",
-              templateUrl: "app/views/tenant_user/userHome.html",
+              templateUrl: "app/views/tenant_user/userSearchPage.html",
               controller: "tenantUserCtrl",
               data: {
                   authorizedRoles: [USER_ROLES.admin, USER_ROLES.tenantadmin]
               }
-          })
-          .state('users.edit', {
-            url: "/:uname/edit",
+            })
+          .state('userEdit', {
+            url: "/users/:uname",
               templateUrl: "app/views/tenant_user/tenantUser.html",
               controller: "tenantUserCtrl",
               data: {
                   authorizedRoles: [USER_ROLES.admin, USER_ROLES.tenantadmin]
               }
           })
-          .state('usersOfTenant', {
-            url: "/users/:selectedId",
-              templateUrl: "app/views/tenant_user/userHome.html",
-              controller: "tenantUserCtrl",
-              data: {
-                  authorizedRoles: [USER_ROLES.admin]
-              }
-          })
+          
           .state('user', {
             url: "/user/:tenantUserId",
               templateUrl: "app/views/tenant_user/tenant_user.html",
@@ -212,6 +213,8 @@ var app = angular.module('app', [
 
 
           $httpProvider.interceptors.push('authInterceptor');
+
+           // $stickyStateProvider.enableDebug(true);
     }
   ]
 )
@@ -256,7 +259,9 @@ var app = angular.module('app', [
               $location.path('/login');
             } 
             else if($stateParams) {
-                console.log('your email is verifying............');
+                var params = angular.copy($stateParams);
+                if(params.username)
+                  console.log('your email is verifying............');
             } 
             else {
               $location.path('/login');

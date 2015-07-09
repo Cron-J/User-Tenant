@@ -105,7 +105,7 @@ exports.endpoints = [
     { method: 'POST', path: '/tenantSelfRegistration', config: Tenant.createTenantSelfRegistration}, 
     { method: 'POST', path: '/searchTenant', config: Tenant.searchTenant},
     { method: 'GET', path: '/exportTenant', config: Tenant.exportTenant},
-    { method: 'GET', path: '/tenant/{id}', config: Tenant.getTenant},
+    { method: 'GET', path: '/tenant/{name}', config: Tenant.getTenant},
     { method: 'PUT', path: '/tenant/{id}', config: Tenant.updateTenantByAdmin},
     { method: 'POST', path: '/user', config: User.createUser},
     { method: 'GET', path: '/tenantUser/{id}', config: User.getAllTenantUserByTenant},

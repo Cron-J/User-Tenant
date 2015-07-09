@@ -1,4 +1,4 @@
-<div  > 
+<div class="container"> 
   <div class="row ut-pageheader">
     <div class="ut-lead col-lg-10 col-md-10 ">Search Users</div>
     <div class="col-lg-2 col-md-2 pull-right">
@@ -81,7 +81,7 @@
             <h3>Sorry, search returned <b>0</b> results</h3>
           </div>
         </div>
-        <div class="col-lg-12 col-md-12" ng-show="filteredItems.length!==0" ng-show="showResult">
+        <div class="col-lg-12 col-md-12" ng-show="filteredItems.length!==0" >
           <div class="row">
             <h4>Search results - <b>{{filteredItems.length}}</b> Users</h4>
           </div>
@@ -108,19 +108,18 @@
                   <td>{{usr.isActive}}</td>
                   <td >
                     <span ng-hide="usr.username == user.username">
-                      <button type="button" ng-show="user.scope == 'Admin' && tenantInfo" 
-                      class="btn btn-default btn-md" 
-                      ng-click="getUserAccountDetails(usr._id);
-                      page.view = 'view'">
+                      <button type="button" class="btn btn-default btn-md" 
+                      ng-show="user.scope == 'Admin' && tenantInfo"
+                      ui-sref="userOfTenant({'tenant': tenantInfo, 'selectedId': usr.username})" >
                         <span class="fa fa-eye"></span> View
                       </button>
-                      <button type="button" 
+                      <a type="button" ui-sref="userEdit({uname:usr.username})" 
                       ng-hide="user.scope == 'Tenant-Admin' || tenantInfo"
                      class="btn btn-primary btn-md" 
-                      ng-click="getUserAccountDetails(usr._id, srch);
-                      page.view = 'edit'" data-toggle="tooltip" data-placement="top" title="Modify user information">
+                      
+                      data-toggle="tooltip" data-placement="top" title="Modify user information">
                         <span class="fa fa-edit"></span>
-                      </button>
+                      </a>
                       <button type="button" ng-hide="user.scope == 'Admin' || tenantInfo" 
                       class="btn btn-primary btn-md" ng-hide="tenantInfo" 
                       ng-click="getTenantUserbyTenant(usr._id, srch);
@@ -138,10 +137,11 @@
                       class="btn btn-warning btn-md" data-toggle="tooltip" data-placement="top" title="Activate user account">
                         <span class="fa fa-user-plus"></span>
                       </button>
-                      <button type="button" 
-                      
+                      <button type="button" class="btn btn-danger btn-md" 
+                      ng-hide="tenantInfo"
                       ng-click="activateTenantUser(usr._id, usr.tenantId, srch)" 
-                      class="btn btn-danger btn-md" data-toggle="tooltip" data-placement="top" title="Delete user account">
+                      data-toggle="tooltip" data-placement="top" 
+                      title="Delete user account">
                         <span class="fa fa-archive"></span>
                       </button>
                     </span>
@@ -171,3 +171,4 @@
     </div>
   </div>
 </div>
+<ui-view></ui-view>

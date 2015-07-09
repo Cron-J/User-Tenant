@@ -1,4 +1,4 @@
-<div >
+<div class="container">
 	<div class="row ut-pageheader">
     <div class="ut-lead col-lg-10 col-md-10 ">Search Tenants</div>
     <div class="col-lg-2 col-md-2 pull-right">
@@ -26,6 +26,7 @@
       <button class="btn btn-primary" ng-click="srch = {};">Reset</button>
     </div>
   </form>
+
   <div ng-show="showResult == true" >
     <div class="col-lg-12 col-md-12" ng-show="resultList.length==0">
       <div class="row">
@@ -50,10 +51,10 @@
             <td>{{tenant.name}}</td>
             <td>{{tenant.description}}</td>
             <td>
-              <button type="button" class="btn btn-primary btn-md" ng-click="getTenant(tenant._id, srch);page.view = 'edit'">
+              <button type="button" class="btn btn-primary btn-md" ui-sref="tenantInfo({'tname': tenant.name})">
                 <span class="fa fa-edit"></span> Edit
               </button>
-                <button type="button" class="btn btn-default btn-md" ng-click="getTenantUsersOfTenant(tenant._id)">
+                <button type="button" class="btn btn-default btn-md" ui-sref="usersOfTenant({'tenantName': tenant.name})">
                 <span class="fa fa-users"></span> Users</button>
             </td>
           </tr>

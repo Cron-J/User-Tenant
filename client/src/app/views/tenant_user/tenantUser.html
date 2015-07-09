@@ -1,4 +1,4 @@
-   <div  >
+   <div  class="container">
     <header>
         <p ng-show="page.view == 'create'" class="ut-lead">Add User</p>
         <p ng-show="page.view == 'view'" class="ut-lead">User Details</p>
@@ -111,9 +111,9 @@
                             <button class="btn btn-primary" ng-show="page.view == 'view'"  ng-click="page.view = 'edit';">Edit</button>
                             <!-- <button class="btn btn-default" ng-hide="isChanged" ng-hide="view" ui-sref="tenantHome">Cancel</button> -->
                         </span>
-                        <button class="btn btn-info" ng-show="tenantInfo && page.role == 'admin'" ng-click="page.view = 'search';"><i class="fa fa-arrow-left"></i> Back</button>
+                        <button class="btn btn-info" ng-show="tenantInfo && page.role == 'admin'" ui-sref="usersOfTenant({'tenantName': tenantInfo})"><i class="fa fa-arrow-left"></i> Back</button>
                         <span ng-hide="tenantInfo">
-                            <button class="btn btn-default" ng-hide="isChanged" ng-click="goBack()"><i class="fa fa-arrow-left"></i> Back</button>
+                            <button class="btn btn-default" ng-hide="isChanged" ui-sref="users"><i class="fa fa-arrow-left"></i> Back</button>
                             <button class="btn btn-default" ng-show="isChanged" ng-click="confirmationModal(true);">Cancel</button>
                             </span>
                         <div ng-include="'app/views/common/confirmationDailogBox.html'"></div>

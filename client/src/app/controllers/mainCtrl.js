@@ -1,9 +1,9 @@
 'use strict';
 
 app.controller('mainCtrl', ['$scope', '$location', '$rootScope', '$http', '$modal',
-		'$log','userInfo', 'countryList', 'AuthServ', 'growl', 
+		'$log','userInfo', 'suggestionsList', 'AuthServ', 'growl', 
     function ($scope, $location, $rootScope, $http, $modal, $log, userInfo, 
-    	countryList, AuthServ, growl) {
+    	suggestionsList, AuthServ, growl) {
         var _scope = {};
         _scope.init = function () {
         	$scope.current_usr = {};
