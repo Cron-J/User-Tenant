@@ -116,7 +116,8 @@ exports.endpoints = [
     { method: 'POST', path: '/sendActivationEmail', config: User.sendActivationEmail},
     { method: 'POST', path: '/sendCredentials', config: User.sendCredentials},
     { method: 'POST', path: '/changePassword', config: User.changePasswordRequest},
-     { method: 'POST', path: '/getSuggestions', config: User.usernameSuggestions}
+    { method: 'POST', path: '/getSuggestions', config: User.usernameSuggestions},
+    { method: 'DELETE', path: '/deleteAccount/{id}', config: User.deleteUser}
 
     
 ];

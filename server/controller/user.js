@@ -240,9 +240,8 @@ exports.activateTenantUser = {
             else{
                 tenantId = decoded.tenantId;
             }
-
             User.findUserById(request.payload.id, function(err, user) {
-                if(tenantId === user.tenantId) {
+                if(tenantId == user.tenantId._id) {
                     User.updateUser(request.payload.id, {"updatedBy": decoded.scope,"isActive" : true}, function(err) {
                         if(!err){
                             if(user){
@@ -372,8 +371,9 @@ exports.searchUser = {
         if (request.payload.tenantId) query['tenantId'] = request.payload.tenantId;
         if (request.payload.isActive) query['isActive'] = request.payload.isActive;
         if (request.payload.scope) query['isActive'] = request.payload.scope;
-        query['isEmailVerified'] = {'$ne': 'false'};
 
+        query['isEmailVerified'] = {'$ne': 'false'};
+        
         User.searchUser(query, function(err, user) {
             if (!err) {
                 for (var i = 0; i< user.length; i++) {
@@ -639,10 +639,10 @@ exports.getUser = {
 exports.getUserByName = {
     auth: {
         strategy: 'token',
-        scope: ['Admin']
+        scope: ['Admin', 'Tenant-Admin']
     },
     handler: function(request, reply) {
-            User.findUserByName(request.params.name, function(err, user) {
+            User.findUserByName(request.params.username, function(err, user) {
                 if(err){
                     return reply(Boom.badImplementation("unable to get user detail"));
                 }
@@ -862,6 +862,33 @@ exports.updateTenantUser = {
                 }
                 else{
                     return reply("user updated successfully");
+                }
+            });
+
+       });
+    }
+};
+
+/**
+    DELETE: /user/{id}
+    SCOPE: 'Admin', 'Tenant-Admin'
+    @param id : user id of Tenant User whose info need to be deleted.
+    Description: Delete Tenant User info by System Admin.
+ */
+
+exports.deleteUser = {
+    auth: {
+        strategy: 'token',
+        scope: ['Tenant-Admin','Admin']
+    },
+    handler: function(request, reply) {
+       Jwt.verify(request.headers.authorization.split(' ')[1], Config.key.privateKey, function(err, decoded) {           /* filterening unwanted attributes which may have in request.payload and can enter bad data */   
+            User.remove(request.params.id, function(err, user) {
+                if(err){
+                  return reply( Boom.badImplementation(err) ); // HTTP 403
+                }
+                else{
+                    return reply('User account sucessfully deleted')
                 }
             });
 

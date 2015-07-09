@@ -373,6 +373,26 @@ app.controller('tenantUserCtrl', ['$scope', '$rootScope', '$http', '$location',
             });
         }
 
+        //Delete Tenant-User
+         $scope.deleteTenantUser = function(id, srchObj){
+            // var obj = {
+            //     "id": id
+            // }
+            $http.delete('/deleteAccount/'+id,   {
+                headers: AuthServ.getAuthHeader()
+            })
+            .success(function (data, status) {
+                $scope.searchTenantUser(srchObj);
+                growl.addSuccessMessage('User account has been deleted successfully');
+            })
+            .error(function (data, status) {
+                if(data.message == 'Invalid token') 
+                    $scope.sessionExpire();
+                else if(data.message != "no user for tenant exist")
+                    growl.addErrorMessage(data.message);
+            });
+        }
+
         $scope.cancelView = function () {
             $scope.page.view = 'search';
         }
