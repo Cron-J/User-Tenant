@@ -13,6 +13,7 @@ var app = angular.module('app', [
     'ui.bootstrap',
     'angularUtils.directives.dirPagination',
     'multi-select',
+    'angularjs-dropdown-multiselect',
     'validation.match',
     'app.factory',
     'cons'
@@ -73,17 +74,17 @@ var app = angular.module('app', [
               }
           })
           .state('createTenant', {
-            url: "/tenantCreation",
-              templateUrl: "app/views/tenant/self_register.html",
+            url: "/newTenant",
+              templateUrl: "app/views/tenant/tenant.html",
               controller: 'tenantCtrl',
               data: {
-                  authorizedRoles: [USER_ROLES.admin, USER_ROLES.tenantadmin]
+                  authorizedRoles: [USER_ROLES.admin]
               }
           }) 
-          .state('createTenantUser', {
-            url: "/tenantUserCreation",
-              templateUrl: "app/views/tenant_user/tenant_user.html",
-              controller: 'tenantCtrl',
+          .state('createUser', {
+            url: "/newUser",
+              templateUrl: "app/views/tenant_user/tenantUser.html",
+              controller: 'tenantUserCtrl',
               data: {
                   authorizedRoles: [USER_ROLES.admin, USER_ROLES.tenantadmin]
               }

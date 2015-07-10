@@ -97,13 +97,11 @@ angular.module('app.factory', [])
    var promise;
    var myService = {
     async: function(email) {
-
         // $http returns a promise, which has a then function, which also returns a promise
         var obj = {'email': email}
         console.log(obj);
         promise = $http.post('/getSuggestions', obj)
         .success(function (data, status) {
-          data = ['hello', 'pollo']
           return data;   
         })
         .error(function (data, status) {
@@ -120,6 +118,28 @@ angular.module('app.factory', [])
     }
   };
   return myService;
+})
+.factory('rolesList', function ($http, AuthServ, growl) {
+    var promise;
+    var myService = {
+        async: function() {
+            // $http returns a promise, which has a then function, which also returns a promise
+            promise = $http.get('/getRoles')
+            .success(function (data, status) {
+              return data;   
+            })
+            .error(function (data, status) {
+                if(data.message == 'Invalid token') {
+                    delete $rootScope.user;
+                    growl.addErrorMessage('Session has expired');
+                } 
+                else
+                  growl.addErrorMessage(data.message);
+            });
 
+          // Return the promise to the controller
+          return promise;
+        }
+      };
+  return myService;
 });
-

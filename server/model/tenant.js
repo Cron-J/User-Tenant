@@ -76,6 +76,12 @@ Tenant.statics.updateTenant = function(id, tenant, callback) {
     }, tenant, callback);
 };
 
+Tenant.statics.findTenantById = function(id, callback) {
+    this.findOne({
+        '_id': id
+    }, callback);
+};
+
 Tenant.statics.findTenantByName = function(name, callback) {
     this.findOne({
         'name': name

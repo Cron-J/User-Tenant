@@ -2,7 +2,8 @@
 
 // Load modules
 
-var User      = require('./controller/user'),
+var Role      = require('./controller/role'),
+    User      = require('./controller/user'),
 	Tenant    = require('./controller/tenant'),
     Static    = require('./static'),
     Staticlist= require('./Utility/staticlist');
@@ -11,7 +12,8 @@ var User      = require('./controller/user'),
 exports.endpoints = [
 
     { method: 'GET',  path: '/{somethingss*}', config: Static.get },
-    { method: 'GET',  path: '/countryList', config: Staticlist.getCountryList },
+    { method: 'POST',  path: '/roles', config: Role.createRoles },
+    { method: 'GET',  path: '/getRoles', config: Role.getRoles },
     { method: 'POST', path: '/admin', config: User.createAdmin},
 
     /**

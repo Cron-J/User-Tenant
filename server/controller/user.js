@@ -8,6 +8,8 @@ var Boom = require('boom'),
     json2csv = require('json2csv'),
     constants = require('../Utility/constants').constants,
     Jwt = require('jsonwebtoken'),
+    async = require("async"),
+    Role = require('../model/role').Role,
     Tenant = require('../model/tenant').Tenant,
     User = require('../model/user').User;
 
@@ -24,7 +26,7 @@ exports.createAdmin = {
                     delete request.payload.tenantId;
                 }
                 request.payload.password = Crypto.encrypt(request.payload.password);
-                request.payload.scope = "Admin";
+                request.payload.scope = [0];
                 request.payload.createdBy = "Admin";
                 request.payload.updatedBy = "Admin";
                 request.payload.isActive= true;
@@ -152,16 +154,29 @@ exports.createTenantUser = {
                         request.payload.updatedBy = "Admin";
                         request.payload.isActive = true;
                         request.payload.isEmailVerified = true;
-                        
+                        var roles = [];
                         User.saveUser( request.payload, function(err, user) {
-                            if (!err) {
-                                var tokenData = {
-                                    userName: user.userName,
-                                    scope: [user.scope],
-                                    id: user._id
-                                };
-                                EmailServices.sendAccountCreationMail(user, tenant);
-                                return reply( "Tenant user successfully created" );
+                            if (!err) {   
+                                async.each(user.scope, function(obj, callback){
+                                    Role.findRoleById(obj.id, function(err, role) {
+                                        if (!err) {
+                                            roles.push(role.label);
+                                            callback();
+                                        } 
+                                    });
+                                },
+                                function(err){
+                                    if(roles.length > 0) {
+                                        for (var i = 0; i < roles.length; i++) {
+                                            if(i == 0) user.scope = roles[i];
+                                            else user.scope += ", "+roles[i];
+                                        };
+                                        EmailServices.sendAccountCreationMail(user, tenant);
+                                        return reply( "Tenant user successfully created" );
+                                    } else {
+                                        reply(Boom.forbidden("User has no role"));
+                                    }
+                                });
                             } else {
                                 if ( constants.kDuplicateKeyError === err.code || constants.kDuplicateKeyErrorForMongoDBv2_1_1 === err.code ) {
                                     return reply(Boom.forbidden("user email already registered"));
@@ -465,12 +480,24 @@ exports.usernameSuggestions = {
                     suggestions.push(name); 
             };
             //checking record is in db or not
-            for (var i = 0; i < suggestions.length; i++) {
-                if(isNameExisted(suggestions[i]) === true)
-                    suggestions.splice(i,1);
-            };
-            
-            reply(suggestions);
+            console.log(suggestions);
+            console.log('((((((((((((())))))))))))))');
+            var suggestionsList = [];
+            async.each(suggestions, function(suggestion, callback){
+                 User.findUserByName(suggestion, function(err, user) {
+                        if (!err) {
+                            if(user === null) suggestionsList.push(suggestion);
+                            callback();
+                        } 
+                    
+                }); 
+            },
+            function(err){
+                console.log('++++++++++++++++++++++++++',suggestionsList);
+                reply(suggestionsList);
+            });
+
+           
     }
 };
 
@@ -481,15 +508,6 @@ var isDuplicated = function (array, name) {
     };
     if(count > 0) return true;
     else return false;
-}
-
-var isNameExisted = function (name) {
-    User.findUserByName({username: name}, function(err, user) {
-        if (!err) {
-            if(user === null) return false;
-            else return true;
-        } 
-    });
 }
 
 exports.exportUser = {
@@ -543,23 +561,27 @@ exports.login = {
                                     reply(Boom.forbidden("Oops something went wrong!"));
                                 }
                                 else{
-                                    var tokenData = {
-                                        username: user.username,
-                                        scope: user.scope,
-                                        tenantId : user.tenantId,
-                                        id: user._id
-                                    },
-                                    res = {
-                                        username: user.username,
-                                        scope: user.scope,
-                                        tenantId: user.tenantId,
-                                        token: Jwt.sign(tokenData, privateKey)
-                                    };
+                                    Role.findRoles(user.scope, function(err, role){
+                                        if(!err) {
+                                            var tokenData = {
+                                                username: user.username,
+                                                scope: role.label,
+                                                tenantId : user.tenantId,
+                                                id: user._id
+                                            },
+                                            res = {
+                                                username: user.username,
+                                                scope: role.label,
+                                                tenantId: user.tenantId,
+                                                token: Jwt.sign(tokenData, privateKey)
+                                            };
 
-                                    reply(res);
+                                            reply(res);
+                                        }
+                                        else  reply(Boom.forbidden("Oops something went wrong!"));
+                                    });
                                 }
                             });
-
                     }
                 } else reply(Boom.forbidden("invalid username or password"));
             } else {
@@ -609,8 +631,7 @@ exports.forgotPassword = {
 */
 exports.getUser = {
     auth: {
-        strategy: 'token',
-        scope: ['User', 'Tenant-Admin', 'Admin']
+        strategy: 'token'
     },
     handler: function(request, reply) {
        Jwt.verify(request.headers.authorization.split(' ')[1], Config.key.privateKey, function(err, decoded) {        

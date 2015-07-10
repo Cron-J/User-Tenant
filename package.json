@@ -19,7 +19,8 @@
     "mongoose": "3.8",
     "mongoose-validators": "^0.1.0",
     "nodemailer": "^0.7.1",
-    "supertest": "^0.15.0"
+    "supertest": "^0.15.0",
+    "mongoose-auto-increment": "^3.0.8"
   },
   "keywords": [
     "node.js",

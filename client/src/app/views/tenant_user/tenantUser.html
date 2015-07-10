@@ -48,9 +48,9 @@
                 </div>
             </div>
             <div class="form-group" ng-show="suggestions">
-                <div class="col-sm-9 col-sm-offset-3">
-                    <div class="row col-sm-3"><b>Suggestions: </b></div>
-                    <div class="col-sm-2" ng-repeat="s in suggestions">
+                <div class="col-sm-5 col-sm-offset-2">
+                    <div class="row "><b>Suggestions: </b></div>
+                    <div class="col-sm-4" ng-repeat="s in suggestions">
                         {{s}}<span ng-hide="$last">, </span>
                     </div>
                 </div>
@@ -84,12 +84,13 @@
                 <div class="form-group">
                     <label class="col-sm-2 control-label">User Role</label>
                     <div class="col-sm-3">
-                        <select class="form-control" name="role" ng-model="account.scope" ng-disabled="page.view == 'view'" required>
+                        <div ng-dropdown-multiselect="" options="rolesList" selected-model="account.scope" extra-settings="multiSelectText" ></div>
+                        <!-- <select class="form-control" name="role" ng-model="account.scope" ng-disabled="page.view == 'view'" required>
                             <option value="">Select Role</option>
                             <option ng-hide="page.role == 'tenant-admin'" value="Admin">Admin</option>
                             <option value="Tenant-Admin">Tenant-Admin</option>
                             <option value="User">User</option>
-                        </select>
+                        </select> -->
                     </div>
                 </div>
             </div>  

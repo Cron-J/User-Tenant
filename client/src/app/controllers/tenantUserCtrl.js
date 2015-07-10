@@ -1,12 +1,10 @@
 
 app.controller('tenantUserCtrl', ['$scope', '$rootScope', '$http', '$location', 
     'AuthServ', 'growl', '$filter', '$stateParams', '$modal', '$log', 'userInfo',
-    'suggestionsList', 'localStorageService', '$previousState',
+    'suggestionsList', 'rolesList', 'localStorageService', '$previousState',
     function ($scope, $rootScope, $http, $location, AuthServ, growl, $filter, 
-        $stateParams, $modal, $log, userInfo, suggestionsList, localStorageService,
+        $stateParams, $modal, $log, userInfo, suggestionsList, rolesList,localStorageService,
         $previousState) {
-        $scope.testclass = 'testclass';
-        console.log('$stateParams',$stateParams);
         var _scope = {};
         _scope.init = function() {
             if($location.path() == '/users') {
@@ -19,11 +17,20 @@ app.controller('tenantUserCtrl', ['$scope', '$rootScope', '$http', '$location',
                     }
                 });
             }
+            rolesList.async().then(function(response) {
+                $scope.rolesList = response.data;
+            });
+            $scope.multiSelect = {displayProp: 'label'};
 
             $scope.page ={
                 view: 'edit',
                 role: 'admin'
             }
+            if($location.path() == "/newUser") {
+                $scope.account = {scope:[]};
+                $scope.page.view = 'create';
+            }
+            
             if($scope.user.scope == 'Tenant-Admin')
                 $scope.page.role = 'tenant-admin';
             var previous = $previousState.get();
@@ -42,7 +49,7 @@ app.controller('tenantUserCtrl', ['$scope', '$rootScope', '$http', '$location',
             if(previous == null) {
                 localStorageService.remove('userSearchObj');
             }
-            console.log(localStorageService.keys());
+
             if($stateParams.uname || $stateParams.selectedId){
                 if($stateParams.selectedId) $scope.page.view = 'view';
                 $scope.getUserAccountDetails();
@@ -87,6 +94,16 @@ app.controller('tenantUserCtrl', ['$scope', '$rootScope', '$http', '$location',
                         growl.addErrorMessage(data.message);
                 });
             }
+            $scope.multiSelectText = {
+                smartButtonMaxItems: 3,
+                smartButtonTextConverter: function(itemText, originalItem) {
+                    if (itemText === 'Jhon') {
+                    return 'Jhonny!';
+                    }
+
+                    return itemText;
+                }
+            };
         }
     
         $scope.authError = null;
@@ -179,7 +196,7 @@ app.controller('tenantUserCtrl', ['$scope', '$rootScope', '$http', '$location',
                 })
                 .success(function (data, status) {
                     growl.addSuccessMessage('User account has been created successfully');
-                    $scope.page.view = 'search';
+                    $location.path('/users')
                     
                 })
                 .error(function (data, status) {
@@ -448,7 +465,6 @@ app.controller('tenantUserCtrl', ['$scope', '$rootScope', '$http', '$location',
         };
       
         $scope.groupToPages = function () {
-            console.log('it came');
           $scope.pagedItems = [];
           $scope.filteredItems = $scope.resultList;
           $scope.filtered();

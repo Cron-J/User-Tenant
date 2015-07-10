@@ -4,8 +4,8 @@ var mongoose = require('mongoose'),
     Schema = mongoose.Schema,
     ObjectId = Schema.Types.ObjectId,
     constants = require('../Utility/constants').constants,
-    validator = require('mongoose-validators');
-
+    validator = require('mongoose-validators'),
+    Role = require('./role').Role;
 /**
  * @module  User
  * @description contain the details of Attribute
@@ -114,11 +114,10 @@ var User = new Schema({
     },
 
     /** 
-      Scope. It can only contain string, is required field, and should have value from enum array.
+      Scope. It can only contain array, is required field.
     */
     scope: {
-        type: String,
-        enum: ['Admin', 'Tenant-Admin', 'User'],
+        type: Array,
         required: true
     }
 
