@@ -5,33 +5,23 @@ var Boom = require('boom'),
     Jwt = require('jsonwebtoken'),
     constants = require('../Utility/constants').constants,
     Crypto = require('../Utility/cryptolib'),
-    Role =  require('../model/role').Role,
+    Activity =  require('../model/activity').Activity,
     async = require("async");
 
-exports.createRoles = {
+exports.createActivities = {
     handler: function(request, reply) {
-        var roles = Config.roles;
-        async.each(roles, function(role, callback){
-                Role.saveRole(role, function(err, callback){
+        var activities = Config.activities;
+        async.each(activities, function(activity, callback){
+                Activity.saveActivity(activity, function(err, callback){
                     if(err) {
                         if ( constants.kDuplicateKeyError === err.code || constants.kDuplicateKeyErrorForMongoDBv2_1_1 === err.code ) {
-                            reply(Boom.forbidden( "Role(s) already exist" ));
+                            reply(Boom.forbidden( "Activity(s) already exist" ));
                         } else reply( Boom.forbidden( err ) );
                     }
-                    else reply('Role(s) Created');
+                    else reply('Activities Created');
                 });
         });
     }
 };
 
-exports.getRoles = {
-    handler: function(request, reply) {
-        Role.getList({}, function(err, result){
-            if(!err) {
-                return reply(result);
-            }
-            else reply(err);
-        });
-    }
-};
 

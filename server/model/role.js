@@ -7,7 +7,8 @@ var mongoose = require('mongoose'),
     validator = require('mongoose-validators'),
     db = require('../config/db').db,
     autoIncrement = require('mongoose-auto-increment'),
-    async = require("async");
+    async = require("async"),
+    Role = require('./role').Role;
     autoIncrement.initialize(db);
 
 /** 
@@ -33,6 +34,12 @@ var Role = new Schema({
         required: true,
         unique: true,
         validate: [validator.isLength(2,30), validator.matches(constants.nameRegex)]
+    },
+    /** 
+      Activity. It can only contain array, is required field.
+    */
+    permissions: {
+        type: Array
     }
 });
 
@@ -41,7 +48,7 @@ Role.statics.saveRole = function(requestData, callback) {
 };
 
 Role.statics.findRoles = function(array, callback) {
-        this.findOne({
+        this.find({
             'id': { $in: array}
         }, callback);
 };

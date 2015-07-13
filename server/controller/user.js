@@ -25,6 +25,9 @@ exports.createAdmin = {
                 if(request.payload.tenantId) {
                     delete request.payload.tenantId;
                 }
+                console.log(request.payload);
+                console.log('*************************');
+                console.log(request.payload.password);
                 request.payload.password = Crypto.encrypt(request.payload.password);
                 request.payload.scope = [0];
                 request.payload.createdBy = "Admin";
@@ -102,7 +105,7 @@ exports.resendVerificationMail = {
 
 
 
-exports.createUser = {
+exports.createUserSelfRegistration = {
     handler: function(request, reply) {
             if( !request.payload.tenantId ){
                 return reply(Boom.forbidden("Please select tenant"));
@@ -111,7 +114,7 @@ exports.createUser = {
                 Tenant.findTenantById( request.payload.tenantId, function( err, tenant ) {
                     if( tenant ){
                         request.payload.password = Crypto.encrypt(request.payload.password);
-                        request.payload.scope = "User";
+                        request.payload.scope = [2];
                         request.payload.createdBy = "Self";
                         request.payload.updatedBy = "Self";
                         User.saveUser( request.payload, function(err, user) {
@@ -193,48 +196,48 @@ exports.createTenantUser = {
 };
 
 
-exports.createTenantUserbyTenant = {
-    handler: function(request, reply) {
-        Jwt.verify(request.headers.authorization.split(' ')[1], Config.key.privateKey, function(err, decoded) { 
-            if( !request.payload.tenantId ){
-                return reply(Boom.forbidden("tenant is not assigned"));
-            }
-            else {   
-                    request.payload.password = Crypto.encrypt(Math.random().toString(36).slice(3));
-                    request.payload.createdBy = "Tenant-Admin";
-                    request.payload.updatedBy = "Tenant-Admin";
-                    request.payload.isActive = true;
-                    request.payload.isEmailVerified = true;
+// exports.createTenantUserbyTenant = {
+//     handler: function(request, reply) {
+//         Jwt.verify(request.headers.authorization.split(' ')[1], Config.key.privateKey, function(err, decoded) { 
+//             if( !request.payload.tenantId ){
+//                 return reply(Boom.forbidden("tenant is not assigned"));
+//             }
+//             else {   
+//                     request.payload.password = Crypto.encrypt(Math.random().toString(36).slice(3));
+//                     request.payload.createdBy = "Tenant-Admin";
+//                     request.payload.updatedBy = "Tenant-Admin";
+//                     request.payload.isActive = true;
+//                     request.payload.isEmailVerified = true;
                     
-                    User.saveUser( request.payload, function(err, user) {
-                        if (!err) {
-                            var tokenData = {
-                                userName: user.userName,
-                                scope: [user.scope],
-                                id: user._id
-                            };
-                            Tenant.findTenantById(decoded.tenantId, function(err, tenant) {
-                                if(!err) {
-                                    if(tenant)
-                                        EmailServices.sendAccountCreationMail(user, tenant);
-                                    else
-                                        return reply( 'no tenant with id ');
-                                }
-                                else {
-                                    return reply( Boom.forbidden(err) );
-                                }
-                            });
-                            return reply( "Tenant user successfully created" );
-                        } else {
-                            if ( constants.kDuplicateKeyError === err.code || constants.kDuplicateKeyErrorForMongoDBv2_1_1 === err.code ) {
-                                return reply(Boom.forbidden("user email already registered"));
-                            } else return reply( Boom.forbidden(err) ); // HTTP 403
-                        }
-                    });
-                }
-        });
-    }
-};
+//                     User.saveUser( request.payload, function(err, user) {
+//                         if (!err) {
+//                             var tokenData = {
+//                                 userName: user.userName,
+//                                 scope: [user.scope],
+//                                 id: user._id
+//                             };
+//                             Tenant.findTenantById(decoded.tenantId, function(err, tenant) {
+//                                 if(!err) {
+//                                     if(tenant)
+//                                         EmailServices.sendAccountCreationMail(user, tenant);
+//                                     else
+//                                         return reply( 'no tenant with id ');
+//                                 }
+//                                 else {
+//                                     return reply( Boom.forbidden(err) );
+//                                 }
+//                             });
+//                             return reply( "Tenant user successfully created" );
+//                         } else {
+//                             if ( constants.kDuplicateKeyError === err.code || constants.kDuplicateKeyErrorForMongoDBv2_1_1 === err.code ) {
+//                                 return reply(Boom.forbidden("user email already registered"));
+//                             } else return reply( Boom.forbidden(err) ); // HTTP 403
+//                         }
+//                     });
+//                 }
+//         });
+//     }
+// };
 
 /**
    POST: /activateUser
@@ -385,7 +388,7 @@ exports.searchUser = {
         if (request.payload.email) query['email'] = new RegExp(request.payload.email, "i");
         if (request.payload.tenantId) query['tenantId'] = request.payload.tenantId;
         if (request.payload.isActive) query['isActive'] = request.payload.isActive;
-        if (request.payload.scope) query['isActive'] = request.payload.scope;
+        if (request.payload.scope) query['scope'] = request.payload.scope;
 
         query['isEmailVerified'] = {'$ne': 'false'};
         
@@ -480,8 +483,6 @@ exports.usernameSuggestions = {
                     suggestions.push(name); 
             };
             //checking record is in db or not
-            console.log(suggestions);
-            console.log('((((((((((((())))))))))))))');
             var suggestionsList = [];
             async.each(suggestions, function(suggestion, callback){
                  User.findUserByName(suggestion, function(err, user) {
@@ -493,7 +494,6 @@ exports.usernameSuggestions = {
                 }); 
             },
             function(err){
-                console.log('++++++++++++++++++++++++++',suggestionsList);
                 reply(suggestionsList);
             });
 
@@ -565,13 +565,13 @@ exports.login = {
                                         if(!err) {
                                             var tokenData = {
                                                 username: user.username,
-                                                scope: role.label,
+                                                scope: role,
                                                 tenantId : user.tenantId,
                                                 id: user._id
                                             },
                                             res = {
                                                 username: user.username,
-                                                scope: role.label,
+                                                scope: role,
                                                 tenantId: user.tenantId,
                                                 token: Jwt.sign(tokenData, privateKey)
                                             };
@@ -641,10 +641,13 @@ exports.getUser = {
                 }
                 else{
                     if(user){
-                        user.password = undefined;
-                        return reply(user);    
+                        Role.findRoles(user.scope, function(err, role) {
+                            user.password = undefined;
+                            user.scope = role;
+                            return reply(user);    
+                        });
                     }
-                    return reply(Boom.forbidden("no user exist"));
+                    else return reply(Boom.forbidden("no user exist"));
                 }
             });
 

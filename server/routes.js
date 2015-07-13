@@ -2,7 +2,8 @@
 
 // Load modules
 
-var Role      = require('./controller/role'),
+var Activity  = require('./controller/activity'),
+    Role      = require('./controller/role'),
     User      = require('./controller/user'),
 	Tenant    = require('./controller/tenant'),
     Static    = require('./static'),
@@ -12,6 +13,7 @@ var Role      = require('./controller/role'),
 exports.endpoints = [
 
     { method: 'GET',  path: '/{somethingss*}', config: Static.get },
+    { method: 'POST',  path: '/activities', config: Activity.createActivities },
     { method: 'POST',  path: '/roles', config: Role.createRoles },
     { method: 'GET',  path: '/getRoles', config: Role.getRoles },
     { method: 'POST', path: '/admin', config: User.createAdmin},
@@ -109,12 +111,12 @@ exports.endpoints = [
     { method: 'GET', path: '/exportTenant', config: Tenant.exportTenant},
     { method: 'GET', path: '/tenant/{name}', config: Tenant.getTenant},
     { method: 'PUT', path: '/tenant/{id}', config: Tenant.updateTenantByAdmin},
-    { method: 'POST', path: '/user', config: User.createUser},
+    { method: 'POST', path: '/user', config: User.createUserSelfRegistration},
     { method: 'GET', path: '/tenantUser/{id}', config: User.getAllTenantUserByTenant},
     { method: 'GET', path: '/tenantDeactiveUser/{id}', config: User.getAllDeactiveTenantUserByTenant},
     { method: 'POST', path: '/tenantUser', config: User.createTenantUser},
     { method: 'POST', path: '/tenantCreation', config: Tenant.createTenantByAdmin},
-    { method: 'POST', path: '/tenantUserCreation', config: User.createTenantUserbyTenant},
+    // { method: 'POST', path: '/tenantUserCreation', config: User.createTenantUserbyTenant},
     { method: 'POST', path: '/sendActivationEmail', config: User.sendActivationEmail},
     { method: 'POST', path: '/sendCredentials', config: User.sendCredentials},
     { method: 'POST', path: '/changePassword', config: User.changePasswordRequest},

@@ -17,7 +17,7 @@ exports.createTenantSelfRegistration = {
              if (!err) {
                 request.payload.user.tenantId = tenant._id;
                 request.payload.user.password = Crypto.encrypt(request.payload.user.password);
-                request.payload.user.scope = "Tenant-Admin";
+                request.payload.user.scope = [1];
                 request.payload.user.createdBy = "Self";
                 request.payload.user.updatedBy = "Self";
                 request.payload.user.isActive = true;
