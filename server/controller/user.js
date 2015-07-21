@@ -9,11 +9,14 @@ var Boom = require('boom'),
     constants = require('../Utility/constants').constants,
     Jwt = require('jsonwebtoken'),
     async = require("async"),
+    ValidateActivity = require('../Utility/validateActivity'),
     Role = require('../model/role').Role,
     Tenant = require('../model/tenant').Tenant,
     User = require('../model/user').User;
 
 var privateKey = Config.key.privateKey;
+
+ 
 
 exports.createAdmin = {
     handler: function(request, reply) {
@@ -107,6 +110,7 @@ exports.resendVerificationMail = {
 
 exports.createUserSelfRegistration = {
     handler: function(request, reply) {
+        console.log('******************', request.payload);
             if( !request.payload.tenantId ){
                 return reply(Boom.forbidden("Please select tenant"));
             }
@@ -241,86 +245,64 @@ exports.createTenantUser = {
 
 /**
    POST: /activateUser
-   SCOPE: 'Admin', 'Tenant-Admin'
    Description: Activate tenant User.
 */
-exports.activateTenantUser = {
-    auth: {
-        strategy: 'token',
-        scope: ['Tenant-Admin', 'Admin']
-    },
-    handler: function(request, reply) {
-       Jwt.verify(request.headers.authorization.split(' ')[1], Config.key.privateKey, function(err, decoded) { 
-            var tenantId;
-            if(decoded.scope === 'Admin'){
-                tenantId = request.payload.tenantId;
-            }
-            else{
-                tenantId = decoded.tenantId;
-            }
+exports.activateUser = function(request, reply){
+    var tenantId = request.payload.tenantId;
+    User.activateUser(request.payload.id, request.pre.AU.scope[0].label, function(err) {
+        if(request.pre.AU.tenantId === undefined || tenantId == request.pre.AU.tenantId) {
             User.findUserById(request.payload.id, function(err, user) {
-                if(tenantId == user.tenantId._id) {
-                    User.updateUser(request.payload.id, {"updatedBy": decoded.scope,"isActive" : true}, function(err) {
-                        if(!err){
-                            if(user){
-                                if(user.isActive == false) {
-                                    EmailServices.sendUserActivationMail(user);
-                                    return reply('Activation email has sent');   
-                                }
-                                else 
-                                    return reply(Boom.forbidden("User is already activated"));
-                            }
+                if(!err){
+                    if(user){
+                        if(user.isActive == true) {
+                            EmailServices.sendUserActivationMail(user);
+                            return reply('Activation email has been sent');   
                         }
-                        else{
-                            return reply(Boom.forbidden("Unable to activate user"));
-                        }
-                    });
+                        else 
+                            return reply(Boom.forbidden("User is already activated"));
+                    }
                 }
-                else {
-                    return reply(Boom.forbidden("Your have no permission to activate this user"));
+                else{
+                    return reply(Boom.forbidden("Unable to activate user"));
                 }
             });
-       });
-    }
+        }
+        else {
+            return reply(Boom.forbidden("Your don't have permission to activate this user"));
+        }
+    });
+
 };
 
 /**
    POST: /deActivateUser
-   SCOPE: 'Admin', 'Tenant-Admin'
    Description: deActivate tenant User.
 */
-exports.deActivateTenantUser = {
-    auth: {
-        strategy: 'token',
-        scope: ['Tenant-Admin', 'Admin']
-    },
-    handler: function(request, reply) {
-       Jwt.verify(request.headers.authorization.split(' ')[1], Config.key.privateKey, function(err, decoded) {     
-            var tenantId;
-            if(decoded.scope === 'Admin'){
-                tenantId = request.payload.tenantId;
-            }
-            else{
-                tenantId = decoded.tenantId;
-            }
-
-            User.deActivateUser(request.payload.id, tenantId, function(err, user) {
+exports.deActivateUser = function(request, reply){
+    var tenantId = request.payload.tenantId;
+    if(request.pre.DU.tenantId === undefined || tenantId == request.pre.DU.tenantId) {    
+        User.deActivateUser(request.payload.id, request.pre.DU.scope[0].label, function(err) { 
                 if(err){
-                    return reply(Boom.badImplementation("unable to deactivate user"));
+                    return reply(Boom.badImplementation("Unable to deactivate user"));
                 }
-                else{
-                    if(user){
-                        EmailServices.sentMailUserDeactivation(user);
-                        user.password = undefined;
-                        user.scope = undefined;
-                        return reply(user);    
-                    }
-                    return reply(Boom.forbidden("no user exist"));
+                else{;
+                    User.findUserById(request.payload.id, function(err, user) {
+                        if(user){
+                            if(user.isActive == false) {
+                                EmailServices.sentMailUserDeactivation(user);
+                                return reply('Deactivation email has been sent');
+                            }
+                            else  
+                              return reply(Boom.forbidden("User is already deactivated"));  
+                        }
+                        else return reply(Boom.forbidden("no user exist"));
+                    });
                 }
-            });
-
-       });
+        });
     }
+    else 
+        return reply(Boom.forbidden("Your don't have permission to activate this user"));
+    
 };
 
 /**
@@ -375,34 +357,42 @@ exports.sendCredentials = {
     SCOPE: 'Admin'
     Description: Search User based on certain field/criteria (firstName, lastName, email, tenantId).
 */
-exports.searchUser = {
-    auth: {
-        strategy: 'token',
-        scope: ['Admin', 'Tenant-Admin']
-    },
-    handler: function(request, reply) {
-        var query = {};
-        if (request.payload.username) query['username'] = new RegExp(request.payload.username, "i");
-        if (request.payload.firstName) query['firstName'] = new RegExp(request.payload.firstName, "i");
-        if (request.payload.lastName) query['lastName'] = new RegExp(request.payload.lastName, "i");
-        if (request.payload.email) query['email'] = new RegExp(request.payload.email, "i");
-        if (request.payload.tenantId) query['tenantId'] = request.payload.tenantId;
-        if (request.payload.isActive) query['isActive'] = request.payload.isActive;
-        if (request.payload.scope) query['scope'] = request.payload.scope;
+exports.searchUser =  function(request, reply) {    
+    var query = {};
+    if (request.payload.username) query['username'] = new RegExp(request.payload.username, "i");
+    if (request.payload.firstName) query['firstName'] = new RegExp(request.payload.firstName, "i");
+    if (request.payload.lastName) query['lastName'] = new RegExp(request.payload.lastName, "i");
+    if (request.payload.email) query['email'] = new RegExp(request.payload.email, "i");
+    if (request.payload.tenantId) query['tenantId'] = request.payload.tenantId;
+    if (request.payload.isActive) query['isActive'] = request.payload.isActive;
+    if (request.payload.scope) query['scope'] = request.payload.scope;
 
-        query['isEmailVerified'] = {'$ne': 'false'};
-        
-        User.searchUser(query, function(err, user) {
-            if (!err) {
-                for (var i = 0; i< user.length; i++) {
-                   if( user[i].password ) { user[i].password = undefined; }
-                }
-                return reply(user);
-            } else reply(Boom.forbidden(err));
-        });
-        
-        // EmailServices.sentUserActivationMailToAdmins();
-    }
+    query['isEmailVerified'] = {'$ne': 'false'};
+    
+    User.searchUser(query, function(err, users) {
+        if (!err) {
+            async.each(users, function(user, callback){
+                if( user.password ) { user.password = undefined; }
+                var roleList = [];
+                    Role.findRoles(user.scope, function(err, roles) {
+                        if(!err) {
+                             for (var i = 0; i < roles.length; i++) {
+                                 user.scope = roles[i].label;
+                             };
+                             callback();
+                        }
+                        else reply(Boom.forbidden(err));
+                    });
+                },
+                    function(err){
+                       
+                        return reply(users);
+                    }
+                );
+          
+            
+        } else reply(Boom.forbidden(err));
+    });
 };
 
 /**
@@ -510,12 +500,8 @@ var isDuplicated = function (array, name) {
     else return false;
 }
 
-exports.exportUser = {
-    auth: {
-        strategy: 'token',
-        scope: ['Admin']
-    },
-    handler: function(request, reply) {
+exports.exportUser = function(request, reply){
+   console.log('sdsddsdfsdfsdf',request.pre.val);
         var query = {};
             query['isEmailVerified'] = {'$ne': 'false'};
         var fieldsArray = ['username', 'firstName', 'lastName', 'email', 'scope', 'isActive'];
@@ -528,7 +514,6 @@ exports.exportUser = {
                 });
             } else reply(Boom.forbidden(err));
         });
-    }
 };
 
 /**
@@ -563,6 +548,19 @@ exports.login = {
                                 else{
                                     Role.findRoles(user.scope, function(err, role){
                                         if(!err) {
+                                            var roles = [];
+                                            for (var i = 0; i < role.length; i++) {
+                                                roles.push(role[i].id)
+                                                if(i === 0 ) 
+                                                   var permissions = role[i].permissions;
+                                                else {
+                                                    for (var j = 0; j < role[i].permissions.length; j++) {
+                                                        if(permissions.indexOf(role[i].permissions[j]) === -1)
+                                                            permissions.push(role[i].permissions[j]);
+                                                    };
+                                                }
+                                            };
+                                            
                                             var tokenData = {
                                                 username: user.username,
                                                 scope: role,
@@ -571,8 +569,9 @@ exports.login = {
                                             },
                                             res = {
                                                 username: user.username,
-                                                scope: role,
+                                                scope: roles,
                                                 tenantId: user.tenantId,
+                                                permissions: permissions,
                                                 token: Jwt.sign(tokenData, privateKey)
                                             };
 
@@ -643,7 +642,6 @@ exports.getUser = {
                     if(user){
                         Role.findRoles(user.scope, function(err, role) {
                             user.password = undefined;
-                            user.scope = role;
                             return reply(user);    
                         });
                     }
@@ -660,26 +658,25 @@ exports.getUser = {
     @param id : username of User whose info is to be get
     Description: Get User's information.
 */
-exports.getUserByName = {
-    auth: {
-        strategy: 'token',
-        scope: ['Admin', 'Tenant-Admin']
-    },
-    handler: function(request, reply) {
-            User.findUserByName(request.params.username, function(err, user) {
-                if(err){
-                    return reply(Boom.badImplementation("unable to get user detail"));
-                }
-                else{
+exports.getUserByName = function(request, reply){
+    console.log(request.params);
+        User.findUserByName(request.params.username, function(err, user) {
+            if(!err){
+                if(request.pre.UBN.tenantId === undefined || user.tenantId._id == request.pre.UBN.tenantId) {
+                    console.log(user);
                     if(user){
                         user.password = undefined;
-                        // user.scope = undefined;
                         return reply(user);    
                     }
                     return reply(Boom.forbidden("no user exist"));
                 }
-            });
-    }
+                else
+                    return reply(Boom.forbidden("You don't have permission"));
+            }
+            else
+                return reply(Boom.forbidden("Unableto get user information"));
+        });
+   
 };
 
 

@@ -140,18 +140,17 @@ User.statics.updateUser = function(id, user, callback) {
     }, user, callback);
 };
 
-User.statics.activateUser = function(id, tenantId, callback) {
+User.statics.activateUser = function(id, role, callback) {
     this.update({
         '_id': id
-    }, {'isActive': true}, callback);
+    }, {'isActive': true, 'updatedBy': role, 'updatedAt': new Date()},callback);
 };
 
-User.statics.deActivateUser = function(id, tenantId, callback) {
+User.statics.deActivateUser = function(id, role, callback) {
     this.update({
-        '_id': id,
-        'scope': 'User',
-        'tenantId': tenantId
-    }, {'isActive': false}, callback);
+        '_id': id
+    },{
+        'isActive': false, 'updatedBy': role, 'updatedAt': new Date()}, callback);
 };
 
 User.statics.updateUserByTenantId = function(id, tenantId, user, callback) {

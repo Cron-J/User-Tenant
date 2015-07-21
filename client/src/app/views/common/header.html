@@ -8,10 +8,12 @@
     </div>
 
     <ul class="nav navbar-nav navbar-right" >
-        <li class="dropdown" ng-show="user.scope == 'Tenant-Admin' || user.scope == 'User'"><span class="ut-nohover"><i class="fa fa-building"></i> {{current_usr.tenantName | uppercase}}</span></li>
+        <li class="dropdown" ng-show="user.scope[0].id >= 1"><span class="ut-nohover"><i class="fa fa-building"></i> {{current_usr.tenantName | uppercase}}</span></li>
         <li class="dropdown" ng-controller="accountCtrl" >
           <a class="dropdown-toggle ut-pointer" data-toggle="dropdown" >
-              <span>{{current_usr.firstName}} {{current_usr.lastName}} </span><b class="caret"></b>
+
+              <span>{{current_usr.firstName}} {{current_usr.lastName}} </span>
+              <i class="ut-icon fa fa-caret-down"></i>
           </a>
           <ul class="dropdown-menu">
             <li><a ui-sref="editProfile" class="ut-pointer"><i class="fa fa-fw fa-user"></i> Profile</a></li>
@@ -23,13 +25,14 @@
             <!-- <li><a href="#">Deutsch</a></li> -->
           </ul>
         </li> 
-        <li class="dropdown" ng-show="user.scope == 'Admin' || user.scope == 'Tenant-Admin'">
-          <a class="icon-nav-item dropdown-toggle" data-toggle="dropdown"><span class="fa fa-cogs fa-1x"></span>  <b class="caret"></b></a>
+
+        <li class="dropdown" ng-show="checkPermission(1) || checkPermission(9)">
+          <a class="icon-nav-item dropdown-toggle" data-toggle="dropdown"><span class="fa fa-cogs fa-1x ut-icon-position"></span>  <b class="caret"></b></a>
           <ul class="dropdown-menu">
-            <li class="dropdown-header"><b>Roles</b></li>
-            <li class="divider"></li>
-            <li><a class="ut-pointer" ui-sref="users">Users</a></li>
-            <li><a class="ut-pointer" ui-sref="tenants" ng-show="user.scope == 'Admin'">Tenants</a></li>
+<!--             <li class="dropdown-header"><b>Roles</b></li>
+            <li class="divider"></li> -->
+            <li><a class="ut-pointer" ui-sref="users" ng-show="checkPermission(1)">Users</a></li>
+            <li><a class="ut-pointer" ui-sref="tenants" ng-show="checkPermission(9)">Tenants</a></li>
           </ul>
         </li> 
       </ul>

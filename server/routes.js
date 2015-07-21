@@ -6,63 +6,72 @@ var Activity  = require('./controller/activity'),
     Role      = require('./controller/role'),
     User      = require('./controller/user'),
 	Tenant    = require('./controller/tenant'),
+    Auth      = require('./Utility/authorization'),
     Static    = require('./static'),
     Staticlist= require('./Utility/staticlist');
 
 // API Server Endpoints
 exports.endpoints = [
-
+    //Get gui pages
     { method: 'GET',  path: '/{somethingss*}', config: Static.get },
+    //Create Activities
     { method: 'POST',  path: '/activities', config: Activity.createActivities },
+    //Get Activities
+    { method: 'POST',  path: '/getactivities', config: Activity.getActivitiesList },
+    //Create Roles
     { method: 'POST',  path: '/roles', config: Role.createRoles },
+    //Get Roles
     { method: 'GET',  path: '/getRoles', config: Role.getRoles },
+    //Create Admin
     { method: 'POST', path: '/admin', config: User.createAdmin},
-
-    /**
-       POST: /activateUser
-       SCOPE: 'Admin', 'Tenant-Admin'
-       Description: Activate tenant User.
-    */
-    { method: 'POST', path: '/activateUser', config: User.activateTenantUser},
-
-    /**
-       POST: /deActivateUser
-       SCOPE: 'Admin', 'Tenant-Admin'
-       Description: deActivate tenant User.
-    */
-    { method: 'POST', path: '/deActivateUser', config: User.deActivateTenantUser},
-
-    /**
-       PUT: /user
-       SCOPE: 'Admin', 'Tenant-Admin', 'User'
-       Description: Update own info for one who is logged in i.e. Admin, Tenant Admin, Tenant User.
-    */
+    //Activate TenantUser
+    { method: 'POST', path: '/activateUser', 
+        config:{
+            app: {
+                permissionLevel: 4  // "permission level" for this route
+            },
+            handler:User.activateUser, 
+            pre: [
+                    {method:Auth.checkPermission, assign:'AU'}
+                ]
+        }
+    },
+    { method: 'POST', path: '/deActivateUser', 
+        config:{
+            app: {
+                permissionLevel: 5  // "permission level" for this route
+            },
+            handler:User.deActivateUser, 
+            pre: [
+                    {method:Auth.checkPermission, assign:'DU'}
+                ]
+        }
+    },
     { method: 'PUT', path: '/user', config: User.updateUser},
-
-    /**
-        PUT: /user/{id}
-        SCOPE: 'Tenant-Admin'
-        @param id : user id of Tenant User whose info need to be edited.
-        Description: Update Tenant User info by System Admin.
-    */
     { method: 'PUT', path: '/user/{id}', config: User.updateTenantUser},
-
-    /**
-        PUT: /user/{id}/{tenantId}
-        SCOPE: 'Admin'
-        @param id : user id of Tenant User whose info need to be edited.
-        @param tenantId : tenant id of tenant whose use info is to be updated.
-        Description: Update Tenant User info by System Admin.
-    */
     { method: 'PUT', path: '/user/{id}/{tenantId}', config: User.updateTenantUser},
-
-    /**
-        POST: /searchUser
-        SCOPE: 'Admin'
-        Description: Search User based on certain field/criteria (firstName, lastName, email, tenantId).
-    */
-    { method: 'POST', path: '/searchUser', config: User.searchUser},
-    { method: 'GET', path: '/exportUser', config: User.exportUser},
+    { method: 'POST', path: '/searchUser', 
+        config:{
+            app: {
+                permissionLevel: 9  // "permission level" for this route
+            },
+            handler:User.searchUser, 
+            pre: [
+                    {method:Auth.checkPermission}
+                ]
+        }
+    },
+    { method: 'GET', path: '/exportUser', 
+        config: {
+            app: {
+                permissionLevel: 7  // "permission level" for this route
+            },
+            handler:User.exportUser, 
+            pre: [
+                    {method:Auth.checkPermission}
+                ]
+        }
+    },
 
     /**
         GET: /user
@@ -82,7 +91,17 @@ exports.endpoints = [
         @param id : user id of Tenant User whose info is to be get
         Description: Get Tenant User information.
     */
-    { method: 'GET', path: '/userByName/{username}', config: User.getUserByName},
+    { method: 'GET', path: '/userByName/{username}', 
+        config: {
+            app: {
+                permissionLevel: 2  // "permission level" for this route
+            },
+            handler:User.getUserByName, 
+            pre: [
+                    {method:Auth.checkPermission, assign:'UBN'}
+                ]
+        }
+    },
 
     /**
         GET: /user/{id}

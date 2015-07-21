@@ -20,8 +20,8 @@ var app = angular.module('app', [
 ])
 
 .config(
-  ['$stateProvider', '$urlRouterProvider', 'growlProvider', '$httpProvider', 'USER_ROLES',
-    function ($stateProvider, $urlRouterProvider, growlProvider, $httpProvider, USER_ROLES) {       
+  ['$stateProvider', '$urlRouterProvider', 'growlProvider', '$httpProvider', 'USER_ACTIVITIES',
+    function ($stateProvider, $urlRouterProvider, growlProvider, $httpProvider, USER_ACTIVITIES) {       
         growlProvider.globalTimeToLive(3000);
         growlProvider.globalEnableHtml(true);
         $urlRouterProvider.otherwise("/error");   
@@ -31,23 +31,15 @@ var app = angular.module('app', [
               templateUrl: "app/views/common/login.html",
               controller: 'accountCtrl',
               data: {
-                  authorizedRoles: [USER_ROLES.all]
+                  authorized: [USER_ACTIVITIES.common]
               }
           })
-          .state('tenantSignup', {
-            url: "/tenantSignup",
-              templateUrl: "app/views/registration/tenant_self_registration.html",
+          .state('signup', {
+            url: "/signup/:page",
+              templateUrl: "app/views/common/registration.html",
               controller: 'accountCtrl',
               data: {
-                  authorizedRoles: [USER_ROLES.all]
-              }
-          }) 
-          .state('tenantUserSignup', {
-            url: "/userSignup",
-              templateUrl: "app/views/registration/user_self_registration.html",
-              controller: 'accountCtrl',
-              data: {
-                  authorizedRoles: [USER_ROLES.all]
+                  authorized: [USER_ACTIVITIES.common]
               }
           }) 
           .state('forgotPassword', {
@@ -55,14 +47,14 @@ var app = angular.module('app', [
               templateUrl: "app/views/common/forgot_password.html",
               controller: 'accountCtrl',
               data: {
-                  authorizedRoles: [USER_ROLES.all]
+                  authorized: [USER_ACTIVITIES.common]
               }
           }) 
           .state('error', {
             url: "/error",
               templateUrl: "app/views/common/error.html",
               data: {
-                  authorizedRoles: [USER_ROLES.admin, USER_ROLES.tenantadmin, USER_ROLES.tenantuser]
+                  authorized: [USER_ACTIVITIES.loggedIn]
               }
           })
           .state('editProfile', {
@@ -70,7 +62,7 @@ var app = angular.module('app', [
               templateUrl: "app/views/common/profile.html",
               controller: "accountCtrl",
               data: {
-                  authorizedRoles: [USER_ROLES.admin, USER_ROLES.tenantadmin, USER_ROLES.tenantuser]
+                  authorized: [USER_ACTIVITIES.loggedIn]
               }
           })
           .state('createTenant', {
@@ -78,7 +70,7 @@ var app = angular.module('app', [
               templateUrl: "app/views/tenant/tenant.html",
               controller: 'tenantCtrl',
               data: {
-                  authorizedRoles: [USER_ROLES.admin]
+                  authorized: [8]
               }
           }) 
           .state('createUser', {
@@ -86,7 +78,7 @@ var app = angular.module('app', [
               templateUrl: "app/views/tenant_user/tenantUser.html",
               controller: 'tenantUserCtrl',
               data: {
-                  authorizedRoles: [USER_ROLES.admin, USER_ROLES.tenantadmin]
+                  authorized: [0]
               }
           }) 
           .state('tenants', {
@@ -94,7 +86,7 @@ var app = angular.module('app', [
               templateUrl: "app/views/tenant/tenantSearchPage.html",
               controller: "tenantCtrl",
               data: {
-                  authorizedRoles: [USER_ROLES.admin]
+                  authorized: [9]
               }
 
           })
@@ -103,7 +95,7 @@ var app = angular.module('app', [
               templateUrl: "app/views/tenant/tenant.html",
               controller: "tenantCtrl",
               data: {
-                  authorizedRoles: [USER_ROLES.admin]
+                  authorized: [10]
               }
           })
           .state('usersOfTenant', {
@@ -111,7 +103,7 @@ var app = angular.module('app', [
               templateUrl: "app/views/tenant_user/userSearchPage.html",
               controller: "tenantUserCtrl",
               data: {
-                  authorizedRoles: [USER_ROLES.admin]
+                  authorized: [13]
               }
           })
           .state('userOfTenant', {
@@ -119,7 +111,7 @@ var app = angular.module('app', [
               templateUrl: "app/views/tenant_user/tenantUser.html",
               controller: "tenantUserCtrl",
               data: {
-                  authorizedRoles: [USER_ROLES.admin]
+                  authorized: [14]
               }
           })
           .state('users', {
@@ -127,7 +119,7 @@ var app = angular.module('app', [
               templateUrl: "app/views/tenant_user/userSearchPage.html",
               controller: "tenantUserCtrl",
               data: {
-                  authorizedRoles: [USER_ROLES.admin, USER_ROLES.tenantadmin]
+                  authorized: [1]
               }
             })
           .state('userEdit', {
@@ -135,7 +127,7 @@ var app = angular.module('app', [
               templateUrl: "app/views/tenant_user/tenantUser.html",
               controller: "tenantUserCtrl",
               data: {
-                  authorizedRoles: [USER_ROLES.admin, USER_ROLES.tenantadmin]
+                  authorized: [2]
               }
           })
           
@@ -144,7 +136,7 @@ var app = angular.module('app', [
               templateUrl: "app/views/tenant_user/tenant_user.html",
               controller: "tenantUserCtrl",
               data: {
-                  authorizedRoles: [USER_ROLES.admin]
+                  authorized: [USER_ACTIVITIES.permission]
               }
 
           })
@@ -153,7 +145,7 @@ var app = angular.module('app', [
               templateUrl: "app/views/tenant/tenant_users_list.html",
               controller: "tenantCtrl",
               data: {
-                  authorizedRoles: [USER_ROLES.tenantadmin]
+                  authorized: [USER_ACTIVITIES.permission]
               }
           })
           .state('tenantHome', {
@@ -161,7 +153,7 @@ var app = angular.module('app', [
               templateUrl: "app/views/tenant/tenant_users_list.html",
               controller: "tenantCtrl",
               data: {
-                  authorizedRoles: [USER_ROLES.tenantadmin]
+                  authorized: [USER_ACTIVITIES.permission]
               }
           })
           .state('tenantUser', {
@@ -169,7 +161,7 @@ var app = angular.module('app', [
               templateUrl: "app/views/tenant_user/tenantUser.html",
               controller: "tenantUserCtrl",
               data: {
-                  authorizedRoles: [USER_ROLES.tenantadmin]
+                  authorized: [USER_ACTIVITIES.permission]
               }
           })
           .state('home', {
@@ -177,7 +169,7 @@ var app = angular.module('app', [
               templateUrl: "app/views/common/home.html",
               controller: 'accountCtrl',
               data: {
-                  authorizedRoles: [USER_ROLES.admin, USER_ROLES.tenantadmin, USER_ROLES.tenantuser]
+                  authorized: [USER_ACTIVITIES.loggedIn]
               }
           })
           .state('activateUser', {
@@ -185,7 +177,7 @@ var app = angular.module('app', [
               // templateUrl: "app/views/tenant_user/userHome.html",
               controller: 'tenantUserCtrl',
               data: {
-                  authorizedRoles: [USER_ROLES.admin, USER_ROLES.tenantadmin]
+                  authorized: [4]
               }
           })
           .state('mailVerification', {
@@ -193,7 +185,7 @@ var app = angular.module('app', [
               templateUrl: "app/views/common/emailVerification.html",
               controller: 'accountCtrl',
               data: {
-                  authorizedRoles: [USER_ROLES.all]
+                  authorized: [USER_ACTIVITIES.common]
               }
           })
           .state('changePassword', {
@@ -201,14 +193,14 @@ var app = angular.module('app', [
               templateUrl: "app/views/common/change_password.html",
               controller: 'accountCtrl',
               data: {
-                  authorizedRoles: [USER_ROLES.admin, USER_ROLES.tenantadmin, USER_ROLES.tenantuser]
+                  authorized: [USER_ACTIVITIES.loggedIn]
               }
           })
           .state('tremsAndConditions', {
             url: "/terms-and-conditions",
               templateUrl: "app/views/common/terms_and_conditions.html",
               data: {
-                  authorizedRoles: [USER_ROLES.all]
+                  authorized: [USER_ACTIVITIES.common]
               }
           })
 
@@ -221,8 +213,8 @@ var app = angular.module('app', [
 )
 .run(function($rootScope, $location, AuthServ,$cookieStore, $timeout, $stateParams) {
   $rootScope.$on('$stateChangeStart', function(event, next) {
-     var authorizedRoles = next.data ? next.data.authorizedRoles : null;
-     var isAuthorized = AuthServ.isAuthorized(authorizedRoles);
+     var authorized = next.data ? next.data.authorized : null;
+     var isAuthorized = AuthServ.isAuthorized(authorized);
      if(!isAuthorized){
         event.preventDefault();
         AuthServ.isLoggedInAsync(function(loggedIn) {
@@ -298,11 +290,11 @@ var app = angular.module('app', [
   };
 })
 
-angular.module('cons', [])
-  .constant('USER_ROLES', {
-      all: '*',
-      admin: 'Admin',
-      tenantadmin: 'Tenant-Admin',
-      tenantuser:'User'
+angular.module('cons', [])     
+  .constant('USER_ACTIVITIES', {
+      common: '*',
+      loggedIn: '#',
+      permission: [0, 1 , 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15]
   })
+ 
   

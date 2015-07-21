@@ -1,26 +1,19 @@
 'use strict';
 
 app.controller('accountCtrl', ['$scope', '$rootScope', '$http', '$location', 
-    'AuthServ', 'growl', '$filter', 'userInfo', 'suggestionsList','$modal', '$log', 
-    '$stateParams', '$timeout',
+    'AuthServ', 'growl', '$filter', 'userInfo', 'suggestionsList','$modal', '$log', '$state',
+    '$stateParams', '$timeout', 'USER_ACTIVITIES', 
     function ($scope, $rootScope, $http, $location, AuthServ, growl, $filter, 
-        userInfo, suggestionsList, $modal, $log, $stateParams, $timeout) {
+        userInfo, suggestionsList, $modal, $log, $state, $stateParams, $timeout, USER_ACTIVITIES) {
         var _scope = {};
         _scope.init = function() {
             $scope.loginForm = {
                 remember: true
             };
             $scope.authError = null;
-            if($location.path() == '/home' || $location.path() == '/changePassword') {
-                userInfo.async().then(function(response) {
-                    $scope.current_usr.firstName = response.data.firstName;
-                    $scope.current_usr.lastName = response.data.lastName;
-                    if(response.data.tenantId)
-                        $scope.current_usr.tenantName = response.data.tenantId.name;
-                });
-            }
-            
-            if($location.path() == '/tenantSignup' || $location.path() =='/userSignup') {
+
+            if($stateParams.page) {
+                $scope.signupType = $stateParams.page;
                 $scope.account = {};
             }
 
@@ -49,6 +42,83 @@ app.controller('accountCtrl', ['$scope', '$rootScope', '$http', '$location',
 
         }
 
+        //Tenant Self Registration
+        $scope.tenantSelfRegistration = function (account_info) {
+                var dump = angular.copy(account_info);
+                delete account_info.user.passwordConfirm;
+                $http.post('/tenantSelfRegistration', account_info)
+                .success(function (data, status) {
+                    $rootScope.aMsg = {id:1, name:'Company'};
+                    $location.path('/login');                    
+                })
+                .error(function (data, status) {
+                    account_info.user.passwordConfirm = dump.user.passwordConfirm;
+                    growl.addErrorMessage(data.message);
+                });
+        
+        }
+
+        //TenantId Search Modal
+        $scope.tenantSearchModal = function(isUser) {
+            var modalInstance = $modal.open({
+               templateUrl: 'tenantSearchModal.html',
+                controller: 'searchModalInstanceCtrl',
+                resolve: {
+                    detail: function () {
+                      return isUser;
+                    }
+                }
+            });
+
+            modalInstance.result.then(function(tenant) {
+                if($scope.account == undefined)
+                    $scope.account = {};
+                if(tenant.description) {
+                    $scope.account.tenantName = tenant.name+", "+tenant.description;
+                }
+                else
+                    $scope.account.tenantName = tenant.name;
+                $scope.tenantNameDup = angular.copy($scope.account.tenantName);
+                $scope.account.tenantId = tenant._id;
+            }, function() {
+                $log.info('Modal dismissed at: ' + new Date());
+            });
+        }
+
+        //User Self Registration
+        $scope.userSelfRegistration = function (data) {
+            var account_info = data,
+                valid;
+                // delete account_info.passwordConfirm;
+            if(account_info.tenantId) {
+                account_info.user.tenantId = account_info.tenantId;
+                delete account_info.tenantName;
+                valid = true;
+            } else {
+                if(checkTenantName(account_info.tenantName) == true)
+                    valid = true;
+                else
+                    valid = false;
+            }
+            var dump = account_info;
+            if(valid) {
+                $http.post('/user', account_info.user)
+                .success(function (data, status) {
+                    $rootScope.aMsg = {id:1, name:'User'};
+                    $location.path('/login');
+                })
+                .error(function (data, status) {
+                    account_info.passwordConfirm = dump;
+                    growl.addErrorMessage(data.message);
+                });
+            }
+            else {
+                growl.addErrorMessage('Please select tenant');
+            }
+ 
+        }
+
+
         //User login
         $scope.login = function (user) {
             $http.post('/login', user)
@@ -56,9 +126,8 @@ app.controller('accountCtrl', ['$scope', '$rootScope', '$http', '$location',
                     AuthServ.setUserToken(data, $scope.loginForm.remember);
                     growl.addSuccessMessage('Successfully logged in');
                     $rootScope.user =  data;
-                    if($rootScope.user.scope == 'Admin' || 
-                        $rootScope.user.scope == 'Tenant-Admin' || 
-                        $rootScope.user.scope == 'User') {
+                    if($rootScope.user) {
+                    console.log($rootScope.user.permissions);
                         userInfo.async().then(function(response) {
                             $scope.current_usr = response.data;
                             if($scope.current_usr.firstLogin === $scope.current_usr.lastLogin && 
@@ -68,8 +137,6 @@ app.controller('accountCtrl', ['$scope', '$rootScope', '$http', '$location',
                                 $location.path('/home');
                         });
                     }
-                        
-                    getAccountDetails();
                 })
                 .error(function (data, status) {
                     growl.addErrorMessage(data.message);
@@ -117,14 +184,12 @@ app.controller('accountCtrl', ['$scope', '$rootScope', '$http', '$location',
         var verifyMail = function () {
             $http.put('/emailVerification', $stateParams)
                 .success(function (data, status) {
-                    if(data.scope == 'User') {
+                    console.log(data);
                         if(data.isActive == false) {
                             sendEmailToAdmins(data);
                             $scope.alertMsg = 3;
                         }
-                    }
-                    else
-                        $scope.alertMsg = 2;
+                        else $scope.alertMsg = 2;
 
                 })
                 .error(function (data, status) {
@@ -155,101 +220,13 @@ app.controller('accountCtrl', ['$scope', '$rootScope', '$http', '$location',
                 })
         }
 
-        //resendEmail Verification
-        $scope.resendVerificationEmail = function (username) {
-            var params = {};
-            params.username = username;
-            $http.post('/resendVerificationMail', params , {
-                headers: AuthServ.getAuthHeader()
-                })
-                .success(function (data, status) {
-                    growl.addSuccessMessage('Verification Email has been successfully sent');             
-                })
-                .error(function (data, status) {
-                    growl.addErrorMessage(data.message);
-                })
-        }
-
-        //Tenant Self Registration
-        $scope.tenantSelfRegistration = function (account_info) {
-                var dump = angular.copy(account_info);
-                delete account_info.user.passwordConfirm;
-                $http.post('/tenantSelfRegistration', account_info)
-                .success(function (data, status) {
-                    $rootScope.aMsg = {id:1, name:'Company'};
-                    $location.path('/login');                    
-                })
-                .error(function (data, status) {
-                    account_info.user.passwordConfirm = dump.user.passwordConfirm;
-                    growl.addErrorMessage(data.message);
-                });
         
-        }
-
-        //TenantId Search Modal
-        $scope.tenantSearchModal = function(isUser) {
-            var modalInstance = $modal.open({
-               templateUrl: 'tenantSearchModal.html',
-                controller: 'searchModalInstanceCtrl',
-                resolve: {
-                    detail: function () {
-                      return isUser;
-                    }
-                }
-            });
-
-            modalInstance.result.then(function(tenant) {
-                if($scope.account == undefined)
-                    $scope.account = {};
-                if(tenant.description) {
-                    $scope.account.tenantName = tenant.name+", "+tenant.description;
-                }
-                else
-                    $scope.account.tenantName = tenant.name;
-                $scope.tenantNameDup = angular.copy($scope.account.tenantName);
-                $scope.account.tenantId = tenant._id;
-            }, function() {
-                $log.info('Modal dismissed at: ' + new Date());
-            });
-        }
-
-        //Tenant-User Self Registration
-        $scope.tenantUserSelfRegistration = function (account_info) {
-            var valid;
-                // delete account_info.passwordConfirm;
-            if(account_info.tenantName._id) {
-                account_info.tenantId = account_info.tenantName._id;
-                delete account_info.tenantName;
-                valid = true;
-            } else {
-                if(checkTenantName(account_info.tenantName) == true)
-                    valid = true;
-                else
-                    valid = false;
-            }
-            var dump = account_info;
-            if(valid) {
-                $http.post('/user', account_info)
-                .success(function (data, status) {
-                    $rootScope.aMsg = {id:1, name:'User'};
-                    $location.path('/login');
-                })
-                .error(function (data, status) {
-                    account_info.passwordConfirm = dump;
-                    growl.addErrorMessage(data.message);
-                });
-            }
-            else {
-                growl.addErrorMessage('Please select tenant');
-            }
- 
-        }
-
-
         $scope.generateRandomUserNames = function (email) {
-            suggestionsList.async(email).then(function(response) {
+            if(email) {
+                suggestionsList.async(email).then(function(response) {
                     $scope.suggestions = response.data;
                 });
+            }
         }
 
         //Get Personal Account Details
@@ -259,6 +236,7 @@ app.controller('accountCtrl', ['$scope', '$rootScope', '$http', '$location',
                 $scope.current_usr.firstName = response.data.firstName;
                 $scope.current_usr.lastName = response.data.lastName;
                 $scope.current_usr.isEmailVerified = response.data.isEmailVerified;
+
             });
         }
 

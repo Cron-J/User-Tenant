@@ -5,7 +5,7 @@ module.exports = {
             port: 8001
     },
     database: {
-        url: 'mongodb://127.0.0.1/User-Tenant'
+        url: 'mongodb://127.0.0.1/User-Tenant-Permission'
     },
     key: {
         privateKey: '37LvDSm4XvjYOh9Y',
@@ -29,11 +29,12 @@ module.exports = {
                  {aId:8, name:'createTenant'},
                  {aId:9, name:'searchTenant'}, 
                  {aId:10, name:'getTenant'},
-                 {aId:11, name:'getTenantUsers'},
-                 {aId:12, name:'updateTenant'}, 
-                 {aId:13, name:'deleteTenant'},
-                 {aId:14, name:'exportTenant'}],
-    roles: [{label:'Admin', permissions:[0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13,14]}, 
-            {label:'Tenant Admin', permissions:[0, 1, 2, 3, 4, 5, 6, 7, 11]}, 
-            {label:'User'}]
+                 {aId:11, name:'updateTenant'}, 
+                 {aId:12, name:'deleteTenant'},
+                 {aId:13, name:'searchTenantUsers'},
+                 {aId:14, name:'getTenantUser'},
+                 {aId:15, name:'exportTenant'}],
+    roles: [{id:0, label:'Admin', permissions:[0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15]}, 
+            {id:1, label:'Tenant Admin', permissions:[0, 1, 2, 3, 4, 5, 6, 7, 13, 14]}, 
+            {id:2, label:'User'}]
 };
