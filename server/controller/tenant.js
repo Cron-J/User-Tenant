@@ -50,22 +50,20 @@ exports.createTenantSelfRegistration = {
     }
 };
 
-exports.createTenantByAdmin = {
-    handler: function(request, reply) {
-        Tenant.saveTenant( request.payload, function( err, tenant ) {
-            if (!err) {
-                reply( "tenant has created" );
-            } else {
-                if ( constants.kDuplicateKeyError === err.code || constants.kDuplicateKeyErrorForMongoDBv2_1_1 === err.code ) {
-                    reply(Boom.forbidden( "tenant name already exist" ));
-                } else reply( Boom.forbidden( err ) ); // HTTP 403
-            }
-        });
-    }
+exports.createTenant = function(request, reply) {
+    Tenant.saveTenant( request.payload, function( err, tenant ) {
+        if (!err) {
+            reply( "tenant has created" );
+        } else {
+            if ( constants.kDuplicateKeyError === err.code || constants.kDuplicateKeyErrorForMongoDBv2_1_1 === err.code ) {
+                reply(Boom.forbidden( "tenant name already exist" ));
+            } else reply( Boom.forbidden( err ) ); // HTTP 403
+        }
+    });
+
 };
 
-exports.searchTenant = {
-     handler: function(request, reply) {
+exports.searchTenant =  function(request, reply) {
         var query = {};
         if (request.payload.name) query['name'] = new RegExp(request.payload.name, "i");
         if (request.payload.description) query['description'] = new RegExp(request.payload.description, "i");
@@ -77,67 +75,43 @@ exports.searchTenant = {
                 reply( Boom.forbidden( err ) ); // HTTP 403
             }
         });
-    }
 };
 
-exports.getTenant = {
-    auth: {
-        strategy: 'token',
-        scope: ['Admin', 'Tenant-Admin']
-    },
-    handler: function(request, reply) {
-        Jwt.verify(request.headers.authorization.split(' ')[1], Config.key.privateKey, function(err, decoded) {
+exports.getTenant = function(request, reply) {
+    Tenant.findTenantByName( request.params.name, function( err, tenant ) {
+        if (!err) {
+            return reply(tenant);
+        } else {
+            reply( Boom.forbidden( err ) ); // HTTP 403
+        }
+    });
+};
 
-            if(decoded.scope === 'Tenant-Admin'){
-                request.params.id = decoded.tenantId;
+exports.updateTenant =  function(request, reply) {
+       
+    /* filterening unwanted attributes which may have in request.payload and can enter bad data */
+    if(request.payload.createdBy) delete request.payload.createdBy;
+
+    request.payload.updatedBy = request.pre.UT.scope[0].label;
+
+    Tenant.updateTenant(request.params.id, request.payload, function(err, tenant) {
+        if(err){
+            return reply(Boom.badImplementation("unable to update"));
+        }
+        else{
+            if( tenant === 0 ) {
+                return reply(Boom.forbidden("unable to update"));
             }
-            Tenant.findTenantByName( request.params.name, function( err, tenant ) {
-                if (!err) {
-                    return reply(tenant);
-                } else {
-                    reply( Boom.forbidden( err ) ); // HTTP 403
-                }
-            });
-        });
-    }
+            else{
+                return reply("Tenant account updated successfully");
+            }
+        }
+    });
+
+
 };
 
-exports.updateTenantByAdmin = {
-    auth: {
-        strategy: 'token',
-        scope: ['Admin']
-    },
-    handler: function(request, reply) {
-       Jwt.verify(request.headers.authorization.split(' ')[1], Config.key.privateKey, function(err, decoded) {
-        
-            /* filterening unwanted attributes which may have in request.payload and can enter bad data */
-            if(request.payload.createdBy) delete request.payload.createdBy;
-
-            request.payload.updatedBy = decoded.scope;
-
-            Tenant.updateTenant(request.params.id, request.payload, function(err, user) {
-                if(err){
-                    return reply(Boom.badImplementation("unable to update"));
-                }
-                else{
-                    if( user === 0 ) {
-                        return reply(Boom.forbidden("unable to update"));
-                    }
-                    else{
-                        return reply("tenant updated successfully");
-                    }
-                }
-            });
-       });
-    }
-};
-
-exports.exportTenant = {
-    auth: {
-        strategy: 'token',
-        scope: ['Admin']
-    },
-    handler: function(request, reply) {
+exports.exportTenant = function(request, reply) {
         var query = {};
             query['scope'] = {'$ne': 'Admin'};
         var dump = [];
@@ -184,7 +158,7 @@ exports.exportTenant = {
                     
             } else reply(Boom.forbidden(err));
         });
-    }
+
 };
  var customJson = function (obj, list ) {
     var result = {};

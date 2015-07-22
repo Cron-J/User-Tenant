@@ -2,7 +2,7 @@
 
 app.controller('tenantCtrl', ['$scope', '$rootScope', '$http', '$location', 
     'AuthServ', 'growl', '$filter', '$stateParams', 'userInfo',
-    '$modal', '$log', 'localStorageService', '$previousState',
+    '$modal', '$log', 'localStorageService', '$previousState', 
     function ($scope, $rootScope, $http, $location, AuthServ, growl, $filter, 
         $stateParams, userInfo, $modal, $log, localStorageService, $previousState) {
         var _scope = {};
@@ -18,15 +18,13 @@ app.controller('tenantCtrl', ['$scope', '$rootScope', '$http', '$location',
                 view: 'edit',
                 role: 'admin'
             }
+            if($location.path() == '/newTenant')
+                $scope.page.view = 'create';
             var previous = $previousState.get();
             var lsKeys = localStorageService.keys();
-            console.log('previous', previous);
-            console.log('lsKeys', lsKeys);
-            console.log('dsfsd0', localStorageService.get('tenantsList'));
             if(previous){
                 if(previous.state.name == 'tenantInfo' || previous.state.name == 'usersOfTenant') {
                     if(lsKeys.indexOf('tenantsList') != -1){
-                        console.log('entered hetre');
                         $scope.showResult = true;
                         $scope.resultList = localStorageService.get('tenantsList');
                         if(lsKeys.indexOf('tenantSearchObj' != -1))
@@ -81,10 +79,7 @@ app.controller('tenantCtrl', ['$scope', '$rootScope', '$http', '$location',
                     headers: AuthServ.getAuthHeader()
                 })
                 .success(function (data, status) {
-                    $scope.page.view = 'search';
-                    if($scope.srchInfo) {
-                        $scope.searchTenant(srch);
-                    }
+                    $location.path('/tenants');
                     growl.addSuccessMessage('Tenant has been created successfully');
                 })
                 .error(function (data, status) {

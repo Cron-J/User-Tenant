@@ -6,7 +6,7 @@
     </header>
     <div class="col-lg-8 col-md-8 ut-container">
         <form id="userForm" class="form-horizontal ut-form form-validation" role="form" name="userForm" novalidate>
-            <div class="row" ng-show="user.scope == 'Admin'">
+            <div class="row" ng-show="user.scope[0] == 0">
                 <div class="form-group">
                     <label class="col-sm-2 control-label">Tenant</label>
                     <div class="col-sm-5">
@@ -16,8 +16,7 @@
                         typeahead="res as res.name+ res.comma + (res.desc | limitTo:10) for res in searchTenantByName($viewValue)" 
                         typeahead-wait-ms="1000" ng-click="isChanged = true"
                         ng-disabled="page.view != 'create'"
-                        ng-show="user.scope == 'Admin'" 
-                        ng-required="user.scope == 'Admin'"
+                        ng-required="user.scope[0] == 1"
                         ng-class="{{testclass}}" />
                     </div>
                     <a class="btn btn-primary btn-sm" ng-hide="page.role == 'tenant-admin' || page.view != 'create'"
@@ -50,9 +49,9 @@
             <div class="form-group" ng-show="suggestions">
                 <div class="col-sm-5 col-sm-offset-2">
                     <div class="row "><b>Suggestions: </b></div>
-                    <div class="col-sm-4" ng-repeat="s in suggestions">
+                    <span ng-repeat="s in suggestions">
                         {{s}}<span ng-hide="$last">, </span>
-                    </div>
+                    </span>
                 </div>
             </div>
             <div class="row">
@@ -83,8 +82,13 @@
             <div class="row">
                 <div class="form-group">
                     <label class="col-sm-2 control-label">User Role</label>
-                    <div class="col-sm-3">
-                        <div ng-dropdown-multiselect="" options="rolesList" selected-model="account.scope" extra-settings="multiSelectText" ></div>
+                    <div class="col-sm-3" ng-if="page.view != 'view'">
+                        <div ng-dropdown-multiselect="" options="rolesList" selected-model="account.scope" extra-settings="multiSelectText"></div>
+                    </div>
+                    <div class="col-sm-3" ng-if="page.view == 'view'">
+                      <input name="scope" type="text" 
+                        class="form-control" ng-model="account.roles" 
+                        ng-disabled="page.view == 'view'" required>
                         <!-- <select class="form-control" name="role" ng-model="account.scope" ng-disabled="page.view == 'view'" required>
                             <option value="">Select Role</option>
                             <option ng-hide="page.role == 'tenant-admin'" value="Admin">Admin</option>

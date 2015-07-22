@@ -148,54 +148,57 @@ exports.createUserSelfRegistration = {
     }
 };
 
-exports.createTenantUser = {
-    handler: function(request, reply) {
-            if( !request.payload.tenantId ){
-                return reply(Boom.forbidden("Please select tenant"));
-            }
-            else {
-                Tenant.findTenantById( request.payload.tenantId, function( err, tenant ) {
-                    if( tenant ){
-                        request.payload.password = Crypto.encrypt(Math.random().toString(36).slice(3));
-                        request.payload.createdBy = "Admin";
-                        request.payload.updatedBy = "Admin";
-                        request.payload.isActive = true;
-                        request.payload.isEmailVerified = true;
-                        var roles = [];
-                        User.saveUser( request.payload, function(err, user) {
-                            if (!err) {   
-                                async.each(user.scope, function(obj, callback){
-                                    Role.findRoleById(obj.id, function(err, role) {
-                                        if (!err) {
-                                            roles.push(role.label);
-                                            callback();
-                                        } 
-                                    });
-                                },
-                                function(err){
-                                    if(roles.length > 0) {
-                                        for (var i = 0; i < roles.length; i++) {
-                                            if(i == 0) user.scope = roles[i];
-                                            else user.scope += ", "+roles[i];
-                                        };
-                                        EmailServices.sendAccountCreationMail(user, tenant);
-                                        return reply( "Tenant user successfully created" );
-                                    } else {
-                                        reply(Boom.forbidden("User has no role"));
-                                    }
+exports.createUser = function(request, reply){
+    if( !request.payload.tenantId ){
+        return reply(Boom.forbidden("Please select tenant"));
+    }
+    else {
+        if(request.pre.CU.tenantId === undefined || request.pre.CU.tenantId === request.payload.tenantId) {
+            Tenant.findTenantById( request.payload.tenantId, function( err, tenant ) {
+                if( tenant ){
+                    request.payload.password = Crypto.encrypt(Math.random().toString(36).slice(3));
+                    request.payload.createdBy = request.pre.CU.scope[0].label;
+                    request.payload.updatedBy = request.pre.CU.scope[0].label;
+                    request.payload.isActive = true;
+                    request.payload.isEmailVerified = true;
+                    var roles = [];
+                    User.saveUser( request.payload, function(err, user) {
+                        if (!err) {   
+                            async.each(user.scope, function(id, callback){
+                                Role.findRoleById(id, function(err, role) {
+                                    if (!err) {
+                                        roles.push(role.label);
+                                        callback();
+                                    } 
                                 });
-                            } else {
-                                if ( constants.kDuplicateKeyError === err.code || constants.kDuplicateKeyErrorForMongoDBv2_1_1 === err.code ) {
-                                    return reply(Boom.forbidden("user email already registered"));
-                                } else return reply( Boom.forbidden(err) ); // HTTP 403
-                            }
-                        });
-                    }
-                    else {
-                        return reply(Boom.forbidden("Invalid tenant selected"));
-                    }
-                });
-            }
+                            },
+                            function(err){
+                                if(roles.length > 0) {
+                                    for (var i = 0; i < roles.length; i++) {
+                                        if(i == 0) user.scope = roles[i];
+                                        else user.scope += ", "+roles[i];
+                                    };
+                                    EmailServices.sendAccountCreationMail(user, tenant);
+                                    return reply( "User successfully created" );
+                                } else {
+                                    reply(Boom.forbidden("User has no role"));
+                                }
+                            });
+                        } else {
+                            if ( constants.kDuplicateKeyError === err.code || constants.kDuplicateKeyErrorForMongoDBv2_1_1 === err.code ) {
+                                return reply(Boom.forbidden("Username has already taken"));
+                            } else return reply( Boom.forbidden(err) ); // HTTP 403
+                        }
+                    });
+                }
+                else {
+                    return reply(Boom.forbidden("Invalid tenant selected"));
+                }
+
+            });
+        }
+        else 
+             return reply(Boom.forbidden("Your don't have permission"));
     }
 };
 
@@ -365,10 +368,10 @@ exports.searchUser =  function(request, reply) {
     if (request.payload.email) query['email'] = new RegExp(request.payload.email, "i");
     if (request.payload.tenantId) query['tenantId'] = request.payload.tenantId;
     if (request.payload.isActive) query['isActive'] = request.payload.isActive;
-    if (request.payload.scope) query['scope'] = request.payload.scope;
+    if (request.payload.scope) query['scope'] = {'$all': request.payload.scope}
 
     query['isEmailVerified'] = {'$ne': 'false'};
-    
+
     User.searchUser(query, function(err, users) {
         if (!err) {
             async.each(users, function(user, callback){
@@ -377,7 +380,7 @@ exports.searchUser =  function(request, reply) {
                     Role.findRoles(user.scope, function(err, roles) {
                         if(!err) {
                              for (var i = 0; i < roles.length; i++) {
-                                 user.scope = roles[i].label;
+                                 user.scope[i] = roles[i].label;
                              };
                              callback();
                         }
@@ -385,12 +388,9 @@ exports.searchUser =  function(request, reply) {
                     });
                 },
                     function(err){
-                       
                         return reply(users);
                     }
-                );
-          
-            
+                );  
         } else reply(Boom.forbidden(err));
     });
 };
@@ -738,16 +738,8 @@ exports.getUserByTenant = {
     }
 };
 
-exports.getAllTenantUserByTenant = {
-    auth: {
-        strategy: 'token',
-        scope: ['Admin', 'Tenant-Admin']
-    },
-    handler: function(request, reply) {
-       Jwt.verify(request.headers.authorization.split(' ')[1], Config.key.privateKey, function(err, decoded) {
-            if(decoded.scope === 'Tenant-Admin'){
-                request.params.id = decoded.tenantId;
-            }
+exports.getAllTenantUsersOfTenant =  function(request, reply) {
+        if(request.pre.GTU.tenantId === undefined || request.pre.GTU.tenantId === request.params.id) {
             User.findUserByTenantIdScope(request.params.id, 'User', function(err, user) {
                 if(err){
                     return reply(Boom.badImplementation("unable to get user detail"));
@@ -765,9 +757,9 @@ exports.getAllTenantUserByTenant = {
                     }
                 }
             });
+        }
+        else return reply(Boom.forbidden("You don't have permission"));
 
-       });
-    }
 };
 
 exports.getAllDeactiveTenantUserByTenant = {
@@ -808,11 +800,7 @@ exports.getAllDeactiveTenantUserByTenant = {
    Description: Update own info for one who is logged in i.e. Admin, Tenant Admin, Tenant User.
  */
 
-exports.updateUser = {
-    auth: {
-        strategy: 'token',
-        scope: ['Admin', 'Tenant-Admin', 'User']
-    },
+exports.updateAccount = {
     handler: function(request, reply) {
        Jwt.verify(request.headers.authorization.split(' ')[1], Config.key.privateKey, function(err, decoded) {
             /* filterening unwanted attributes which may have in request.payload and can enter bad data */
@@ -842,77 +830,54 @@ exports.updateUser = {
 /**
     PUT: /user/{id}
     PUT: /user/{id}/{tenantId}
-    SCOPE: 'Admin', 'Tenant-Admin'
     @param id : user id of Tenant User whose info need to be edited.
     @param tenantId : tenant id of tenant whose use info is to be updated.
     Description: Update Tenant User info by System Admin.
  */
 
-exports.updateTenantUser = {
-    auth: {
-        strategy: 'token',
-        scope: ['Tenant-Admin','Admin']
-    },
-    handler: function(request, reply) {
-       Jwt.verify(request.headers.authorization.split(' ')[1], Config.key.privateKey, function(err, decoded) {
- 
+exports.updateUser = function(request, reply){
+    if((request.pre.UU.tenantId === undefined) || (request.pre.UU.tenantId === request.params.tenantId)) {
+        /* filterening unwanted attributes which may have in request.payload and can enter bad data */
+        if(request.payload.tenantId) delete request.payload.tenantId;
+        if(request.payload.firstLogin) delete request.payload.firstLogin;
+        if(request.payload.lastLogin) delete request.payload.lastLogin;
+        if(request.payload.createdBy) delete request.payload.createdBy;
+        request.payload.updatedBy = request.pre.UU.scope[0].label;
+        // if(request.payload.scope) delete request.payload.scope;
+        //if(request.payload.password) request.payload.password = Crypto.encrypt(request.payload.password);
         
-            /* filterening unwanted attributes which may have in request.payload and can enter bad data */
-            if(request.payload.tenantId) delete request.payload.tenantId;
-            if(request.payload.firstLogin) delete request.payload.firstLogin;
-            if(request.payload.lastLogin) delete request.payload.lastLogin;
-            if(request.payload.createdBy) delete request.payload.createdBy;
-            // if(request.payload.scope) delete request.payload.scope;
-            if(request.payload.password) request.payload.password = Crypto.encrypt(request.payload.password);
-
-            request.payload.updatedBy = decoded.scope;
-            var tenantId;
-
-            if(decoded.scope === 'Tenant-Admin'){
-                tenantId = decoded.tenantId;    
+        User.updateUserDetails(request.params.id, request.params.tenantId, request.payload, function(err, user) {
+            if(err){
+                if ( constants.kDuplicateKeyError === err.code || constants.kDuplicateKeyErrorForMongoDBv2_1_1 === err.code ) {
+                    reply(Boom.forbidden("user email already registered"));
+                } else return reply( Boom.badImplementation(err) ); // HTTP 403
             }
             else{
-                tenantId = request.params.tenantId;
+                return reply("user updated successfully");
             }
-            
-            User.updateUserByTenantId(request.params.id, tenantId, request.payload, function(err, user) {
-                if(err){
-                    if ( constants.kDuplicateKeyError === err.code || constants.kDuplicateKeyErrorForMongoDBv2_1_1 === err.code ) {
-                        reply(Boom.forbidden("user email already registered"));
-                    } else return reply( Boom.badImplementation(err) ); // HTTP 403
-                }
-                else{
-                    return reply("user updated successfully");
-                }
-            });
-
-       });
+        });
     }
+    else 
+        reply(Boom.forbidden("You don't have permission"));
 };
 
 /**
     DELETE: /user/{id}
-    SCOPE: 'Admin', 'Tenant-Admin'
     @param id : user id of Tenant User whose info need to be deleted.
     Description: Delete Tenant User info by System Admin.
  */
 
-exports.deleteUser = {
-    auth: {
-        strategy: 'token',
-        scope: ['Tenant-Admin','Admin']
-    },
-    handler: function(request, reply) {
-       Jwt.verify(request.headers.authorization.split(' ')[1], Config.key.privateKey, function(err, decoded) {           /* filterening unwanted attributes which may have in request.payload and can enter bad data */   
-            User.remove(request.params.id, function(err, user) {
-                if(err){
-                  return reply( Boom.badImplementation(err) ); // HTTP 403
-                }
-                else{
-                    return reply('User account sucessfully deleted')
-                }
-            });
-
-       });
+exports.deleteUser = function(request, reply){
+    if(request.pre.DU.tenantId === undefined || request.pre.DU.tenantId === request.payload.tenantId) {
+        User.remove(request.params.id, function(err, user) {
+            if(err){
+              return reply( Boom.badImplementation(err) ); // HTTP 403
+            }
+            else{
+                return reply('User account sucessfully deleted')
+            }
+        });
     }
+    else
+        return reply("You don't have permission");
 };

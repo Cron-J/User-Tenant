@@ -26,9 +26,11 @@ exports.checkPermission = function(request, reply) {
     var pId = request.route.settings.app.permissionLevel;
     Jwt.verify(request.headers.authorization.split(' ')[1], Config.key.privateKey, function(err, decoded) {    
             var permissions = permissionsSet(decoded.scope);
+            console.log('********************');
+            console.log(permissions.indexOf(pId));
             if(permissions.indexOf(pId) > -1)
                 return reply(decoded);
             else
-                reply(Boom.forbidden( "You are not authorized." ));
+                reply(Boom.forbidden( "You are not authorized" ));
         });
 }

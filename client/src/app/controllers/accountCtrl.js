@@ -2,9 +2,9 @@
 
 app.controller('accountCtrl', ['$scope', '$rootScope', '$http', '$location', 
     'AuthServ', 'growl', '$filter', 'userInfo', 'suggestionsList','$modal', '$log', '$state',
-    '$stateParams', '$timeout', 'USER_ACTIVITIES', 
+    '$stateParams', '$timeout', 'rolesList',
     function ($scope, $rootScope, $http, $location, AuthServ, growl, $filter, 
-        userInfo, suggestionsList, $modal, $log, $state, $stateParams, $timeout, USER_ACTIVITIES) {
+        userInfo, suggestionsList, $modal, $log, $state, $stateParams, $timeout, rolesList) {
         var _scope = {};
         _scope.init = function() {
             $scope.loginForm = {
@@ -231,12 +231,20 @@ app.controller('accountCtrl', ['$scope', '$rootScope', '$http', '$location',
 
         //Get Personal Account Details
         var getAccountDetails = function () {
-            userInfo.async().then(function(response) {
-                $scope.account = response.data;
-                $scope.current_usr.firstName = response.data.firstName;
-                $scope.current_usr.lastName = response.data.lastName;
-                $scope.current_usr.isEmailVerified = response.data.isEmailVerified;
-
+            rolesList.async().then(function(res) {
+                userInfo.async().then(function(response) {
+                    $scope.account = response.data;
+                    var roles;
+                    for (var i = 0; i < $scope.account.scope.length; i++) {
+                        for (var j = 0;j < res.data.length; j++) {
+                            if($scope.account.scope[i] == res.data[j].id) 
+                                if(i == 0) roles = res.data[j].label;
+                                else 
+                                    roles += ", "+res.data[j].label;
+                        };
+                    };
+                    $scope.account.scope = angular.copy(roles);
+                });
             });
         }
 

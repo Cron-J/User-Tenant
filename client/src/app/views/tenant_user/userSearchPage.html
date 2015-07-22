@@ -2,8 +2,8 @@
   <div class="row ut-pageheader">
     <div class="ut-lead col-lg-10 col-md-10 ">Search Users</div>
     <div class="col-lg-2 col-md-2 pull-right">
-      <a class="btn btn-primary" ng-class="{'pull-right': user.scope == 'Tenant-Admin'}" ng-hide="tenantInfo" ui-sref="createUser"><i class="fa fa-user"></i> New</a>
-      <a class="btn btn-default" ng-hide="tenantInfo || user.scope == 'Tenant-Admin'" ng-controller="adminCtrl" ng-click="exportUserData()"><i class="fa fa-download"></i> Export</a>
+      <span ng-hide="tenantInfo"><a class="btn btn-primary" ng-class="{'pull-right': user.scope[0].id == 1}" ng-if="checkPermission(0)" ui-sref="createUser"><i class="fa fa-user"></i> New</a></span>
+      <a class="btn btn-default" ng-if="checkPermission(7)" ng-controller="adminCtrl" ng-click="exportUserData()"><i class="fa fa-download"></i> Export</a>
       <a class="btn btn-info pull-right" ng-show="tenantInfo" ui-sref="tenants"><i class="fa fa-arrow-left"></i> Back</a>
     </div>
   </div>
@@ -61,8 +61,8 @@
           </div>
         </div>
       </div>
-      <div class="row" >
-        <div class="col-md-6 form-group" ng-hide="user.scope != 'Admin' || tenantInfo">
+      <div class="row" ng-if="checkPermission(9)">
+        <div class="col-md-6 form-group" >
           <label for="tenantName" class="col-md-3 control-label">Tenant</label>
           <div class="col-md-5">
             <input class="form-control" placeholder="" type="text" ng-model="srch.tenantName" typeahead="res as res.name+ res.comma + (res.desc | limitTo:10) for res in searchTenantByName($viewValue)" typeahead-wait-ms="1000" />
@@ -72,8 +72,8 @@
         </div>
       </div>
       <div class="pull-right">
-        <button class="btn btn-primary" type="submit" ng-click="searchTenantUser(srch)">Search</button>
-        <button class="btn btn-primary" ng-click="srch = {};">Reset</button>
+        <button class="btn btn-primary" type="submit" ng-if="checkPermission(1)" ng-click="searchTenantUser(srch)">Search</button>
+        <button class="btn btn-primary" ng-click="resetForm()">Reset</button>
       </div>
     </form>
 
@@ -114,39 +114,43 @@
                   <td>{{usr.isActive}}</td>
                   <td >
                     <span ng-hide="usr.username == user.username">
-                      <button type="button" class="btn btn-default btn-md" 
-                      ng-show="user.scope == 'Admin' && tenantInfo"
-                      ui-sref="userOfTenant({'tenant': tenantInfo, 'selectedId': usr.username})" >
-                        <span class="fa fa-eye"></span> View
-                      </button>
-                      <a type="button" ui-sref="userEdit({uname:usr.username})" 
-                      class="btn btn-primary btn-md" 
-                      data-toggle="tooltip" data-placement="top" title="Modify user information">
-                        <span class="fa fa-edit"></span>
-                      </a>
-                      <!-- <button type="button" ng-hide="user.scope == 'Admin' || tenantInfo" 
-                      class="btn btn-primary btn-md" ng-hide="tenantInfo" 
-                      ng-click="getTenantUserbyTenant(usr._id, srch);
-                      page.view = 'edit'" data-toggle="tooltip" data-placement="top" title="Modify user information">
-                        <span class="fa fa-edit"></span> Edit
-                      </button> -->
-                      <button type="button" ng-if="checkPermission(5) && usr.isActive == true" 
-                      ng-click="deactivateTenantUser(usr._id, usr.tenantId)" 
-                      class="btn btn-warning btn-md" data-toggle="tooltip" data-placement="top" title="Deactivate user account">
-                        <span class="fa fa-user-times"></span>
-                      </button>
-                      <button type="button" ng-if="checkPermission(4) && usr.isActive == false " 
-                      ng-click="activateTenantUser(usr._id, usr.tenantId)" 
-                      class="btn btn-warning btn-md" data-toggle="tooltip" data-placement="top" title="Activate user account">
-                        <span class="fa fa-user-plus"></span>
-                      </button>
-                      <button type="button" class="btn btn-danger btn-md" 
-                      ng-if="checkPermission(6)"
-                      ng-click="deleteTenantUser(usr._id, srch)" 
-                      data-toggle="tooltip" data-placement="top" 
-                      title="Delete user account">
-                        <span class="fa fa-trash"></span>
-                      </button>
+                 <!--      <span ng-show="tenantInfo">
+                        <button type="button" class="btn btn-default btn-md" 
+                        ng-show="user.scope == 'Admin' && tenantInfo"
+                        ui-sref="userOfTenant({'tenant': tenantInfo, 'selectedId': usr.username})" >
+                          <span class="fa fa-eye"></span> View
+                        </button>
+                      </span> -->
+                      <span ng-hide="tenantInfo">
+                        <a type="button" ui-sref="userEdit({uname:usr.username})" 
+                        class="btn btn-primary btn-md" 
+                        data-toggle="tooltip" data-placement="top" title="Modify user information">
+                          <span class="fa fa-edit"></span>
+                        </a>
+                        <!-- <button type="button" ng-hide="user.scope == 'Admin' || tenantInfo" 
+                        class="btn btn-primary btn-md" ng-hide="tenantInfo" 
+                        ng-click="getTenantUserbyTenant(usr._id, srch);
+                        page.view = 'edit'" data-toggle="tooltip" data-placement="top" title="Modify user information">
+                          <span class="fa fa-edit"></span> Edit
+                        </button> -->
+                        <button type="button" ng-if="checkPermission(5) && usr.isActive == true" 
+                        ng-click="deactivateTenantUser(usr._id, usr.tenantId)" 
+                        class="btn btn-warning btn-md" data-toggle="tooltip" data-placement="top" title="Deactivate user account">
+                          <span class="fa fa-user-times"></span>
+                        </button>
+                        <button type="button" ng-if="checkPermission(4) && usr.isActive == false " 
+                        ng-click="activateTenantUser(usr._id, usr.tenantId)" 
+                        class="btn btn-warning btn-md" data-toggle="tooltip" data-placement="top" title="Activate user account">
+                          <span class="fa fa-user-plus"></span>
+                        </button>
+                        <button type="button" class="btn btn-danger btn-md" 
+                        ng-if="checkPermission(6)"
+                        ng-click="deleteUserAccount(usr._id)" 
+                        data-toggle="tooltip" data-placement="top" 
+                        title="Delete user account">
+                          <span class="fa fa-trash"></span>
+                        </button>
+                      </span>
                     </span>
                   </td>
               </tr>  

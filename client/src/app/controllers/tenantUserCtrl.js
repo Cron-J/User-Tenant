@@ -15,8 +15,16 @@ app.controller('tenantUserCtrl', ['$scope', '$rootScope', '$http', '$location',
                     }
                 });
             }
+            if($stateParams.tenantName)
+                $scope.tenantInfo = true;
             rolesList.async().then(function(response) {
                 $scope.rolesList = response.data;
+                if($scope.tenantInfo) {
+                    for (var i = 0; i < $scope.rolesList.length; i++) {
+                        if($scope.rolesList[i].label == 'Admin')
+                        delete $scope.rolesList[i];
+                    };
+                }
             });
             $scope.multiSelectText = {displayProp: 'label'};
 
@@ -29,8 +37,7 @@ app.controller('tenantUserCtrl', ['$scope', '$rootScope', '$http', '$location',
                 $scope.account = {scope:[]};
                 $scope.page.view = 'create';
             }
-            
-            if($scope.user.scope == 'Tenant-Admin')
+            if($scope.user.scope[0] == 1)
                 $scope.page.role = 'tenant-admin';
             var previous = $previousState.get();
             var lsKeys = localStorageService.keys();
@@ -130,6 +137,13 @@ app.controller('tenantUserCtrl', ['$scope', '$rootScope', '$http', '$location',
             });
         }
 
+        $scope.resetForm = function () {
+            $scope.srch = {
+                scope: [],
+                tenantName: []
+            };
+        }
+
 
         //Get Tenant-User account details by Admin
         $scope.getUserAccountDetails = function () {
@@ -143,6 +157,12 @@ app.controller('tenantUserCtrl', ['$scope', '$rootScope', '$http', '$location',
                 .success(function (data, status) {
                     $scope.account = data;
                     for (var i = 0; i < $scope.account.scope.length; i++) {
+                        for (var j = 0; j < $scope.rolesList.length; j++) {
+                            if($scope.rolesList[j].id == $scope.account.scope[i]){
+                                if(i==0) $scope.account.roles = $scope.rolesList[j].label;
+                                else $scope.account.roles +=", "+$scope.rolesList[j].label;
+                            }
+                        };
                         $scope.account.scope[i] = {id: $scope.account.scope[i]};
                     };
                     $scope.account.tenantName = data.tenantId.name;
@@ -187,13 +207,16 @@ app.controller('tenantUserCtrl', ['$scope', '$rootScope', '$http', '$location',
         $scope.createTenantUserAccount = function (account_info, valid) {
             if(valid){
                 var dump = angular.copy(account_info);
+                for (var i = 0; i < account_info.scope.length; i++) {
+                    account_info.scope[i] = angular.copy(account_info.scope[i].id);
+                };
                 if(account_info.tenantName) {
                     if(account_info.tenantName._id)
                         account_info.tenantId = angular.copy(account_info.tenantName._id);
                     delete account_info.tenantName;
                 }
 
-                $http.post('/tenantUser', account_info, {
+                $http.post('/createUser', account_info, {
                     headers: AuthServ.getAuthHeader()
                 })
                 .success(function (data, status) {
@@ -244,10 +267,13 @@ app.controller('tenantUserCtrl', ['$scope', '$rootScope', '$http', '$location',
             $scope.account = {};
         }
 
-        //Update Tenant-User account details by Admin
+        //Update User account details 
         $scope.updateUserAccount = function (account_info, valid) {
             if(valid){
                 var dump = angular.copy(account_info);
+                for (var i = 0; i < account_info.scope.length; i++) {
+                    account_info.scope[i] = angular.copy(account_info.scope[i].id);
+                };
                 delete account_info._id, delete account_info.createdAt, 
                 delete account_info.createdBy, delete account_info.updatedAt,
                 delete account_info.updatedBy;
@@ -255,10 +281,11 @@ app.controller('tenantUserCtrl', ['$scope', '$rootScope', '$http', '$location',
                     headers: AuthServ.getAuthHeader()
                 })
                 .success(function (data, status) {
-                    growl.addSuccessMessage('User account has been updated successfully');
                     $scope.getUserAccountDetails(dump._id);
+                    console.log(data);
                     $scope.page.view = 'view';
-                    $scope.searchTenantUser(localStorageService.get('userSearchObj'));
+                    growl.addSuccessMessage('User account has been updated successfully');
+                    // $scope.searchTenantUser(localStorageService.get('userSearchObj'));
                 })
                 .error(function (data, status) {
                     if(data.message == 'Invalid token') 
@@ -400,16 +427,16 @@ app.controller('tenantUserCtrl', ['$scope', '$rootScope', '$http', '$location',
         }
 
         //Delete Tenant-User
-         $scope.deleteTenantUser = function(id, tenantId){
+         $scope.deleteUserAccount = function(id, tenantId){
             var obj = {
                 "id": id,
                 "tenantId": tenantId
             }
-            $http.delete('/deleteAccount/', obj,   {
-                headers: AuthServ.getAuthHeader()
+            $http.delete('/deleteAccount/'+obj.id, {
+                 headers: AuthServ.getAuthHeader()
             })
             .success(function (data, status) {
-                $scope.searchTenantUser(srchObj);
+                $scope.searchTenantUser($scope.srch);
                 growl.addSuccessMessage('User account has been deleted successfully');
             })
             .error(function (data, status) {

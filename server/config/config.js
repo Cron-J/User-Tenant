@@ -32,7 +32,7 @@ module.exports = {
                  {aId:11, name:'updateTenant'}, 
                  {aId:12, name:'deleteTenant'},
                  {aId:13, name:'searchTenantUsers'},
-                 {aId:14, name:'getTenantUser'},
+                 {aId:14, name:'getTenantUsers'},
                  {aId:15, name:'exportTenant'}],
     roles: [{id:0, label:'Admin', permissions:[0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15]}, 
             {id:1, label:'Tenant Admin', permissions:[0, 1, 2, 3, 4, 5, 6, 7, 13, 14]}, 

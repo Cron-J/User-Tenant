@@ -87,7 +87,9 @@ app.controller('mainCtrl', ['$scope', '$location', '$rootScope', '$http', '$moda
             obj['name'] = $viewValue;
             // obj['value'] = $viewValue;
             temp.push(obj);
-            return $http.post('/searchTenant', obj).
+            return $http.post('/searchTenant', obj,  {
+                headers: AuthServ.getAuthHeader()
+            }).
             then(function(data){
               var tenantList = [];
               angular.forEach(data.data, function(item){   

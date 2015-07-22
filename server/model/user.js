@@ -153,7 +153,7 @@ User.statics.deActivateUser = function(id, role, callback) {
         'isActive': false, 'updatedBy': role, 'updatedAt': new Date()}, callback);
 };
 
-User.statics.updateUserByTenantId = function(id, tenantId, user, callback) {
+User.statics.updateUserDetails = function(id, tenantId, user, callback) {
     if (user.createdAt) {
         delete user.createdAt;
     }

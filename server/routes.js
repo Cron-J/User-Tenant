@@ -24,7 +24,7 @@ exports.endpoints = [
     { method: 'GET',  path: '/getRoles', config: Role.getRoles },
     //Create Admin
     { method: 'POST', path: '/admin', config: User.createAdmin},
-    //Activate TenantUser
+    //Activate User
     { method: 'POST', path: '/activateUser', 
         config:{
             app: {
@@ -36,6 +36,7 @@ exports.endpoints = [
                 ]
         }
     },
+    //Deactivate User
     { method: 'POST', path: '/deActivateUser', 
         config:{
             app: {
@@ -47,13 +48,34 @@ exports.endpoints = [
                 ]
         }
     },
-    { method: 'PUT', path: '/user', config: User.updateUser},
-    { method: 'PUT', path: '/user/{id}', config: User.updateTenantUser},
-    { method: 'PUT', path: '/user/{id}/{tenantId}', config: User.updateTenantUser},
+    //Update User
+    { method: 'PUT', path: '/user', config: User.updateAccount},
+    { method: 'PUT', path: '/user/{id}', 
+        config:{
+            app: {
+                permissionLevel: 3  // "permission level" for this route
+            },
+            handler:User.updateUser, 
+            pre: [
+                    {method:Auth.checkPermission, assign:'UU'}
+                ]
+        }
+    },
+    { method: 'PUT', path: '/user/{id}/{tenantId}', 
+        config:{
+            app: {
+                permissionLevel: 3  // "permission level" for this route
+            },
+            handler:User.updateUser, 
+            pre: [
+                    {method:Auth.checkPermission, assign:'UU'}
+                ]
+        }
+    },
     { method: 'POST', path: '/searchUser', 
         config:{
             app: {
-                permissionLevel: 9  // "permission level" for this route
+                permissionLevel: 1  // "permission level" for this route
             },
             handler:User.searchUser, 
             pre: [
@@ -126,21 +148,108 @@ exports.endpoints = [
     { method: 'PUT', path: '/emailVerification', config: User.emailVerification},
     { method: 'POST', path: '/resendVerificationMail', config: User.resendVerificationMail},
     { method: 'POST', path: '/tenantSelfRegistration', config: Tenant.createTenantSelfRegistration}, 
-    { method: 'POST', path: '/searchTenant', config: Tenant.searchTenant},
-    { method: 'GET', path: '/exportTenant', config: Tenant.exportTenant},
-    { method: 'GET', path: '/tenant/{name}', config: Tenant.getTenant},
-    { method: 'PUT', path: '/tenant/{id}', config: Tenant.updateTenantByAdmin},
+    //Search Tenant
+    { method: 'POST', path: '/searchTenant', 
+        config: {
+            app: {
+                permissionLevel: 9  // "permission level" for this route
+            },
+            handler:Tenant.searchTenant, 
+            pre: [
+                    {method:Auth.checkPermission, assign:'ST'}
+                ]
+        }
+    },
+    { method: 'GET', path: '/exportTenant', 
+        config: {
+            app: {
+                permissionLevel: 15  // "permission level" for this route
+            },
+            handler:Tenant.exportTenant, 
+            pre: [
+                    {method:Auth.checkPermission, assign:'ET'}
+                ]
+        }
+    },
+    //Get Tenant Details
+    { method: 'GET', path: '/tenant/{name}', 
+        config: {
+            app: {
+                permissionLevel: 10  // "permission level" for this route
+            },
+            handler:Tenant.getTenant, 
+            pre: [
+                    {method:Auth.checkPermission, assign:'GT'}
+                ]
+        }
+    },
+    //Update tenant account information
+    { method: 'PUT', path: '/tenant/{id}', 
+        config: {
+            app: {
+                permissionLevel: 10  // "permission level" for this route
+            },
+            handler:Tenant.updateTenant, 
+            pre: [
+                    {method:Auth.checkPermission, assign:'UT'}
+                ]
+        }
+    },
     { method: 'POST', path: '/user', config: User.createUserSelfRegistration},
-    { method: 'GET', path: '/tenantUser/{id}', config: User.getAllTenantUserByTenant},
+    //Get all tenantUsers of tenant
+    { method: 'GET', path: '/tenantUser/{id}', 
+        config: {
+            app: {
+                permissionLevel: 14  // "permission level" for this route
+            },
+            handler:User.getAllTenantUsersOfTenant, 
+            pre: [
+                    {method:Auth.checkPermission, assign:'GTU'}
+                ]
+        }
+    },
     { method: 'GET', path: '/tenantDeactiveUser/{id}', config: User.getAllDeactiveTenantUserByTenant},
-    { method: 'POST', path: '/tenantUser', config: User.createTenantUser},
-    { method: 'POST', path: '/tenantCreation', config: Tenant.createTenantByAdmin},
+    //Create User
+    { method: 'POST', path: '/createUser', 
+        config: {
+            app: {
+                permissionLevel: 0  // "permission level" for this route
+            },
+            handler:User.createUser, 
+            pre: [
+                    {method:Auth.checkPermission, assign:'CU'}
+                ]
+        }
+    },
+    //Create Tenant Account
+    { method: 'POST', path: '/tenantCreation', 
+        config: {
+            app: {
+                permissionLevel: 8  // "permission level" for this route
+            },
+            handler:Tenant.createTenant, 
+            pre: [
+                    {method:Auth.checkPermission, assign:'CU'}
+                ]
+        }
+    },
     // { method: 'POST', path: '/tenantUserCreation', config: User.createTenantUserbyTenant},
     { method: 'POST', path: '/sendActivationEmail', config: User.sendActivationEmail},
     { method: 'POST', path: '/sendCredentials', config: User.sendCredentials},
     { method: 'POST', path: '/changePassword', config: User.changePasswordRequest},
     { method: 'POST', path: '/getSuggestions', config: User.usernameSuggestions},
-    { method: 'DELETE', path: '/deleteAccount/{id}', config: User.deleteUser}
+    //Delete User
+    { method: 'DELETE', path: '/deleteAccount/{id}', 
+        config: {
+            app: {
+                permissionLevel: 6  // "permission level" for this route
+            },
+            handler:User.deleteUser, 
+            pre: [
+                    {method:Auth.checkPermission, assign:'DU'}
+                ]
+        }
+    }
 
     
 ];

@@ -36,7 +36,7 @@
             <div class="row">
                 <div class="form-group">
                     <div class="col-lg-12 col-md-12">
-                        <button class="btn btn-primary" ng-show="page.view == 'create'" ng-disabled="!tenantForm.$valid" ng-click="createTenantAccount(account, tenantForm.$valid)">Create</button>
+                        <button class="btn btn-primary" ng-show="page.view == 'create'" ng-if="checkPermission(8)" ng-disabled="!tenantForm.$valid" ng-click="createTenantAccount(account, tenantForm.$valid)">Create</button>
                         <button class="btn btn-primary" ng-show="page.view == 'view'"  ng-click="page.view = 'edit';isChanged = false">Edit</button>
                         <button class="btn btn-primary" ng-show="page.view == 'edit'" ng-disabled="!tenantForm.$valid" ng-click="isChanged = false;updateTenantAccount(account, tenantForm.$valid)">Update</button>
                         <button class="btn btn-default" ng-show="!isChanged" ui-sref="tenants"><i class="fa fa-arrow-left"></i> Back</button>
