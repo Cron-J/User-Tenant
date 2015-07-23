@@ -501,16 +501,32 @@ var isDuplicated = function (array, name) {
 }
 
 exports.exportUser = function(request, reply){
-   console.log('sdsddsdfsdfsdf',request.pre.val);
         var query = {};
             query['isEmailVerified'] = {'$ne': 'false'};
-        var fieldsArray = ['username', 'firstName', 'lastName', 'email', 'scope', 'isActive'];
-        var fieldNamesArray = ['User Name', 'First Name', 'Last Name', 'Email', 'User Role', 'Active'];
-        User.searchUser(query, function(err, user) {
+        var fieldsArray = ['username', 'email', 'firstName', 'lastName', 'roles', 'isActive'];
+        var fieldNamesArray = ['User Name', 'Email', 'First Name', 'Last Name', 'User Role', 'Active'];
+        User.searchUser(query, function(err, users) {
             if (!err) {
-                json2csv({data: user, fields: fieldsArray, fieldNames: fieldNamesArray}, function(err, csv) {
-                  if (err) console.log(err);
-                  return reply(csv).header('Content-Type', 'application/octet-stream').header('content-disposition', 'attachment; filename=user.csv;');
+                var list = JSON.parse(JSON.stringify(users));
+                async.each(list, function(user, callback){
+                    user.roles = {};
+                    Role.findRoles(user.scope, function(err, role){
+                        if(!err){
+                            for (var i = 0; i < role.length; i++) {
+                                user.scope[i] = role[i].label;
+                            };
+                            user.roles = user.scope.toString();
+                            
+                            callback();                
+                        }
+                        else reply(Boom.forbidden(err));
+                    });
+                 },
+                function(err){
+                    json2csv({data: list, fields: fieldsArray, fieldNames: fieldNamesArray}, function(err, csv) {
+                      if (err) console.log(err);
+                      return reply(csv).header('Content-Type', 'application/octet-stream').header('content-disposition', 'attachment; filename=user.csv;');
+                    });
                 });
             } else reply(Boom.forbidden(err));
         });
@@ -868,7 +884,7 @@ exports.updateUser = function(request, reply){
  */
 
 exports.deleteUser = function(request, reply){
-    if(request.pre.DU.tenantId === undefined || request.pre.DU.tenantId === request.payload.tenantId) {
+    if(request.pre.DU.tenantId === undefined || request.pre.DU.tenantId === request.params.tenantId) {
         User.remove(request.params.id, function(err, user) {
             if(err){
               return reply( Boom.badImplementation(err) ); // HTTP 403
@@ -879,5 +895,5 @@ exports.deleteUser = function(request, reply){
         });
     }
     else
-        return reply("You don't have permission");
+        return reply(Boom.forbidden("You don't have permission"));
 };

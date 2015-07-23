@@ -127,7 +127,7 @@ app.controller('accountCtrl', ['$scope', '$rootScope', '$http', '$location',
                     growl.addSuccessMessage('Successfully logged in');
                     $rootScope.user =  data;
                     if($rootScope.user) {
-                    console.log($rootScope.user.permissions);
+                        $scope.getLoginUserInfo();
                         userInfo.async().then(function(response) {
                             $scope.current_usr = response.data;
                             if($scope.current_usr.firstLogin === $scope.current_usr.lastLogin && 
@@ -253,8 +253,9 @@ app.controller('accountCtrl', ['$scope', '$rootScope', '$http', '$location',
             if(valid){
                 var id = angular.copy(account_info._id);
                 delete account_info._id, delete account_info.scope, 
-                delete account_info.createdAt, delete account_info.createdBy, delete account_info.updatedAt,
-                delete account_info.updatedBy;
+                delete account_info.createdAt, delete account_info.createdBy, 
+                delete account_info.updatedAt, delete account_info.updatedBy;
+                if(account_info.tenantId) delete account_info.tenantId;
                 $http.put('/user', account_info, {
                     headers: AuthServ.getAuthHeader()
                 })

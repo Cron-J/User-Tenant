@@ -6,14 +6,19 @@ app.controller('mainCtrl', ['$scope', '$location', '$rootScope', '$http', '$moda
     	suggestionsList, AuthServ, growl, $stateParams) {
         var _scope = {};
         _scope.init = function () {
+        	
+            $scope.getLoginUserInfo();
+        }
 
-        	$scope.current_usr = {};
-        	if($rootScope.user) {
+        $scope.getLoginUserInfo = function(){
+            if($rootScope.user) {
                 $scope.isHeader = true;
-    	        userInfo.async().then(function(response) {
-    	          $scope.current_usr = response.data;
-    	        });
-    	    }
+                $scope.current_usr = {};
+                userInfo.async().then(function(response) {
+                  $scope.current_usr = response.data;
+                });
+                
+            }
         }
 
         $scope.checkPermission = function (id) {

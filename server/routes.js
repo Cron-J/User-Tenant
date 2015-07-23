@@ -249,6 +249,17 @@ exports.endpoints = [
                     {method:Auth.checkPermission, assign:'DU'}
                 ]
         }
+    },
+    { method: 'DELETE', path: '/deleteAccount/{id}/{tenantId}', 
+        config: {
+            app: {
+                permissionLevel: 6  // "permission level" for this route
+            },
+            handler:User.deleteUser, 
+            pre: [
+                    {method:Auth.checkPermission, assign:'DU'}
+                ]
+        }
     }
 
     

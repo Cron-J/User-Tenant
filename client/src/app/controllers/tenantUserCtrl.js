@@ -8,23 +8,16 @@ app.controller('tenantUserCtrl', ['$scope', '$rootScope', '$http', '$location',
         var _scope = {};
         _scope.init = function() {
             if($location.path() == '/users') {
-                userInfo.async().then(function(response) {
-                    if(response.data.tenantId) {
-                        $scope.current_usr.tenantId = response.data.tenantId._id;
-                        $scope.current_usr.tenantName = response.data.tenantId.name;
-                    }
-                });
+               $scope.srch ={scope : []};
             }
-            if($stateParams.tenantName)
-                $scope.tenantInfo = true;
+            if($stateParams.tenantName || $rootScope.user.tenantId)
+                $scope.tenantView = true;
+
             rolesList.async().then(function(response) {
-                $scope.rolesList = response.data;
-                if($scope.tenantInfo) {
-                    for (var i = 0; i < $scope.rolesList.length; i++) {
-                        if($scope.rolesList[i].label == 'Admin')
-                        delete $scope.rolesList[i];
-                    };
+                if($scope.tenantView) {
+                    response.data.shift();
                 }
+                $scope.rolesList = response.data;
             });
             $scope.multiSelectText = {displayProp: 'label'};
 
@@ -32,6 +25,7 @@ app.controller('tenantUserCtrl', ['$scope', '$rootScope', '$http', '$location',
                 view: 'edit',
                 role: 'admin'
             }
+
             $scope.srch = {scope:[]};
             if($location.path() == "/newUser") {
                 $scope.account = {scope:[]};
@@ -42,10 +36,10 @@ app.controller('tenantUserCtrl', ['$scope', '$rootScope', '$http', '$location',
             var previous = $previousState.get();
             var lsKeys = localStorageService.keys();
             if(previous) {
-                if(previous.state.name == 'userEdit' || previous.state.name == 'userOfTenant') {
+                if(previous.state.name == 'userEdit') {
                     if(lsKeys.indexOf('usersList') != -1){
                         $scope.showUserResult = true;
-                        if(lsKeys.indexOf('userSearchObj' != -1))
+                        if(lsKeys.indexOf('userSearchObj') > -1)
                             $scope.srch = localStorageService.get('userSearchObj');
                         $scope.resultList = localStorageService.get('usersList');
                         $scope.groupToPages();
@@ -58,6 +52,7 @@ app.controller('tenantUserCtrl', ['$scope', '$rootScope', '$http', '$location',
 
             if($stateParams.uname || $stateParams.selectedId){
                 if($stateParams.selectedId) $scope.page.view = 'view';
+                $scope.account = {scope:[]};
                 $scope.getUserAccountDetails();
             }
             
@@ -79,12 +74,27 @@ app.controller('tenantUserCtrl', ['$scope', '$rootScope', '$http', '$location',
             }
 
             if($stateParams.tenantName || $stateParams.tenant) {
-                var name;
-                if($stateParams.tenantName) name = angular.copy($stateParams.tenantName);
-                if($stateParams.tenant) name = angular.copy($stateParams.tenant);
-                $scope.tenantInfo = name
+                getTenantId();
+                if($stateParams.tenantName) 
+                    $scope.tenantInfo = angular.copy($stateParams.tenantName);
+                if($stateParams.tenant) 
+                    $scope.tenantInfo = angular.copy($stateParams.tenant);
             }
 
+            
+            $scope.multiSelectText = {
+                smartButtonMaxItems: 3,
+                smartButtonTextConverter: function(itemText, originalItem) {
+                    if (itemText === 'Jhon') {
+                    return 'Jhonny!';
+                    }
+
+                    return itemText;
+                }
+            };
+        }
+
+        var getTenantId = function(){
             if($stateParams.tenantName) {
                 $http.get('/tenant/'+ $stateParams.tenantName, {
                     headers: AuthServ.getAuthHeader()
@@ -100,16 +110,6 @@ app.controller('tenantUserCtrl', ['$scope', '$rootScope', '$http', '$location',
                         growl.addErrorMessage(data.message);
                 });
             }
-            $scope.multiSelectText = {
-                smartButtonMaxItems: 3,
-                smartButtonTextConverter: function(itemText, originalItem) {
-                    if (itemText === 'Jhon') {
-                    return 'Jhonny!';
-                    }
-
-                    return itemText;
-                }
-            };
         }
     
         $scope.authError = null;
@@ -155,16 +155,17 @@ app.controller('tenantUserCtrl', ['$scope', '$rootScope', '$http', '$location',
                     headers: AuthServ.getAuthHeader()
                 })
                 .success(function (data, status) {
-                    $scope.account = data;
-                    for (var i = 0; i < $scope.account.scope.length; i++) {
+
+                    for (var i = 0; i < data.scope.length; i++) {
                         for (var j = 0; j < $scope.rolesList.length; j++) {
-                            if($scope.rolesList[j].id == $scope.account.scope[i]){
-                                if(i==0) $scope.account.roles = $scope.rolesList[j].label;
-                                else $scope.account.roles +=", "+$scope.rolesList[j].label;
+                            if($scope.rolesList[j].id == data.scope[i]){
+                                if(i==0) data.roles = $scope.rolesList[j].label;
+                                else data.roles +=", "+$scope.rolesList[j].label;
                             }
                         };
-                        $scope.account.scope[i] = {id: $scope.account.scope[i]};
+                        data.scope[i] = {id: data.scope[i]};
                     };
+                    $scope.account = data;
                     $scope.account.tenantName = data.tenantId.name;
                     $scope.account.tenantId = data.tenantId._id;
                 })
@@ -215,7 +216,8 @@ app.controller('tenantUserCtrl', ['$scope', '$rootScope', '$http', '$location',
                         account_info.tenantId = angular.copy(account_info.tenantName._id);
                     delete account_info.tenantName;
                 }
-
+                if($rootScope.user.tenantId)
+                    account_info.tenantId = $rootScope.user.tenantId;
                 $http.post('/createUser', account_info, {
                     headers: AuthServ.getAuthHeader()
                 })
@@ -225,11 +227,11 @@ app.controller('tenantUserCtrl', ['$scope', '$rootScope', '$http', '$location',
                     
                 })
                 .error(function (data, status) {
+                     account_info = angular.copy(dump);
                     if(data.message == 'Invalid token') 
                         $scope.sessionExpire();
                     else
                       growl.addErrorMessage(data.message);
-                  account_info = dump;
                 });
             }
         }
@@ -277,15 +279,19 @@ app.controller('tenantUserCtrl', ['$scope', '$rootScope', '$http', '$location',
                 delete account_info._id, delete account_info.createdAt, 
                 delete account_info.createdBy, delete account_info.updatedAt,
                 delete account_info.updatedBy;
-                $http.put('/user/'+dump._id+'/'+dump.tenantId, account_info, {
+                var url;
+                if(dump.tenantId)
+                    url = dump._id+'/'+dump.tenantId;
+                else
+                    url = dump._id;
+                $http.put('/user/'+url, account_info, {
                     headers: AuthServ.getAuthHeader()
                 })
                 .success(function (data, status) {
                     $scope.getUserAccountDetails(dump._id);
-                    console.log(data);
                     $scope.page.view = 'view';
                     growl.addSuccessMessage('User account has been updated successfully');
-                    // $scope.searchTenantUser(localStorageService.get('userSearchObj'));
+                    $scope.searchTenantUser(localStorageService.get('userSearchObj'));
                 })
                 .error(function (data, status) {
                     if(data.message == 'Invalid token') 
@@ -298,53 +304,57 @@ app.controller('tenantUserCtrl', ['$scope', '$rootScope', '$http', '$location',
         }
 
         
-        //Update Tenant-User account details by Tenant-Admin
-        $scope.updatetenantUserAccountByTenant = function (account_info, valid) {
-            if(valid){
-                var dump = angular.copy(account_info);
-                delete account_info._id, delete account_info.createdAt, 
-                delete account_info.createdBy, delete account_info.updatedAt,
-                delete account_info.updatedBy;
-                account_info.tenantId = account_info.tenantId._id;
-                $http.put('/user/'+ dump._id, account_info, {
-                    headers: AuthServ.getAuthHeader()
-                })
-                .success(function (data, status) {
-                    growl.addSuccessMessage('Tenant-User account has been updated successfully');
-                    $scope.getTenantUserbyTenant(dump._id);
-                    $scope.page.view = 'view';
-                })
-                .error(function (data, status) {
-                    if(data.message == 'Invalid token') 
-                        $scope.sessionExpire();
-                    else
-                        growl.addErrorMessage(data.message);
-                });
+        // //Update Tenant-User account details by Tenant-Admin
+        // $scope.updatetenantUserAccountByTenant = function (account_info, valid) {
+        //     if(valid){
+        //         var dump = angular.copy(account_info);
+        //         delete account_info._id, delete account_info.createdAt, 
+        //         delete account_info.createdBy, delete account_info.updatedAt,
+        //         delete account_info.updatedBy;
+        //         account_info.tenantId = account_info.tenantId._id;
+        //         $http.put('/user/'+ dump._id, account_info, {
+        //             headers: AuthServ.getAuthHeader()
+        //         })
+        //         .success(function (data, status) {
+        //             growl.addSuccessMessage('Tenant-User account has been updated successfully');
+        //             $scope.getTenantUserbyTenant(dump._id);
+        //             $scope.page.view = 'view';
+        //         })
+        //         .error(function (data, status) {
+        //             if(data.message == 'Invalid token') 
+        //                 $scope.sessionExpire();
+        //             else
+        //                 growl.addErrorMessage(data.message);
+        //         });
                 
-            }
-        }
+        //     }
+        // }
 
 
         //Search Tenant-User
         $scope.searchTenantUser = function(obj){
-            var searchObj = angular.copy(obj);
-            if(searchObj){
+            if(obj){
+                var searchObj = angular.copy(obj);
                 localStorageService.set('userSearchObj', searchObj);
             }
             if(!searchObj) searchObj = {};
-            if(searchObj.scope.length > 0) {
-                for (var i = 0; i < searchObj.scope.length; i++) {
-                    searchObj.scope[i] = searchObj.scope[i].id;
-                };
-            } else {
-                delete searchObj.scope;
-            }
+            if(searchObj.scope) {
+                if(searchObj.scope.length > 0) {
+                    for (var i = 0; i < searchObj.scope.length; i++) {
+                        searchObj.scope[i] = searchObj.scope[i].id;
+                    };
+                }
+                else 
+                    delete searchObj.scope;
+            } 
             if(searchObj.tenantName != undefined) {
                 if(searchObj.tenantName._id)
                         searchObj.tenantId = searchObj.tenantName._id;
             }
             if($stateParams.tenantName)
                 searchObj.tenantId = $scope.tenantId;
+            if($rootScope.user.tenantId)
+                searchObj.tenantId = $rootScope.user.tenantId;
             if($scope.user.scope == 'Tenant-Admin') 
                 searchObj.tenantId = $scope.user.tenantId;
             $http.post('/searchUser', searchObj, {
@@ -428,15 +438,16 @@ app.controller('tenantUserCtrl', ['$scope', '$rootScope', '$http', '$location',
 
         //Delete Tenant-User
          $scope.deleteUserAccount = function(id, tenantId){
-            var obj = {
-                "id": id,
-                "tenantId": tenantId
-            }
-            $http.delete('/deleteAccount/'+obj.id, {
+            var extUrl;
+            if(tenantId)
+                extUrl = id+'/'+tenantId;
+            else
+                extUrl = id;
+            $http.delete('/deleteAccount/'+extUrl, {
                  headers: AuthServ.getAuthHeader()
             })
             .success(function (data, status) {
-                $scope.searchTenantUser($scope.srch);
+                $scope.searchTenantUser(localStorageService.get('userSearchObj'));
                 growl.addSuccessMessage('User account has been deleted successfully');
             })
             .error(function (data, status) {

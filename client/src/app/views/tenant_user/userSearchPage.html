@@ -2,14 +2,32 @@
   <div class="row ut-pageheader">
     <div class="ut-lead col-lg-10 col-md-10 ">Search Users</div>
     <div class="col-lg-2 col-md-2 pull-right">
-      <span ng-hide="tenantInfo"><a class="btn btn-primary" ng-class="{'pull-right': user.scope[0].id == 1}" ng-if="checkPermission(0)" ui-sref="createUser"><i class="fa fa-user"></i> New</a></span>
-      <a class="btn btn-default" ng-if="checkPermission(7)" ng-controller="adminCtrl" ng-click="exportUserData()"><i class="fa fa-download"></i> Export</a>
+      <span ng-hide="tenantInfo">
+        <a class="btn btn-primary" ng-class="{'pull-right': checkPermission(0)}" ng-if="checkPermission(0)" ui-sref="createUser"><i class="fa fa-user"></i> New</a>
+      </span>
+      <span ng-hide="tenantView">
+        <a class="btn btn-default" ng-if="checkPermission(7)" ng-controller="adminCtrl" ng-click="exportUserData()"><i class="fa fa-download"></i> Export</a>
+      </span>
       <a class="btn btn-info pull-right" ng-show="tenantInfo" ui-sref="tenants"><i class="fa fa-arrow-left"></i> Back</a>
     </div>
   </div>
   <div class="ut-container">
     <form name="searchForm">
       <div class="row"> 
+        <div class="col-md-6 form-group">
+          <label for="email" class="col-md-3 control-label">User Name</label>
+          <div class="col-md-5">
+              <input class="form-control" placeholder="" name="srchname" type="text" ng-model="srch.username">
+          </div>
+        </div>
+        <div class="col-md-6 form-group">
+          <label for="email" class="col-md-3 control-label">Email</label>
+          <div class="col-md-5">
+              <input class="form-control" placeholder="" name="srchmail" type="text" ng-model="srch.email">
+          </div>
+        </div>
+      </div>
+      <div class="row">
         <div class="col-md-6 form-group">
           <label for="firstName" class="col-md-3 control-label">First Name</label>
             <div class="col-md-5">
@@ -23,45 +41,25 @@
           </div>                  
         </div>
       </div>
-      <div class="row">
-        <div class="col-md-6 form-group">
-          <label for="email" class="col-md-3 control-label">User Name</label>
-          <div class="col-md-5">
-              <input class="form-control" placeholder="" name="srchname" type="text" ng-model="srch.username">
-          </div>
-        </div>
+      <div class="row" >
         <div class="col-md-6 form-group">
           <label for="scope" class="col-md-3 control-label">User Role(s)</label>
           <div class="col-md-5">
           <div ng-dropdown-multiselect="" options="rolesList" selected-model="srch.scope" extra-settings="multiSelectText" ></div>
-              <!-- <select class="form-control" placeholder="" name="srchrole" type="text" ng-model="srch.scope">
-                  <option value="">Select role</option>
-                  <option value="Tenant-Admin">Admin</option>
-                  <option value="Tenant-Admin">Tenant-Admin</option>
-                  <option value="User">User</option>
-              </select>  -->
-          </div>
-        </div>
-      </div>
-      <div class="row" >
-        <div class="col-md-6 form-group">
-          <label for="email" class="col-md-3 control-label">Email</label>
-          <div class="col-md-5">
-              <input class="form-control" placeholder="" name="srchmail" type="text" ng-model="srch.email">
           </div>
         </div>
         <div class="col-md-6 form-group">
           <label for="isActive" class="col-md-3 control-label">Active</label>
-          <div class="col-md-5">
+          <div class="col-md-3">
               <select class="form-control" placeholder="" name="srchstatus" type="text" ng-model="srch.isActive">
-                  <option value="">Select status</option>
+                  <option value="">Select</option>
                   <option value="true">True</option>
                   <option value="false">False</option>
               </select> 
           </div>
         </div>
       </div>
-      <div class="row" ng-if="checkPermission(9)">
+      <div class="row" ng-hide="tenantView">
         <div class="col-md-6 form-group" >
           <label for="tenantName" class="col-md-3 control-label">Tenant</label>
           <div class="col-md-5">
@@ -72,7 +70,13 @@
         </div>
       </div>
       <div class="pull-right">
-        <button class="btn btn-primary" type="submit" ng-if="checkPermission(1)" ng-click="searchTenantUser(srch)">Search</button>
+        <span ng-if="!tenantView">
+          <button class="btn btn-primary" type="submit" ng-if="checkPermission(1)" 
+        ng-click="searchTenantUser(srch)">Search</button>
+        </span>
+        <span ng-if="tenantView">
+          <button class="btn btn-primary" type="submit" ng-if="checkPermission(13)" ng-click="searchTenantUser(srch)">Search</button>
+        </span>
         <button class="btn btn-primary" ng-click="resetForm()">Reset</button>
       </div>
     </form>
@@ -92,9 +96,9 @@
             <thead>
               <tr>
                 <th>User Name</th>
+                <th>Email</th>
                 <th>First Name</th>
                 <th>Last Name</th>
-                <th>Email</th>
                 <th>User Role(s)</th>
                 <th>Active</th>
                 <th></th>
@@ -103,9 +107,9 @@
             <tbody>
                 <tr class="ut-pointer" ng-repeat="usr in pagedItems[currentPage] | orderBy: 'username'" >
                   <td>{{usr.username}}</td>
+                  <td>{{usr.email}}</td>
                   <td>{{usr.firstName}}</td>
                   <td>{{usr.lastName}}</td>
-                  <td>{{usr.email}}</td>
                   <td>
                     <span ng-repeat="role in usr.scope">
                       {{role}} <i ng-hide="$last">, </i>
@@ -114,25 +118,12 @@
                   <td>{{usr.isActive}}</td>
                   <td >
                     <span ng-hide="usr.username == user.username">
-                 <!--      <span ng-show="tenantInfo">
-                        <button type="button" class="btn btn-default btn-md" 
-                        ng-show="user.scope == 'Admin' && tenantInfo"
-                        ui-sref="userOfTenant({'tenant': tenantInfo, 'selectedId': usr.username})" >
-                          <span class="fa fa-eye"></span> View
-                        </button>
-                      </span> -->
                       <span ng-hide="tenantInfo">
                         <a type="button" ui-sref="userEdit({uname:usr.username})" 
                         class="btn btn-primary btn-md" 
                         data-toggle="tooltip" data-placement="top" title="Modify user information">
                           <span class="fa fa-edit"></span>
                         </a>
-                        <!-- <button type="button" ng-hide="user.scope == 'Admin' || tenantInfo" 
-                        class="btn btn-primary btn-md" ng-hide="tenantInfo" 
-                        ng-click="getTenantUserbyTenant(usr._id, srch);
-                        page.view = 'edit'" data-toggle="tooltip" data-placement="top" title="Modify user information">
-                          <span class="fa fa-edit"></span> Edit
-                        </button> -->
                         <button type="button" ng-if="checkPermission(5) && usr.isActive == true" 
                         ng-click="deactivateTenantUser(usr._id, usr.tenantId)" 
                         class="btn btn-warning btn-md" data-toggle="tooltip" data-placement="top" title="Deactivate user account">
@@ -145,7 +136,7 @@
                         </button>
                         <button type="button" class="btn btn-danger btn-md" 
                         ng-if="checkPermission(6)"
-                        ng-click="deleteUserAccount(usr._id)" 
+                        ng-click="deleteUserAccount(usr._id, usr.tenantId)" 
                         data-toggle="tooltip" data-placement="top" 
                         title="Delete user account">
                           <span class="fa fa-trash"></span>

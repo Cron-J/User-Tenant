@@ -8,7 +8,7 @@
     </div>
 
     <ul class="nav navbar-nav navbar-right" >
-        <li class="dropdown" ng-show="user.scope[0].id >= 1"><span class="ut-nohover"><i class="fa fa-building"></i> {{current_usr.tenantName | uppercase}}</span></li>
+        <li class="dropdown" ng-show="user.tenantId"><span class="ut-nohover"><i class="fa fa-building"></i> {{current_usr.tenantId.name}}</span></li>
         <li class="dropdown" ng-controller="accountCtrl" >
           <a class="dropdown-toggle ut-pointer" data-toggle="dropdown" >
 
@@ -17,7 +17,7 @@
           </a>
           <ul class="dropdown-menu">
             <li><a ui-sref="editProfile" class="ut-pointer"><i class="fa fa-fw fa-user"></i> Profile</a></li>
-            <!-- <li><a ui-sref="changePassword" class="ut-pointer"><i class="fa fa-fw fa-key"></i> Change Password</a></li> -->
+            <li><a ui-sref="changePassword" class="ut-pointer"><i class="fa fa-fw fa-key"></i> Change Password</a></li>
             <li><a ng-click="logOut()" class="ut-pointer"><i class="fa fa-fw fa-sign-out"></i> Log Off</a></li>
             <!-- <li class="divider"></li>
             <li class="dropdown-header">Language</li>
