@@ -9,6 +9,7 @@ var Boom = require('boom'),
     Crypto = require('../Utility/cryptolib'),
     User = require('../model/user').User,
     Tenant = require('../model/tenant').Tenant,
+    Role = require('../model/role').Role,
     async = require("async");
 
 exports.createTenantSelfRegistration = {
@@ -117,45 +118,54 @@ exports.exportTenant = function(request, reply) {
         var dump = [];
         Tenant.searchTenant(query, function(err, tenants) {
             if (!err) {
-                    var query1 = {};
-                    async.each(tenants, function(tenant, callback){
-                        query1['tenantId'] = tenant._id;
-                            User.searchUser(query1, function(err, user) {
-                                if (!err) {
-                                    if(user.length == 0) {
-                                        dump.push(customJson(tenant));
-                                    } 
-                                    else{
-                                        for(var i = 0; i < user.length; i++) {
-                                            if(user[i].isEmailVerified)
-                                                dump.push(customJson(tenant, user[i]));
-                                        }
-                                        
-                                    }
+                var query1 = {};
+                async.each(tenants, function(tenant, callback){
+                    query1['tenantId'] = tenant._id;
+                        User.searchUser(query1, function(err, users) {
+                            if (!err) {
+                                if(users.length == 0) {
+                                    dump.push(customJson(tenant));
                                     callback();
                                 } 
-                                else reply(Boom.forbidden(err));
+                                else{
+                                    var list = JSON.parse(JSON.stringify(users));
+                                    async.each(list, function(user, callback1){
+                                        Role.findRoles(user.scope, function(err, role){
+                                            if(!err){
+                                                for (var i = 0; i < role.length; i++) {
+                                                    user.scope[i] = role[i].label;
+                                                };
+                                                
+                                                dump.push(customJson(tenant, user));
+                                                callback1();                
+                                            }
+                                            else reply(Boom.forbidden(err));
+                                        });
+                                    },
+                                    function(err){
+                                        callback();
+                                    });
+                                    
+                                }
+                            } 
+                            else reply(Boom.forbidden(err));
+                        }); 
+                    }, function(err){
+                        if(!err) {
+                            //sorting data by tenant name
+                            dump.sort(function(a, b) {
+                                var textA = a.name.toUpperCase();
+                                var textB = b.name.toUpperCase();
+                                return (textA < textB) ? -1 : (textA > textB) ? 1 : 0;
+                            });
+                            //writing data into csv file
+                            json2csv({data: dump,  fields: ['name', 'description', 'username', 'email', 'firstName', 'lastName', 'role', 'isActive'], fieldNames: ['Tenant Name', 'Tenant Description', 'User name', 'Email', 'First Name', 'Last Name', 'User Role(s)', 'Active'] }, function(err, csv1) {
+                              if (err) console.log(err);
+                                return reply(csv1).header('Content-Type', 'application/octet-stream').header('content-disposition', 'attachment; filename=user.csv;');
+                            });
 
-                            }); 
-                        },
-                        function(err){
-                            if(!err) {
-                                //sorting data by tenant name
-                                dump.sort(function(a, b) {
-                                    var textA = a.name.toUpperCase();
-                                    var textB = b.name.toUpperCase();
-                                    return (textA < textB) ? -1 : (textA > textB) ? 1 : 0;
-                                });
-                                //writing data into csv file
-                                json2csv({data: dump,  fields: ['name', 'description', 'username', 'firstName', 'lastName', 'email', 'role', 'isActive'], fieldNames: ['Tenant Name', 'Tenant Description', 'User name', 'First Name', 'Last Name', 'Email', 'User Role', 'Active'] }, function(err, csv1) {
-                                  if (err) console.log(err);
-                                    return reply(csv1).header('Content-Type', 'application/octet-stream').header('content-disposition', 'attachment; filename=user.csv;');
-                                });
-
-                            } else reply(Boom.forbidden(err));
-                        }
-                    );
-                    
+                        } else reply(Boom.forbidden(err));
+                });
             } else reply(Boom.forbidden(err));
         });
 
@@ -172,7 +182,7 @@ exports.exportTenant = function(request, reply) {
         result['firstName'] = list.firstName;
         result['lastName'] = list.lastName;
         result['email'] = list.email;
-        result['role'] = list.scope;
+        result['role'] = list.scope.toString();
         result['isActive'] = list.isActive;
     } else {
         result['username'] = "-";
