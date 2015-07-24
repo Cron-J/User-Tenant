@@ -875,13 +875,26 @@ exports.updateUser = function(request, reply){
 
 exports.deleteUser = function(request, reply){
     if(request.pre.DU.tenantId === undefined || request.pre.DU.tenantId === request.params.tenantId) {
-        User.remove(request.params.id, function(err, user) {
-            if(err){
-              return reply( Boom.badImplementation(err) ); // HTTP 403
+        User.findUserById(request.params.id, function(err, user){
+            if(!err) {
+                User.remove(request.params.id, function(err, info) {
+                    if(err){
+                      return reply( Boom.badImplementation(err) ); // HTTP 403
+                    }
+                    else{
+                        var tokenData = {
+                            userName: user.userName,
+                            scope: [user.scope],
+                            id: user._id
+                        };
+
+                        //Sending email regarding deletion 
+                        EmailServices.accountDeletionMail(user, Jwt.sign(tokenData, privateKey));
+                        return reply('User account sucessfully deleted')
+                    }
+                });
             }
-            else{
-                return reply('User account sucessfully deleted')
-            }
+            else reply(Boom.forbidden(err));
         });
     }
     else

@@ -26,14 +26,14 @@ exports.sentMailForgotPassword = function(user) {
 exports.sentMailUserDeactivation = function(user, password) {
     var from = Config.email.accountName+" Team<" + Config.email.username + ">";
     var mailbody = "<p>Hi "+user.firstName+" "+user.lastName+", </p><br>"
-    +"<p>Your Account has deactivated</p>"
-    +"<p>Please contact admin for any queries. </p>"
+    +"<p>Your Account has been deactivated.</p>"
+    +"<p>If you need any assistance, please contact <b>"+Config.email.accountName+" Team</b>.</p>"
     mail(from, user.email , "jCatalog Account is deactivated", mailbody);
 };
 exports.sendUserActivationMail = function(user) {
     var from = Config.email.accountName+" Team<" + Config.email.username + ">";
     var mailbody = "<p>Hi "+user.firstName+" "+user.lastName+", </p><br>"
-    +"<p>Your "+Config.email.accountName+" Account has activated</p>"
+    +"<p>Your "+Config.email.accountName+" Account has been activated</p>"
     +"<p>Your account credentials are</p><p><b>username :</b> "+user.username+", <b>password :</b> "+crypto.decrypt(user.password)+"</p>"
     +"<p>You can login <a href="+Config.url+"login>here</a></p>"
     mail(from, user.email , "jCatalog Account is activated", mailbody);
@@ -41,7 +41,7 @@ exports.sendUserActivationMail = function(user) {
 exports.sendAccountCreationMail = function(user, tenant) {
     var from = Config.email.accountName+" Team<" + Config.email.username + ">";
     var mailbody = "<p>Hi "+user.firstName+" "+user.lastName+", </p><br>"
-    +"<p>Your "+Config.email.accountName+" account has created.</p>"
+    +"<p>Your "+Config.email.accountName+" account has been created.</p>"
     +"<p>As <b>"+user.scope+"</b> for the company <b>"+tenant.name+"</b> you are invited to join.</p>"
     +"<p>Here is your login details.</p>"
     +"<p><b>User Name : </b>"+user.username+" <b>Password : </b>"+crypto.decrypt(user.password)+"</p>"
@@ -83,6 +83,15 @@ exports.resentMailVerificationLink = function(user,token) {
     var from = Config.email.accountName+" Team<" + Config.email.username + ">";
     var mailbody = "<p>Please verify your email by clicking on the verification link below.<br/><a href='"+Config.url+Config.email.verifyEmailUrl+"?"+crypto.encrypt(user.username)+"&"+token+"'>Verification Link</a></p>"
     mail(from, user.email , "Account Verification", mailbody);
+};
+
+exports.accountDeletionMail = function(user, token) {
+    var from = Config.email.accountName+" Team<" + Config.email.username + ">";
+    var mailbody = "<p>Hi "+user.firstName+" "+user.lastName+", </p><br>"
+                    +"<p>Your "+Config.email.accountName+" account for company <b>"+user.tenantId.name+"</b> has been permanently deleted.</p>"
+                    +"<p>If you need any further assistance, please contact <b>"+Config.email.accountName+" Team</b>.</p>"
+    
+    mail(from, user.email , "jCatalog Account has been deleted", mailbody);
 };
 
 function mail(from, email, subject, mailbody){
