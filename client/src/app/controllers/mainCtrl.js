@@ -85,14 +85,36 @@ app.controller('mainCtrl', ['$scope', '$location', '$rootScope', '$http', '$moda
             growl.addErrorMessage('Session has expired');
         }
 
-	       //Tenant Search by name
+	    //Tenant Search by name
         $scope.searchTenantByName = function($viewValue){
             var temp = [];
             var obj = {};
             obj['name'] = $viewValue;
             // obj['value'] = $viewValue;
             temp.push(obj);
-            return $http.post('/searchTenant', obj,  {
+            return $http.post('/tenantsInfo', obj,  {
+                headers: AuthServ.getAuthHeader()
+            }).
+            then(function(data){
+              var tenantList = [];
+              angular.forEach(data.data, function(item){   
+                if(item.description != undefined){
+                    tenantList.push({ "name": item.name, "_id": item._id, 
+                    "desc":item.description, "comma": ', ' });
+                } else {
+                    tenantList.push({ "name": item.name, "_id": item._id });
+                }
+              });
+              return tenantList;
+            }).catch(function(error){
+                growl.addErrorMessage('oops! Something went wrong');
+            });
+        }
+
+        //Tenant Search by name
+        $scope.searchTenantInfo = function(obj){
+            if(!obj) obj = {};
+            $http.post('/tenantsInfo', obj,  {
                 headers: AuthServ.getAuthHeader()
             }).
             then(function(data){

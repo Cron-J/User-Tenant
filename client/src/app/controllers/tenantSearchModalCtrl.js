@@ -24,13 +24,29 @@ app.controller('searchModalInstanceCtrl', ['$scope', '$http', '$modalInstance',
         });
     }
 
-    
+    //Tenant Search by name
+        $scope.searchTenantInfo = function(obj){
+            if(!obj) obj ={};
+            $http.post('/tenantsInfo', obj)
+            .success(function (data, status) {
+                $scope.resultList = data;
+                $scope.showTableData = true;
+                $scope.currentPage = 0;
+                $scope.groupToPages();
+            })
+            .error(function (data, status) {
+                if(data.message == 'Invalid token') 
+                    $scope.sessionExpire();
+                else
+                    growl.addErrorMessage(data.message);
+            });
+        }
 
     //Get Tanant Id
-    $scope.getTenantId = function(id) {
+    $scope.getTenantId = function(obj) {
         $scope.submitted = true;
         $scope.reset_search();
-        $modalInstance.close(id);
+        $modalInstance.close(obj);
     }
 
     $scope.cancel = function() {

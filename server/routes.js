@@ -160,6 +160,11 @@ exports.endpoints = [
                 ]
         }
     },
+    //Give Tenant information for registration
+    { method: 'POST', path: '/tenantsInfo', 
+        config: { handler:Tenant.searchTenant}
+    },
+    //Export Tenant Inforamtion with related users
     { method: 'GET', path: '/exportTenant', 
         config: {
             app: {
@@ -236,6 +241,7 @@ exports.endpoints = [
     // { method: 'POST', path: '/tenantUserCreation', config: User.createTenantUserbyTenant},
     { method: 'POST', path: '/sendActivationEmail', config: User.sendActivationEmail},
     { method: 'POST', path: '/sendCredentials', config: User.sendCredentials},
+    //Change Password
     { method: 'POST', path: '/changePassword', config: User.changePasswordRequest},
     { method: 'POST', path: '/getSuggestions', config: User.usernameSuggestions},
     //Delete User

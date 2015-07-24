@@ -28,9 +28,6 @@ exports.createAdmin = {
                 if(request.payload.tenantId) {
                     delete request.payload.tenantId;
                 }
-                console.log(request.payload);
-                console.log('*************************');
-                console.log(request.payload.password);
                 request.payload.password = Crypto.encrypt(request.payload.password);
                 request.payload.scope = [0];
                 request.payload.createdBy = "Admin";
@@ -45,7 +42,7 @@ exports.createAdmin = {
                             scope: [user.scope],
                             id: user._id
                         };
-                        EmailServices.sendVerificationEmail(user, Jwt.sign(tokenData, privateKey));
+                        EmailServices.sendVerificationEmail(user, tenant, Jwt.sign(tokenData, privateKey));
                         reply( "Admin successfully created" );
                     } else {
                         if ( constants.kDuplicateKeyError === err.code || constants.kDuplicateKeyErrorForMongoDBv2_1_1 === err.code ) {
@@ -110,7 +107,6 @@ exports.resendVerificationMail = {
 
 exports.createUserSelfRegistration = {
     handler: function(request, reply) {
-        console.log('******************', request.payload);
             if( !request.payload.tenantId ){
                 return reply(Boom.forbidden("Please select tenant"));
             }
@@ -314,10 +310,6 @@ exports.deActivateUser = function(request, reply){
    Description: Activate tenant User.
 */
 exports.changePasswordRequest = {
-    auth: {
-        strategy: 'token',
-        scope: ['Tenant-Admin', 'Admin', 'User']
-    },
     handler: function(request, reply) {
        Jwt.verify(request.headers.authorization.split(' ')[1], Config.key.privateKey, function(err, decoded) { 
             User.findUserById(decoded.id, function(err, user) {
@@ -675,11 +667,9 @@ exports.getUser = {
     Description: Get User's information.
 */
 exports.getUserByName = function(request, reply){
-    console.log(request.params);
         User.findUserByName(request.params.username, function(err, user) {
             if(!err){
                 if(request.pre.UBN.tenantId === undefined || user.tenantId._id == request.pre.UBN.tenantId) {
-                    console.log(user);
                     if(user){
                         user.password = undefined;
                         return reply(user);    

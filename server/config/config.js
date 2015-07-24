@@ -5,7 +5,7 @@ module.exports = {
             port: 8001
     },
     database: {
-        url: 'mongodb://127.0.0.1/User-Tenant-Permission'
+        url: 'mongodb://127.0.0.1/User-Tenant'
     },
     key: {
         privateKey: '37LvDSm4XvjYOh9Y',

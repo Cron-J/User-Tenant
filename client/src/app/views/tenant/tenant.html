@@ -14,7 +14,7 @@
                         placeholder="Siemens"
                         ng-model="account.name" 
                         ng-pattern="/^[a-zA-Z0-9]{2,30}$/" 
-                        ng-disabled="page.view == 'view'" 
+                        ng-disabled="page.view == 'view' || page.view == 'edit'" 
                         ng-click="isChanged = true" required>
                     </div>
                 </div>

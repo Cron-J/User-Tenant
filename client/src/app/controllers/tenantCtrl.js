@@ -60,8 +60,6 @@ app.controller('tenantCtrl', ['$scope', '$rootScope', '$http', '$location',
                 headers: AuthServ.getAuthHeader()
             })
             .success(function (data, status) {
-                $scope.current_usr.firstName = data.name;
-                $scope.current_usr.lastName = '';
                 $scope.account = data;
             })
             .error(function (data, status) {

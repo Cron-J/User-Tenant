@@ -19,7 +19,8 @@
               ng-model="searchQuery.description" />
             </div>
             <div class="col-sm-4 ut-search-btnset">
-              <button class="btn btn-primary btn-sm" ng-click="searchTenant(searchQuery)"><span class="glyphicon glyphicon-search"></span></button>
+              <button class="btn btn-primary btn-sm" ng-if="checkPermission(15)" ng-click="searchTenant(searchQuery)"><span class="glyphicon glyphicon-search"></span></button>
+              <button class="btn btn-primary btn-sm" ng-hide="checkPermission(15)"ng-click="searchTenantInfo(searchQuery)"><span class="glyphicon glyphicon-search"></span></button>
               <button class="btn btn-primary btn-sm" ng-click="reset_search()">Clear</button>
             </div>
           </div>    

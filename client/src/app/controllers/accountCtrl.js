@@ -90,16 +90,13 @@ app.controller('accountCtrl', ['$scope', '$rootScope', '$http', '$location',
             var account_info = data,
                 valid;
                 // delete account_info.passwordConfirm;
-            if(account_info.tenantId) {
+            if(account_info.tenantId) 
                 account_info.user.tenantId = account_info.tenantId;
-                delete account_info.tenantName;
+            if(checkTenantName(account_info.tenantName) == true)
                 valid = true;
-            } else {
-                if(checkTenantName(account_info.tenantName) == true)
-                    valid = true;
-                else
-                    valid = false;
-            }
+            else
+                valid = false;
+            
             var dump = account_info;
             if(valid) {
                 $http.post('/user', account_info.user)
@@ -113,7 +110,7 @@ app.controller('accountCtrl', ['$scope', '$rootScope', '$http', '$location',
                 });
             }
             else {
-                growl.addErrorMessage('Please select tenant');
+                growl.addErrorMessage('Entered company is not existed');
             }
  
         }
@@ -307,6 +304,9 @@ app.controller('accountCtrl', ['$scope', '$rootScope', '$http', '$location',
                 $log.info('Modal dismissed at: ' + new Date());
             });
         }
+
+
+        
 
         //accordion
         $scope.status = {

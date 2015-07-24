@@ -41,7 +41,7 @@
                     <label class="col-sm-2 control-label">User Name</label>
                     <div class="col-sm-5">
                         <input name="username" placeholder="User Name" class="form-control" 
-                        ng-model="account.username" ng-pattern="/^[a-zA-Z0-9]{3,20}$/"  ng-click="isChanged = true" ng-disabled="page.view == 'view'" required>
+                        ng-model="account.username" ng-pattern="/^[a-zA-Z0-9]{3,20}$/"  ng-click="isChanged = true" ng-disabled="page.view == 'view' || page.view == 'edit'" required>
                     </div>
                 </div>
             </div>
