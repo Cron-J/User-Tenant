@@ -6,7 +6,7 @@
     </header>
     <div class="col-lg-8 col-md-8 ut-container">
         <form id="userForm" class="form-horizontal ut-form form-validation" role="form" name="userForm" novalidate>
-            <div class="row" ng-show="user.scope == 'Admin'">
+            <div class="row" ng-if="!tenantView">
                 <div class="form-group">
                     <label class="col-sm-2 control-label">Tenant</label>
                     <div class="col-sm-5">
@@ -16,9 +16,7 @@
                         typeahead="res as res.name+ res.comma + (res.desc | limitTo:10) for res in searchTenantByName($viewValue)" 
                         typeahead-wait-ms="1000" ng-click="isChanged = true"
                         ng-disabled="page.view != 'create'"
-                        ng-show="user.scope == 'Admin'" 
-                        ng-required="user.scope == 'Admin'"
-                        ng-class="{{testclass}}" />
+                        ng-required="user.scope[0] == 1" />
                     </div>
                     <a class="btn btn-primary btn-sm" ng-hide="page.role == 'tenant-admin' || page.view != 'create'"
                     ng-click="searchModal()"><i class="fa fa-search"></i></a>
@@ -43,16 +41,16 @@
                     <label class="col-sm-2 control-label">User Name</label>
                     <div class="col-sm-5">
                         <input name="username" placeholder="User Name" class="form-control" 
-                        ng-model="account.username" ng-pattern="/^[a-zA-Z0-9]{3,20}$/"  ng-click="isChanged = true" ng-disabled="page.view == 'view'" required>
+                        ng-model="account.username" ng-pattern="/^[a-zA-Z0-9]{3,20}$/"  ng-click="isChanged = true" ng-disabled="page.view == 'view' || page.view == 'edit'" required>
                     </div>
                 </div>
             </div>
             <div class="form-group" ng-show="suggestions">
                 <div class="col-sm-5 col-sm-offset-2">
                     <div class="row "><b>Suggestions: </b></div>
-                    <div class="col-sm-4" ng-repeat="s in suggestions">
+                    <span ng-repeat="s in suggestions">
                         {{s}}<span ng-hide="$last">, </span>
-                    </div>
+                    </span>
                 </div>
             </div>
             <div class="row">
@@ -83,8 +81,13 @@
             <div class="row">
                 <div class="form-group">
                     <label class="col-sm-2 control-label">User Role</label>
-                    <div class="col-sm-3">
-                        <div ng-dropdown-multiselect="" options="rolesList" selected-model="account.scope" extra-settings="multiSelectText" ></div>
+                    <div class="col-sm-3" ng-if="page.view != 'view'">
+                        <div ng-dropdown-multiselect="" options="rolesList" selected-model="account.scope" extra-settings="multiSelectText"></div>
+                    </div>
+                    <div class="col-sm-3" ng-if="page.view == 'view'">
+                      <input name="scope" type="text" 
+                        class="form-control" ng-model="account.roles" 
+                        ng-disabled="page.view == 'view'" required>
                         <!-- <select class="form-control" name="role" ng-model="account.scope" ng-disabled="page.view == 'view'" required>
                             <option value="">Select Role</option>
                             <option ng-hide="page.role == 'tenant-admin'" value="Admin">Admin</option>
@@ -99,19 +102,10 @@
             <div class="row">
                 <div class="form-group">
                     <div class="col-lg-12 col-md-12">
-                        <!-- Admin view -->
-                        <span ng-hide="page.role == 'tenant-admin' || tenantInfo">
-                            <button class="btn btn-primary" ng-show="page.view == 'create'" ng-disabled="!userForm.$valid" ng-click="isChanged = false;createTenantUserAccount(account, userForm.$valid)">Create</button>
-                            <button class="btn btn-primary" ng-show="page.view == 'edit'" ng-disabled="!userForm.$valid" ng-click="isChanged = false;updateUserAccount(account, userForm.$valid)">Update</button>
-                            <button class="btn btn-primary" ng-show="page.view == 'view'"  ng-click="page.view = 'edit';">Edit</button>
-                        </span>
-                        <!-- Tenant view -->
-                        <span ng-show="page.role == 'tenant-admin'">
-                            <button class="btn btn-primary" ng-show="page.view == 'create'" ng-disabled="!userForm.$valid" ng-click="isChanged = false;createTenantUserAccountbyTenant(account, userForm.$valid)">Create</button>
-                            <button class="btn btn-primary" ng-show="page.view == 'edit'" ng-disabled="!userForm.$valid" ng-click="isChanged = false;updatetenantUserAccountByTenant(account, userForm.$valid)">Update</button>
-                            <button class="btn btn-primary" ng-show="page.view == 'view'"  ng-click="page.view = 'edit';">Edit</button>
-                            <!-- <button class="btn btn-default" ng-hide="isChanged" ng-hide="view" ui-sref="tenantHome">Cancel</button> -->
-                        </span>
+                        <button class="btn btn-primary" ng-show="page.view == 'create'" ng-disabled="!userForm.$valid" ng-click="isChanged = false;createTenantUserAccount(account, userForm.$valid)">Create</button>
+                        <button class="btn btn-primary" ng-show="page.view == 'edit'" ng-disabled="!userForm.$valid" ng-click="isChanged = false;updateUserAccount(account, userForm.$valid)">Update</button>
+                        <button class="btn btn-primary" ng-show="page.view == 'view'"  ng-click="page.view = 'edit';">Edit</button>
+
                         <button class="btn btn-info" ng-show="tenantInfo && page.role == 'admin'" ui-sref="usersOfTenant({'tenantName': tenantInfo})"><i class="fa fa-arrow-left"></i> Back</button>
                         <span ng-hide="tenantInfo">
                             <button class="btn btn-default" ng-hide="isChanged" ui-sref="users"><i class="fa fa-arrow-left"></i> Back</button>

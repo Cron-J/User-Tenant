@@ -2,7 +2,7 @@
 	<div class="row ut-pageheader">
     <div class="ut-lead col-lg-10 col-md-10 ">Search Tenants</div>
     <div class="col-lg-2 col-md-2 pull-right">
-      <a class="btn btn-primary" ng-click="createTenant(srch)"><i class="fa fa-building"></i> New</a>
+      <a class="btn btn-primary" ui-sref="createTenant" ng-if="checkPermission(8)"><i class="fa fa-building"></i> New</a>
       <a class="btn btn-default" ng-click="exportTenantsData()" ng-controller="adminCtrl"><i class="fa fa-download"></i> Export</a>
     </div>
   </div>  
@@ -22,7 +22,7 @@
       </div>
     </section>
     <div class="pull-right">
-      <button value="Search" class="btn btn-primary" type="submit" ng-click="searchTenant(srch)">Search</button>
+      <button value="Search" class="btn btn-primary" type="submit" ng-if="checkPermission(9)" ng-click="searchTenant(srch)">Search</button>
       <button class="btn btn-primary" ng-click="srch = {};">Reset</button>
     </div>
   </form>
@@ -51,11 +51,13 @@
             <td>{{tenant.name}}</td>
             <td>{{tenant.description}}</td>
             <td>
-              <button type="button" class="btn btn-primary btn-md" ui-sref="tenantInfo({'tname': tenant.name})">
-                <span class="fa fa-edit"></span> Edit
-              </button>
-                <button type="button" class="btn btn-default btn-md" ui-sref="usersOfTenant({'tenantName': tenant.name})">
-                <span class="fa fa-users"></span> Users</button>
+              <button type="button" class="btn btn-primary btn-md" 
+              ng-if="checkPermission(10)" ui-sref="tenantInfo({'tname': tenant.name})">
+                <span class="fa fa-edit"></span></button>
+              <button type="button" class="btn btn-default btn-md" 
+              ng-if="checkPermission(14)"
+              ui-sref="usersOfTenant({'tenantName': tenant.name})">
+              <span class="fa fa-users"></span></button>
             </td>
           </tr>
         </tbody>

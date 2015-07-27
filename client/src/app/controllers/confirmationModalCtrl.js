@@ -1,17 +1,18 @@
 'use strict';
 
 app.controller('confirmationModalInstanceCtrl', ['$scope', '$rootScope', '$http', 
-    '$location', '$modalInstance', 'detail',
-    function ($scope, $rootScope, $http, $location, $modalInstance, detail) {
+    '$location', '$modalInstance', 'detail', '$stateParams',
+    function ($scope, $rootScope, $http, $location, $modalInstance, detail, $stateParams) {
 
-    var view;
     //confirmation dialog box actions
     $scope.isRedirectConformed = function () {
-        if($location.path() == '/editProfile' || $location.path() == '/changePassword') 
+        if($stateParams.tname || $location.path() == '/newTenant') 
+            $location.path('/tenants');
+        else if($stateParams.uname)
+            $location.path('/users');
+        else
             $location.path('/home');
-        else 
-            view = 'search';
-        $modalInstance.close(view);
+        $modalInstance.close();
     };
 
     $scope.cancel = function () {

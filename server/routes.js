@@ -6,63 +6,94 @@ var Activity  = require('./controller/activity'),
     Role      = require('./controller/role'),
     User      = require('./controller/user'),
 	Tenant    = require('./controller/tenant'),
+    Auth      = require('./Utility/authorization'),
     Static    = require('./static'),
     Staticlist= require('./Utility/staticlist');
 
 // API Server Endpoints
 exports.endpoints = [
-
+    //Get gui pages
     { method: 'GET',  path: '/{somethingss*}', config: Static.get },
+    //Create Activities
     { method: 'POST',  path: '/activities', config: Activity.createActivities },
+    //Get Activities
+    { method: 'POST',  path: '/getactivities', config: Activity.getActivitiesList },
+    //Create Roles
     { method: 'POST',  path: '/roles', config: Role.createRoles },
+    //Get Roles
     { method: 'GET',  path: '/getRoles', config: Role.getRoles },
+    //Create Admin
     { method: 'POST', path: '/admin', config: User.createAdmin},
-
-    /**
-       POST: /activateUser
-       SCOPE: 'Admin', 'Tenant-Admin'
-       Description: Activate tenant User.
-    */
-    { method: 'POST', path: '/activateUser', config: User.activateTenantUser},
-
-    /**
-       POST: /deActivateUser
-       SCOPE: 'Admin', 'Tenant-Admin'
-       Description: deActivate tenant User.
-    */
-    { method: 'POST', path: '/deActivateUser', config: User.deActivateTenantUser},
-
-    /**
-       PUT: /user
-       SCOPE: 'Admin', 'Tenant-Admin', 'User'
-       Description: Update own info for one who is logged in i.e. Admin, Tenant Admin, Tenant User.
-    */
-    { method: 'PUT', path: '/user', config: User.updateUser},
-
-    /**
-        PUT: /user/{id}
-        SCOPE: 'Tenant-Admin'
-        @param id : user id of Tenant User whose info need to be edited.
-        Description: Update Tenant User info by System Admin.
-    */
-    { method: 'PUT', path: '/user/{id}', config: User.updateTenantUser},
-
-    /**
-        PUT: /user/{id}/{tenantId}
-        SCOPE: 'Admin'
-        @param id : user id of Tenant User whose info need to be edited.
-        @param tenantId : tenant id of tenant whose use info is to be updated.
-        Description: Update Tenant User info by System Admin.
-    */
-    { method: 'PUT', path: '/user/{id}/{tenantId}', config: User.updateTenantUser},
-
-    /**
-        POST: /searchUser
-        SCOPE: 'Admin'
-        Description: Search User based on certain field/criteria (firstName, lastName, email, tenantId).
-    */
-    { method: 'POST', path: '/searchUser', config: User.searchUser},
-    { method: 'GET', path: '/exportUser', config: User.exportUser},
+    //Activate User
+    { method: 'POST', path: '/activateUser', 
+        config:{
+            app: {
+                permissionLevel: 4  // "permission level" for this route
+            },
+            handler:User.activateUser, 
+            pre: [
+                    {method:Auth.checkPermission, assign:'AU'}
+                ]
+        }
+    },
+    //Deactivate User
+    { method: 'POST', path: '/deActivateUser', 
+        config:{
+            app: {
+                permissionLevel: 5  // "permission level" for this route
+            },
+            handler:User.deActivateUser, 
+            pre: [
+                    {method:Auth.checkPermission, assign:'DU'}
+                ]
+        }
+    },
+    //Update User
+    { method: 'PUT', path: '/user', config: User.updateAccount},
+    { method: 'PUT', path: '/user/{id}', 
+        config:{
+            app: {
+                permissionLevel: 3  // "permission level" for this route
+            },
+            handler:User.updateUser, 
+            pre: [
+                    {method:Auth.checkPermission, assign:'UU'}
+                ]
+        }
+    },
+    { method: 'PUT', path: '/user/{id}/{tenantId}', 
+        config:{
+            app: {
+                permissionLevel: 3  // "permission level" for this route
+            },
+            handler:User.updateUser, 
+            pre: [
+                    {method:Auth.checkPermission, assign:'UU'}
+                ]
+        }
+    },
+    { method: 'POST', path: '/searchUser', 
+        config:{
+            app: {
+                permissionLevel: 1  // "permission level" for this route
+            },
+            handler:User.searchUser, 
+            pre: [
+                    {method:Auth.checkPermission}
+                ]
+        }
+    },
+    { method: 'GET', path: '/exportUser', 
+        config: {
+            app: {
+                permissionLevel: 7  // "permission level" for this route
+            },
+            handler:User.exportUser, 
+            pre: [
+                    {method:Auth.checkPermission}
+                ]
+        }
+    },
 
     /**
         GET: /user
@@ -82,7 +113,17 @@ exports.endpoints = [
         @param id : user id of Tenant User whose info is to be get
         Description: Get Tenant User information.
     */
-    { method: 'GET', path: '/userByName/{username}', config: User.getUserByName},
+    { method: 'GET', path: '/userByName/{username}', 
+        config: {
+            app: {
+                permissionLevel: 2  // "permission level" for this route
+            },
+            handler:User.getUserByName, 
+            pre: [
+                    {method:Auth.checkPermission, assign:'UBN'}
+                ]
+        }
+    },
 
     /**
         GET: /user/{id}
@@ -107,21 +148,125 @@ exports.endpoints = [
     { method: 'PUT', path: '/emailVerification', config: User.emailVerification},
     { method: 'POST', path: '/resendVerificationMail', config: User.resendVerificationMail},
     { method: 'POST', path: '/tenantSelfRegistration', config: Tenant.createTenantSelfRegistration}, 
-    { method: 'POST', path: '/searchTenant', config: Tenant.searchTenant},
-    { method: 'GET', path: '/exportTenant', config: Tenant.exportTenant},
-    { method: 'GET', path: '/tenant/{name}', config: Tenant.getTenant},
-    { method: 'PUT', path: '/tenant/{id}', config: Tenant.updateTenantByAdmin},
+    //Search Tenant
+    { method: 'POST', path: '/searchTenant', 
+        config: {
+            app: {
+                permissionLevel: 9  // "permission level" for this route
+            },
+            handler:Tenant.searchTenant, 
+            pre: [
+                    {method:Auth.checkPermission, assign:'ST'}
+                ]
+        }
+    },
+    //Give Tenant information for registration
+    { method: 'POST', path: '/tenantsInfo', 
+        config: { handler:Tenant.searchTenant}
+    },
+    //Export Tenant Inforamtion with related users
+    { method: 'GET', path: '/exportTenant', 
+        config: {
+            app: {
+                permissionLevel: 15  // "permission level" for this route
+            },
+            handler:Tenant.exportTenant, 
+            pre: [
+                    {method:Auth.checkPermission, assign:'ET'}
+                ]
+        }
+    },
+    //Get Tenant Details
+    { method: 'GET', path: '/tenant/{name}', 
+        config: {
+            app: {
+                permissionLevel: 10  // "permission level" for this route
+            },
+            handler:Tenant.getTenant, 
+            pre: [
+                    {method:Auth.checkPermission, assign:'GT'}
+                ]
+        }
+    },
+    //Update tenant account information
+    { method: 'PUT', path: '/tenant/{id}', 
+        config: {
+            app: {
+                permissionLevel: 10  // "permission level" for this route
+            },
+            handler:Tenant.updateTenant, 
+            pre: [
+                    {method:Auth.checkPermission, assign:'UT'}
+                ]
+        }
+    },
     { method: 'POST', path: '/user', config: User.createUserSelfRegistration},
-    { method: 'GET', path: '/tenantUser/{id}', config: User.getAllTenantUserByTenant},
+    //Get all tenantUsers of tenant
+    { method: 'GET', path: '/tenantUser/{id}', 
+        config: {
+            app: {
+                permissionLevel: 14  // "permission level" for this route
+            },
+            handler:User.getAllTenantUsersOfTenant, 
+            pre: [
+                    {method:Auth.checkPermission, assign:'GTU'}
+                ]
+        }
+    },
     { method: 'GET', path: '/tenantDeactiveUser/{id}', config: User.getAllDeactiveTenantUserByTenant},
-    { method: 'POST', path: '/tenantUser', config: User.createTenantUser},
-    { method: 'POST', path: '/tenantCreation', config: Tenant.createTenantByAdmin},
+    //Create User
+    { method: 'POST', path: '/createUser', 
+        config: {
+            app: {
+                permissionLevel: 0  // "permission level" for this route
+            },
+            handler:User.createUser, 
+            pre: [
+                    {method:Auth.checkPermission, assign:'CU'}
+                ]
+        }
+    },
+    //Create Tenant Account
+    { method: 'POST', path: '/tenantCreation', 
+        config: {
+            app: {
+                permissionLevel: 8  // "permission level" for this route
+            },
+            handler:Tenant.createTenant, 
+            pre: [
+                    {method:Auth.checkPermission, assign:'CU'}
+                ]
+        }
+    },
     // { method: 'POST', path: '/tenantUserCreation', config: User.createTenantUserbyTenant},
     { method: 'POST', path: '/sendActivationEmail', config: User.sendActivationEmail},
     { method: 'POST', path: '/sendCredentials', config: User.sendCredentials},
+    //Change Password
     { method: 'POST', path: '/changePassword', config: User.changePasswordRequest},
     { method: 'POST', path: '/getSuggestions', config: User.usernameSuggestions},
-    { method: 'DELETE', path: '/deleteAccount/{id}', config: User.deleteUser}
+    //Delete User
+    { method: 'DELETE', path: '/deleteAccount/{id}', 
+        config: {
+            app: {
+                permissionLevel: 6  // "permission level" for this route
+            },
+            handler:User.deleteUser, 
+            pre: [
+                    {method:Auth.checkPermission, assign:'DU'}
+                ]
+        }
+    },
+    { method: 'DELETE', path: '/deleteAccount/{id}/{tenantId}', 
+        config: {
+            app: {
+                permissionLevel: 6  // "permission level" for this route
+            },
+            handler:User.deleteUser, 
+            pre: [
+                    {method:Auth.checkPermission, assign:'DU'}
+                ]
+        }
+    }
 
     
 ];

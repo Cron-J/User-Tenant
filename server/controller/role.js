@@ -35,3 +35,29 @@ exports.getRoles = {
     }
 };
 
+//hapi-route-acl
+exports.permissionsFunc = function(credentials, callback) {
+  // use credentials here to retrieve permissions for user
+  // in this example we just return some permissions
+  Role.getList({}, function(err, result){
+             var userPermissions = {
+                cars: {
+                  read: true,
+                  create: false,
+                  edit: true,
+                  delete: true
+                },
+                drivers: {
+                  read: true,
+                  create: false,
+                  edit: false,
+                  delete: false
+                }
+              };
+  });
+
+ 
+
+  callback(null, userPermissions);
+};
+

@@ -111,10 +111,45 @@
 	margin-top: -15px;
 	margin-left: 15px;
 }
+.ut-user-info {
+	max-width: 100px;
+  display: inline-block;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+  text-align: left;
+  vertical-align: top;
+  line-height: 15px;
+  position: relative;
+  top: 6px;
+}
+.ut-user-info small {
+  display: block;
+}
+
 /*modified css*/
 .form-horizontal .control-label {
   text-align: left;
   color: #888;
 }
-
+.navbar-default .navbar-nav > li > a{
+  display: block;
+  line-height: inherit;
+  text-align: center;
+  height: 100%;
+  width: auto;
+  min-width: 50px;
+  padding: 3px 8px;
+  position: relative;
+}
+.navbar-default .navbar-nav>li>a>.ut-icon {
+  display: inline-block;
+  font-size: 16px;
+  text-align: center;
+  width: 20px;
+  margin-top: 12px;
+}
+.ut-icon-position {
+	margin-top: 12px;
+}
 

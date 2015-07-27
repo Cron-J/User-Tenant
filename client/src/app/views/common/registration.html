@@ -1,4 +1,4 @@
- <div class="container">
+<div class="container">
     <div class="row">
         <div class="col-sm-7 col-sm-offset-3">
             <a class="navbar-brand-1 block m-t" href="javascript:void(0)">
@@ -7,10 +7,31 @@
             <form name="signUpForm" class="form-horizontal form-validation">
                 <div class="panel panel-default">
                     <div class="panel-heading text-center font-bold">
-                        User Registration
+                        <span ng-show="signupType == 'tenant'">Company Registration</span>
+                        <span ng-show="signupType == 'user'">User Registration</span>
                     </div>
                     <div class="panel-body">
+                    <span ng-if="signupType == 'tenant'">
+                         <div class="form-group">
+                            <label class="col-sm-3 control-label">Company Name</label>
+
+                            <div class="col-sm-9">
+                                <input type="text" class="form-control"
+                                       ng-model="account.tenant.name" ng-pattern="/^[a-zA-Z_ ]{2,30}$/"  required name="tenantName" placeholder="Company Name" >
+                            </div>
+                        </div>
                         <div class="form-group">
+                            <label class="col-sm-3 control-label">Description</label>
+
+                            <div class="col-sm-9">
+                                <textarea class="form-control" 
+                                placeholder="Description" ng-model="account.tenant.description" ng-pattern="/^[a-zA-Z_ ]{2,30}$/" name="tenantDesc"></textarea>
+                            </div>
+                        </div>
+                        <hr>
+                    </span>
+                     <span ng-if="signupType == 'user'">
+                         <div class="form-group">
                             <label class="col-sm-3 control-label">Company</label>
                             <div class="col-sm-9">
                                 <div class="row">
@@ -25,23 +46,21 @@
                                 </div>                                    
                             </div>
                         </div>
+                     </span>
                         <div class="form-group">
                             <label class="col-sm-3 control-label">Email</label>
 
                             <div class="col-sm-9">
-                                <input type="email" placeholder="Email" 
-                                class="form-control" ng-model="account.email"
-                                ng-minlength="5" maxlength="50" 
-                                ng-blur="generateRandomUserNames(account.email)" 
-                                required>
+                                <input type="email" placeholder="Email" class="form-control" ng-model="account.user.email" ng-minlength="5" maxlength="50" ng-blur="generateRandomUserNames(account.user.email)" required>
                             </div>
                         </div>
                         <div class="form-group">
                             <label class="col-sm-3 control-label">User Name</label>
 
                             <div class="col-sm-9">
-                                <input placeholder="User Name" class="form-control" ng-model="account.username"
-                                       ng-pattern="/^[a-zA-Z0-9]{3,20}$/" required>
+                                <input placeholder="User Name" class="form-control" 
+                                ng-model="account.user.username"
+                                ng-pattern="/^[a-zA-Z0-9]{3,20}$/" required>
                             </div>
                         </div>
                         <div class="form-group" ng-show="suggestions">
@@ -52,12 +71,13 @@
                                 </div>
                             </div>
                         </div>
+
                         <div class="form-group">
                             <label class="col-sm-3 control-label">First Name</label>
 
                             <div class="col-sm-9">
                                 <input placeholder="First Name" type="text" class="form-control"
-                                       ng-model="account.firstName"
+                                       ng-model="account.user.firstName"
                                        ng-pattern="/^[a-zA-Z]{3,20}$/" required>
                             </div>
                         </div>
@@ -65,7 +85,7 @@
                             <label class="col-sm-3 control-label">Last Name</label>
 
                             <div class="col-sm-9">
-                                <input placeholder="Last Name" type="text" class="form-control" ng-model="account.lastName"
+                                <input placeholder="Last Name" type="text" class="form-control" ng-model="account.user.lastName"
                                        ng-pattern="/^[a-zA-Z]{3,20}$/" required>
                             </div>
                         </div>
@@ -74,7 +94,7 @@
 
                             <div class="col-sm-9">
                                 <input type="password" class="form-control"
-                                       ng-model="account.password" ng-minlength="5" maxlength="50" required
+                                       ng-model="account.user.password" ng-minlength="5" maxlength="50" required
                                        data-ng-class="{'ng-invalid':signUpForm.confirmPassword.$error.match}">
                             </div>
                         </div>
@@ -83,23 +103,30 @@
 
                             <div class="col-sm-9">
                                 <input type="password" class="form-control"
-                                       ng-model="account.passwordConfirm" 
-                                       required data-match="account.password"
+                                       ng-model="account.user.passwordConfirm" required  data-match="account.user.password"
                                        name="confirmPassword">
                             </div>
                         </div>
+                        
                         <div class="form-group">
                             <div class="col-sm-6 col-sm-offset-3 checkbox m-b-md m-t-none">
                                 <label class="i-checks">
-                                    <input type="checkbox" ng-model="agree" required /><span> I agree to the <a ui-sref="tremsAndConditions">Terms and
-                                    Conditions</a></span>
+                                    <input type="checkbox" ng-model="agree" required /><span> I agree with <a target="_blank" ui-sref="tremsAndConditions">terms and
+                                    conditions</a>
                                 </label>
                             </div>
                         </div>
                     </div>
                     <div class="panel-footer text-right bg-light lter">
-                        <button type="submit" class="btn btn-primary btn-block ut-btn" ng-click="tenantUserSelfRegistration(account)"
-                                ng-disabled='signUpForm.$invalid'>Sign up
+                        <button type="submit" class="btn btn-primary btn-block ut-btn" 
+                        ng-show="signupType == 'tenant'"
+                        ng-click="tenantSelfRegistration(account)"
+                        ng-disabled='signUpForm.$invalid'>Sign up
+                        </button>
+                        <button type="submit" class="btn btn-primary btn-block ut-btn"
+                        ng-show="signupType == 'user'" 
+                        ng-click="userSelfRegistration(account)"
+                        ng-disabled='signUpForm.$invalid'>Sign up
                         </button>
                         <div class="line line-dashed"></div>
                         <p class="text-center">

@@ -42,14 +42,16 @@ angular.module('app.factory', [])
         $cookieStore.put('user', user);
 
     },
-    isAuthorized: function(authorizedRoles) {
-        if (!angular.isArray(authorizedRoles)) {
-            authorizedRoles = [authorizedRoles];
-        }
-        if (authorizedRoles[0] == '*') 
+    isAuthorized: function(authorized) {
+        if (authorized[0] == '*') 
           return true;
-        if($cookieStore.get('user')) 
-          return (authorizedRoles.indexOf($cookieStore.get('user').scope) !== -1);
+        else if($cookieStore.get('user')) {
+          if(authorized[0] == '#')
+            return true;
+          else if(($cookieStore.get('user').permissions.indexOf(authorized[0])) !== -1)
+            return true;
+          else false;
+        }
         else
           return false
     },
@@ -99,7 +101,6 @@ angular.module('app.factory', [])
     async: function(email) {
         // $http returns a promise, which has a then function, which also returns a promise
         var obj = {'email': email}
-        console.log(obj);
         promise = $http.post('/getSuggestions', obj)
         .success(function (data, status) {
           return data;   
@@ -119,6 +120,7 @@ angular.module('app.factory', [])
   };
   return myService;
 })
+
 .factory('rolesList', function ($http, AuthServ, growl) {
     var promise;
     var myService = {

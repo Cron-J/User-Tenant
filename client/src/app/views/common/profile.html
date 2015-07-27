@@ -5,6 +5,17 @@
     </header>
     <div class="col-lg-8 col-md-8 ut-container">
         <form id="profileForm" class="form-horizontal ut-form form-validation" role="form" name="profileForm">
+            <div class="row" ng-if="account.tenantId">
+                <div class="form-group">
+                    <label class="col-sm-3 control-label">Company</label>
+                    <div class="col-sm-5">
+                        <input type="text" class="form-control" 
+                        ng-model="account.tenantId.name" 
+                        style="width: 299px;"
+                        disabled ng-required="account.tenantId">
+                    </div>     
+                </div>
+            </div>
             <div class="row">
                 <div class="form-group">
                     <label class="col-sm-3 control-label">Email</label>
@@ -54,7 +65,7 @@
                     <div class="col-sm-5">
                         <input type="text" class="form-control" 
                         ng-model="account.scope" ng-click="isChanged = true"
-                        ng-pattern="/^[a-zA-Z]{3,20}$/" disabled required>
+                         disabled required>
                     </div>
                 </div>
             </div>
