@@ -22,7 +22,7 @@ client/src/ bower install
 
 Run the following command in root directory of an app in command prompt.
 
-server/ node server.js
+server/ nodemon server.js
 
 You can see the port number in command prompt after sucessfull run
 
